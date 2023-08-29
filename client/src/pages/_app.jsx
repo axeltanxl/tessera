@@ -8,7 +8,7 @@ const poppins = Poppins({
 })
 function MyApp({ Component, pageProps }) {
   return <main className={poppins.className}>
-    <Navbar/>
+    {/* <Navbar/> */}
     <Component {...pageProps} />
   </main>
 }
