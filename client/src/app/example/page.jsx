@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 async function getData() {
     // You would usually fetch data from an API here.
     // const res = await fetch("https://api.github.com/");
@@ -13,5 +16,12 @@ async function getData() {
   export default async function Page() {
     const name = await getData();
   
-    return <p>🤩 Hello {name}!</p>;
+    return (
+        <div>
+            <Button aschild variant="outline" className="m-4 bg-example hover:bg-example text-black pointer-events:none">
+            <Link href="/">Help</Link>
+            </Button>
+            <p>🤩 Hello {name}!</p>
+        </div>
+    )
   }
