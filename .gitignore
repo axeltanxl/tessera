@@ -23,5 +23,5 @@
 hs_err_pid*
 replay_pid*
 
-vite.generated.ts
-package-lock.json
+backend/vite.generated.ts
+backend/package-lock.json
