@@ -1,6 +1,7 @@
-import Navbar from '@/app/components/header/NavBar'
+import Navbar from '@/components/ui/header/NavBar'
 import '../styles/globals.css';
-import {Poppins} from 'next/font/google'
+import {Poppins} from 'next/font/google';
+
 const poppins = Poppins({
   subsets: ['latin'],
   weight: '400',
@@ -8,7 +9,7 @@ const poppins = Poppins({
 })
 function MyApp({ Component, pageProps }) {
   return <main className={poppins.className}>
-    {/* <Navbar/> */}
+    <Navbar/>
     <Component {...pageProps} />
   </main>
 }

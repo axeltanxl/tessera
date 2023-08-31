@@ -1,6 +1,6 @@
 const FAQ = () => {
     return(
-        <div>FAQ Page</div>
+        <section className="pt-10">FAQ page</section>
     )
 }
 
