@@ -1,6 +1,6 @@
 'use client';
 const Events = () => {
-    return(<div>Events page</div>)
+    return(<section className="pt-10">Events</section>)
 }
 
 export default Events
