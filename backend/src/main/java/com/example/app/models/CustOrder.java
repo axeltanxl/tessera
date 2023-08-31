@@ -6,41 +6,41 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+// import jakarta.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-public class Order {
+public class CustOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderID;
-    private String price;
+    private long orderID;
+
+    private int price;
 
     @ManyToOne
     // @PrimaryKeyJoinColumn(name="userID", referencedColumnName="userID")
     @JoinColumn(name="userID")
     private User user;
     
-    public Order() {
+    public CustOrder() {
     }
 
-    public Order(Long orderID, String price) {
-        this.orderID = orderID;
+    public CustOrder(int price) {
         this.price = price;
     }
 
-    public Long getOrderID() {
+    public long getOrderID() {
         return orderID;
     }
 
-    public void setOrderID(Long orderID) {
+    public void setOrderID(long orderID) {
         this.orderID = orderID;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

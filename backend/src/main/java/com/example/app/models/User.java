@@ -4,8 +4,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,12 +14,11 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userID;
+    private long userID;
 
     private String name;
     private String email;
     private String password;
-
     @Column(name = "contactNum")
     private int contactNum;
 
@@ -41,18 +38,18 @@ public class User {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "User[id=%d, name='%s', email='%s']",
-                userID, name, email);
-    }
+    // @Override
+    // public String toString() {
+    //     return String.format(
+    //             "User[id=%d, name='%s', email='%s']",
+    //             userID, name, email);
+    // }
 
-    public Long getUserID() {
+    public long getUserID() {
         return userID;
     }
 
-    public void setUserID(Long userID) {
+    public void setUserID(long userID) {
         this.userID = userID;
     }
 
