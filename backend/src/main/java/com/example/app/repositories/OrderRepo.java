@@ -1,8 +1,8 @@
 package com.example.app.repositories;
 
 import org.springframework.data.repository.CrudRepository;
-import com.example.app.models.CustOrder;
+import com.example.app.models.Order;
 
-public interface OrderRepo extends CrudRepository<CustOrder, Integer>{
+public interface OrderRepo extends CrudRepository<Order, Integer>{
     
 }

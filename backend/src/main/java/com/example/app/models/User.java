@@ -4,6 +4,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
+import java.util.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,13 +20,17 @@ public class User {
     private String name;
     private String email;
     private String password;
-    @Column(name = "contactNum")
     private int contactNum;
-
     private String address;
 
-    // @OneToOne(targetEntity = Order.class)
-    // private List<Order> orders;
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "buyer")
+    private List<Transaction> buyerTransactions;
+
+    @OneToMany(mappedBy = "seller")
+    private List<Transaction> sellerTransactions;
 
     public User() {
     }
@@ -37,13 +42,6 @@ public class User {
         this.contactNum = contactNum;
         this.address = address;
     }
-
-    // @Override
-    // public String toString() {
-    //     return String.format(
-    //             "User[id=%d, name='%s', email='%s']",
-    //             userID, name, email);
-    // }
 
     public long getUserID() {
         return userID;
@@ -93,4 +91,27 @@ public class User {
         this.address = address;
     }
 
+    public List<Order> getOrders() {
+      return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+      this.orders = orders;
+    }
+
+    public List<Transaction> getBuyerTransactions() {
+      return buyerTransactions;
+    }
+
+    public void setBuyerTransactions(List<Transaction> buyerTransactions) {
+      this.buyerTransactions = buyerTransactions;
+    }
+
+    public List<Transaction> getSellerTransactions() {
+      return sellerTransactions;
+    }
+
+    public void setSellerTransactions(List<Transaction> sellerTransactions) {
+      this.sellerTransactions = sellerTransactions;
+    }
 }
