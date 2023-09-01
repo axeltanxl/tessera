@@ -15,17 +15,17 @@ import {
           <img
             src={src}
             alt="card-image"
-            className="h-full w-full object-cover rounded"
+            className="h-full w-full object-cover rounded p-2"
           />
         </CardHeader>
-        <CardBody className="p-2 sm:p-6 pb-o">
+        <CardBody className="p-2 sm:p-2 pl-4 pb-0 bg-[#FDFBFF]">
           <div className="mb-2 flex items-center justify-between">
             <Typography color="blue-gray" className="font-semibold">
               {title}
             </Typography>
-            <Typography color="blue-gray" className="font-medium">
+            {/* <Typography color="blue-gray" className="font-medium">
               $95.00
-            </Typography>
+            </Typography>  */}
           </div>
           <Typography
             variant="small"
@@ -34,13 +34,13 @@ import {
           >{category}
           </Typography>
         </CardBody>
-        <CardFooter className="pt-0 flex justify-center">
+        <CardFooter className="pt-0 flex justify-center bg-[#FDFBFF] pb-2">
           <Button
             ripple={false}
-            fullWidth={true}
-            className="bg-[#F5F7FB] px-4 py-1 rounded shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+            fullWidth={false}
+            className="bg-slate-200 w-[50%] px-4 py-1 rounded shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
           >
-            Add to Cart
+            View event
           </Button>
         </CardFooter>
       </Card>
