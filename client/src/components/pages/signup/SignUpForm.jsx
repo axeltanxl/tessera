@@ -1,5 +1,4 @@
 'use client'
-import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,7 +18,7 @@ import { signUpSchema } from "./signUpschema"
 import { Icons } from "@/components/ui/icons/icons"
 
 
-const SignUpForm = () => {
+const SignUpForm = ({actionName, action}) => {
     const [isLoading, setIsLoading] = useState(false);
     const form = useForm({
         defaultValues : {
@@ -37,7 +36,7 @@ const SignUpForm = () => {
     const onSubmit = (data) => {
         console.log(data)
         setIsLoading(true)
-
+        action();
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
@@ -53,11 +52,6 @@ const SignUpForm = () => {
     })
     }
     return (
-    <div className="w-full drop-shadow-lg">
-        <div className="w-full bg-secondary flex justify-center px-8 rounded-t-lg py-4">
-            <h1 className="font-extrabold text-primary text-4xl">Tessera</h1>
-        </div>
-        <div className="bg-primary p-8 flex flex-col items-center rounded-b-lg">
             <Form {...form}>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                     <FormField
@@ -67,9 +61,9 @@ const SignUpForm = () => {
                         <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                         </FormControl>
-                        <FormMessage className="text-red-500"/>
+                        <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
@@ -80,9 +74,9 @@ const SignUpForm = () => {
                         <FormItem>
                         <FormLabel>Contact Number</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                         </FormControl>
-                        <FormMessage className="text-red-500"/>
+                        <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
@@ -93,9 +87,9 @@ const SignUpForm = () => {
                         <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                         </FormControl>
-                        <FormMessage className="text-red-500"/>
+                        <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
@@ -106,9 +100,9 @@ const SignUpForm = () => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                         </FormControl>
-                        <FormMessage className="text-red-500"/>
+                        <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
@@ -119,24 +113,19 @@ const SignUpForm = () => {
                         <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400 focus:shadow-inner focus:shadow-gray-400"/>
                         </FormControl>
-                        <FormMessage className="text-red-500"/>
+                        <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
                     <Button type="submit" className="w-full text-primary bg-secondary hover:bg-secondary" disabled={isLoading}>
                         {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> }
-                        Sign Up
+                        {actionName}
                     </Button>
                 </form>
             </Form>
-            <div className="flex py-8 gap-2">
-                <p>Already have an account?</p> 
-                <Link href="/login" className="underline text-cyan-600">Log in</Link>
-            </div>
-        </div>
-    </div>);
+            );
 }
 
 export default SignUpForm;
