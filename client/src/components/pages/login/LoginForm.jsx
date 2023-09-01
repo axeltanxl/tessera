@@ -1,6 +1,8 @@
 'use client'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { useState } from "react"
+
 import {
   Form,
   FormControl,
@@ -15,8 +17,11 @@ import { toast } from "@/components/ui/use-toast"
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { loginSchema } from "./loginSchema"
+import { Icons } from "@/components/ui/icons/icons"
 
 const LoginForm = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const form = useForm({
         defaultValues : {
             email : "",
@@ -29,6 +34,14 @@ const LoginForm = () => {
 
     const onSubmit = (data) => {
         console.log(data)
+
+        setIsLoading(true)
+
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 3000)
+
+        
         toast({
       title: "You submitted the following values:",
       description: (
@@ -72,7 +85,10 @@ const LoginForm = () => {
                         </FormItem>
                     )}
                     />
-                    <Button type="submit" className="w-full text-primary bg-secondary hover:bg-secondary">Sign In</Button>
+                    <Button type="submit" className="w-full text-primary bg-secondary hover:bg-secondary" disabled={isLoading}>
+                        {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> }
+                        Sign In
+                    </Button>
                 </form>
             </Form>
             <div className="flex py-8 gap-2">
