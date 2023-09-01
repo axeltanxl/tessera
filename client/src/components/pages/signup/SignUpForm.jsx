@@ -1,5 +1,6 @@
 'use client'
 import Link from "next/link"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -15,12 +16,16 @@ import { toast } from "@/components/ui/use-toast"
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { signUpSchema } from "./signUpschema"
+import { Icons } from "@/components/ui/icons/icons"
+
 
 const SignUpForm = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const form = useForm({
         defaultValues : {
             email : "",
-            phoneNumber : "",
+            contactNum : "",
+            address:  "",
             password : "",
             confirmPassword : "",
         },
@@ -31,6 +36,13 @@ const SignUpForm = () => {
 
     const onSubmit = (data) => {
         console.log(data)
+        setIsLoading(true)
+
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 3000)
+
+
         toast({
       title: "You submitted the following values:",
       description: (
@@ -63,10 +75,10 @@ const SignUpForm = () => {
                     />
                     <FormField
                     control={control}
-                    name="phoneNumber"
+                    name="contactNum"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
+                        <FormLabel>Contact Number</FormLabel>
                         <FormControl>
                             <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
                         </FormControl>
@@ -74,7 +86,19 @@ const SignUpForm = () => {
                         </FormItem>
                     )}
                     />
-                   
+                   <FormField
+                    control={control}
+                    name="address"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-500"/>
+                        </FormControl>
+                        <FormMessage className="text-red-500"/>
+                        </FormItem>
+                    )}
+                    />
                     <FormField
                     control={control}
                     name="password"
@@ -101,12 +125,15 @@ const SignUpForm = () => {
                         </FormItem>
                     )}
                     />
-                    <Button type="submit" className="w-full text-primary bg-secondary hover:bg-secondary">Sign Up</Button>
+                    <Button type="submit" className="w-full text-primary bg-secondary hover:bg-secondary" disabled={isLoading}>
+                        {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> }
+                        Sign Up
+                    </Button>
                 </form>
             </Form>
             <div className="flex py-8 gap-2">
                 <p>Already have an account?</p> 
-                <Link href="/signup" className="underline text-cyan-600">Log in</Link>
+                <Link href="/login" className="underline text-cyan-600">Log in</Link>
             </div>
         </div>
     </div>);

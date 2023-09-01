@@ -7,7 +7,9 @@ export const signUpSchema = yup.object()
             email: yup.string()
                 .email("Invalid email format")
                 .required("This field is required"),
-            phoneNumber: yup.string()
+            contactNum: yup.string()
+                .required("This field is required"),
+            address: yup.string()
                 .required("This field is required"),
             password: yup.string()
                 .required("This field is required"),
