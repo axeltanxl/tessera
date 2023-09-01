@@ -8,7 +8,6 @@ const Carousel = () => {
         '/image-2.png',
         '/image-3.png',
         '/image-4.png',
-        '/image-1.png',
     ]
 
     const [curr, setCurr] = useState(0);
@@ -22,9 +21,9 @@ const Carousel = () => {
     // },[])
 
     return (
-        <div className='flex justify-center items-center'>
-            <div className='overflow-hidden relative'>
-                <div className='flex transition-transform ease-out duration-500' style={{ transform: `translateX(-${curr * 80}%)` }}>
+        <div className='hidden md:flex justify-center items-center rounded'>
+            <div className='overflow-hidden relative rounded xl:w-[45%]'>
+                <div className='flex transition-transform ease-out duration-900' style={{ transform: `translateX(-${curr * 100}%)` }}>
                     {slides.map((s, index) => {
                         return (
                             <img src={s} key="index" alt="image" className='object-contain' />
