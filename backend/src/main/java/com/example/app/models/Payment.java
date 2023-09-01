@@ -4,16 +4,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Payment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long paymentID;
 
     private String paymentMethod;
     private int isSuccessful;
+
+    @ManyToOne
+    @JoinColumn(name = "orderId")
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "transactionId")
+    private Transaction transaction;
 
     public Payment() {
     }
@@ -47,6 +56,11 @@ public class Payment {
         this.isSuccessful = isSuccessful;
     }
 
-    
-    
+    public Order getOrder() {
+      return order;
+    }
+
+    public void setOrder(Order order) {
+      this.order = order;
+    }
 }
