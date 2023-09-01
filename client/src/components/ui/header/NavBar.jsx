@@ -22,7 +22,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className="sticky w-full h-10 z-50">
+    <nav className="sticky w-full h-10 z-50 pt-2">
       <div className="flex justify-between items-center h-full w-full px-4 md:px-10 2xl:px-24">
         <div className="flex items-center">
           {/*Left side */}
@@ -32,12 +32,12 @@ const Navbar = () => {
           </div>
           <div className="flex md:fixed">
             <Link href="/">
-              <img src="/tessera-logo.png" width={100} alt="logo" /> {/*To replace with logo*/}
+              <img src="/tessera-logo.png" width={120} alt="logo" /> {/*To replace with logo*/}
             </Link>
           </div>
           <div>
             {/*Center*/}
-            <ul className="hidden md:flex ml-20 mr-2">
+            <ul className="hidden md:flex ml-24 mr-2">
               {menuLeft.map(({ name, url }) => {
                 return (
                   <Link href={url} key={name}>
