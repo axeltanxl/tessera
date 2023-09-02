@@ -47,7 +47,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (authHeader == null || !authHeader.startsWith("Bearer ") || 
             authentication == null && (authentication instanceof AnonymousAuthenticationToken)) {
-                System.out.println("????");
                 // if null and not valid will pass on to the next "Filter"
                 filterChain.doFilter(request, response);
                 return;
