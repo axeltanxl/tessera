@@ -24,7 +24,6 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-
         return ResponseEntity.ok(service.register(request));
     }
 
@@ -33,20 +32,8 @@ public class AuthController {
             throws UsernameNotFoundException {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        // return ResponseEntity.ok(service.authenticate(request));
+        return ResponseEntity.ok(service.authenticate(request));
 
-        try {
-            // Attempt to authenticate the user
-            AuthenticationResponse response = service.authenticate(request);
-            System.out.println("RESPONSE :ASDASD : " + response);
-            return ResponseEntity.ok(response);
-        } catch (UsernameNotFoundException ex) {
-            // Handle the case when the username is not found
-            System.out.println("Erorr laaaaaaaaaaaaaaaaaaaaaaaaaa");
-            return null;
-            // return ResponseEntity<>.status(HttpStatus.UNAUTHORIZED).body("Username not
-            // found");
-        }
     }
 
 }

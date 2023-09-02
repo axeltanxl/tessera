@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Service
 public class Middleware {
     @Value("${jwt.secret}")
-    private static String jwtSecret; // Load from application properties or YAML
+    private String jwtSecret; // Load from application properties or YAML
 
     // @Value("${jwt.expiration}")
     // private long jwtExpiration; // Load from application properties or YAML
@@ -35,13 +35,13 @@ public class Middleware {
         // + jwtExpiration);
 
         return Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 2))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS512)
-                .compact();
+            .builder()
+            .setClaims(extraClaims)
+            .setSubject(userDetails.getUsername())
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS512)
+            .compact();
     }
 
     //want to validate if the token belongs to the UserDetails

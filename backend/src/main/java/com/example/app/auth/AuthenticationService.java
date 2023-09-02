@@ -24,44 +24,43 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
 
+        try {
+            User user = User.builder()
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .contactNum(request.getContactNum())
+                    .address(request.getAddress())
+                    .role(Role.USER)
+                    .build();
 
-        User user = User.builder()
-            .name(request.getName())
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .contactNum(request.getContactNum())
-            .address(request.getAddress())
-            .role(Role.USER)
-            .build();
+            userRepo.save(user);
 
-        userRepo.save(user);
+            String jwtToken = jwtService.generateJwtToken(user);
 
-        String jwtToken = jwtService.generateJwtToken(user);
-
-        return AuthenticationResponse.builder()
-            .token(jwtToken)
-            .build();
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
-        System.out.println("request: " + request.getEmail());
-
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-            )
-        );
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()));
 
-        //Authenticated
+        // Authenticated
         User user = userRepo.findByEmail(request.getEmail());
 
         String jwtToken = jwtService.generateJwtToken(user);
-        System.out.println("TOKEN: " + jwtToken);
-        
-        return AuthenticationResponse.builder() 
-            .token(jwtToken)
-            .build();
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 }
