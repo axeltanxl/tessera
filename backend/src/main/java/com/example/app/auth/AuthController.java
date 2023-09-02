@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.app.configs.DuplicateUsernameException;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,7 +26,22 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        return ResponseEntity.ok(service.register(request));
+        
+        // return ResponseEntity.ok(service.register(request));
+
+        try {
+            // Attempt to register the user
+            AuthenticationResponse response = service.register(request);
+            return ResponseEntity.ok(response);
+
+        } catch (DuplicateUsernameException e) {
+            // Handle the DuplicateUsernameException
+            AuthenticationResponse errorResponse = AuthenticationResponse.builder()
+                .message("Email has been taken.")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 
     @PostMapping(path = "/authenticate") // Map ONLY POST Requests
