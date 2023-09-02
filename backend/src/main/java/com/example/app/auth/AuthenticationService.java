@@ -1,11 +1,11 @@
 package com.example.app.auth;
 
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.app.configs.DuplicateUsernameException;
 import com.example.app.configs.Middleware;
 import com.example.app.models.Role;
 import com.example.app.models.User;
@@ -24,27 +24,33 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
 
-        try {
-            User user = User.builder()
-                    .name(request.getName())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .contactNum(request.getContactNum())
-                    .address(request.getAddress())
-                    .role(Role.USER)
-                    .build();
+        // try {
 
-            userRepo.save(user);
-
-            String jwtToken = jwtService.generateJwtToken(user);
-
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        // User getUser = userRepo.findByEmail(request.getEmail());
+        if (userRepo.existsByEmail(request.getEmail())) {
+            throw new DuplicateUsernameException("Username (email) is already in use.");
         }
-        return null;
+
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .contactNum(request.getContactNum())
+                .address(request.getAddress())
+                .role(Role.USER)
+                .build();
+
+        userRepo.save(user);
+
+        String jwtToken = jwtService.generateJwtToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+        // } catch (Exception ex) {
+        // ex.printStackTrace();
+        // }
+        // return null;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
