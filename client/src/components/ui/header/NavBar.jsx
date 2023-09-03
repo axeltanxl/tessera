@@ -22,7 +22,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className="sticky w-full h-10">
+    <nav className="sticky w-full h-10 z-50 pt-2">
       <div className="flex justify-between items-center h-full w-full px-4 md:px-10 2xl:px-24">
         <div className="flex items-center">
           {/*Left side */}
@@ -30,12 +30,14 @@ const Navbar = () => {
             {/*Mobile screen Menu Button*/}
             <AiOutlineMenu size={25} />
           </div>
-          <Link href="/">
-            <img src="/tessera-logo.png" width={100} alt="logo" className="min-h-full block" /> {/*To replace with logo*/}
-          </Link>
+          <div className="flex md:fixed">
+            <Link href="/">
+              <img src="/tessera-logo.png" width={120} alt="logo" /> {/*To replace with logo*/}
+            </Link>
+          </div>
           <div>
             {/*Center*/}
-            <ul className="hidden md:flex">
+            <ul className="hidden md:flex ml-24 mr-2">
               {menuLeft.map(({ name, url }) => {
                 return (
                   <Link href={url} key={name}>
@@ -51,7 +53,7 @@ const Navbar = () => {
 
         <div className="flex flex-row items-center">
           {/**Right side */}
-          <SearchBar />
+          <SearchBar style={"hidden xs:block"} />
           <BiUserCircle size={25} className="cursor-pointer" />
           <button className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign in</button>
         </div>
@@ -60,7 +62,7 @@ const Navbar = () => {
 
       {/**Mobile Screen Menu*/}
       <div className={menuOpen ?
-        "fixed left-0 top-0 w-[100%] md:hidden h-screen bg-[#ecf0f3] p-10 ease-in duration-500"
+        "fixed left-0 top-0 w-[100%] md:hidden h-screen bg-[#ecf0f3] p-10 ease-in duration-500 z-50"
         : "fixed left-[-100%] top-0 w-[65%] md:hidden h-screen bg-[#ecf0f3] p-10 ease-in duration-500"}>
         <div className="flex w-full items-center">
           <div onClick={handleNav} className="cursor-pointer">
@@ -90,6 +92,9 @@ const Navbar = () => {
             <img src="/tessera-logo.png" width={100} alt="logo" className="min-h-full mt-6" /> {/*To replace with logo*/}
           </Link>
         </div>
+      </div>
+      <div className="flex justify-center w-full">
+        <SearchBar style={"xs:hidden"} />
       </div>
     </nav>
   )
