@@ -46,6 +46,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .message("Registration successful.")
                 .build();
         // } catch (Exception ex) {
         // ex.printStackTrace();

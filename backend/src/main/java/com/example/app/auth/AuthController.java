@@ -40,11 +40,11 @@ public class AuthController {
                 .message("Email has been taken.")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
-    @PostMapping(path = "/authenticate") // Map ONLY POST Requests
+    @PostMapping(path = "/login") // Map ONLY POST Requests
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request)
             throws UsernameNotFoundException {
         // @ResponseBody means the returned String is the response, not a view name
