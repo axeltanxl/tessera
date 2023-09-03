@@ -1,0 +1,42 @@
+{
+  "events" :  [
+        {
+            "id" : 1,
+            "name" : "Taylor Swift's era tour 2023",
+            "poster" : "/images/swift.jpeg",
+            "category" : "concert",
+            "description" : "Taylor Swift announced additional dates to Taylor Swift | The Eras Tour today. Singapore will be the only stop in Southeast Asia. Taylor Swift | The Eras Tour in Singapore is presented by Marina Bay Sands and supported by the Singapore Tourism Board, official bank and pre-sale partner UOB, and official experience partner Klook, promoted by AEG Presents Asia, and produced by Taylor Swift Touring.",
+            "ticketSaleDate" : "20/2/2023 08:00", 
+            "startDate" : "22/2/2023 19:00",
+            "endDate" : "22/2/2023 19:01",
+            "pricePerCategory" : {
+                "A" : {
+                    "price" : 5,
+                    "specifics" : "Seating (VIP) blocks:108, 134 "
+                },
+                "B" : {
+                    "price" : 4,
+                    "specifics" : "Standing blocks:109 ~ 133"
+                },
+                "C" : {
+                    "price" : 3,
+                    "specifics" : "Standing pen B"
+                },
+                "D" : {
+                    "price" : 2,
+                    "specifics" : "Seating blocks:209 ~ 233"
+                },
+                "E" : {
+                    "price" : 1,
+                    "specifics" : "Seating blocks 209 ~ 333"
+                }
+            },
+            "venue" : {
+                "name" : "Kallang Stadium", 
+                "map" : "/images/stadiumSeating.webp"
+            },
+            "maxSlots" : 255,
+            "soldOut" : true
+        }
+]
+}
