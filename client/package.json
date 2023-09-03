@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "startServer": "npx json-server --watch ./db_server/db.json --routes ./db_server/routes.json --port 3001"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -25,10 +26,12 @@
     "@react-three/drei": "^9.80.9",
     "@react-three/fiber": "^8.13.7",
     "autoprefixer": "10.4.15",
+    "axios": "^1.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.19",
+    "json-server": "^0.17.3",
     "lucide-react": "^0.270.0",
     "next": "13.4.19",
     "postcss": "8.4.28",
