@@ -23,10 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-
-        // try {
-
-        // User getUser = userRepo.findByEmail(request.getEmail());
+        
         if (userRepo.existsByEmail(request.getEmail())) {
             throw new DuplicateUsernameException("Username (email) is already in use.");
         }
@@ -48,10 +45,6 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .message("Registration successful.")
                 .build();
-        // } catch (Exception ex) {
-        // ex.printStackTrace();
-        // }
-        // return null;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -68,6 +61,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .message("Login Success.")
                 .build();
     }
 }
