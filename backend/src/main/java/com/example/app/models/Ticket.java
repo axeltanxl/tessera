@@ -14,27 +14,27 @@ import jakarta.persistence.GenerationType;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ticketId;
+    private long ticketID;
 
     private String uniqueCode;
     
     @ManyToOne
-    @JoinColumn(name="orderId")
+    @JoinColumn(name="orderID")
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name="seatId")
+    @JoinColumn(name="seatID")
     private Seat seat;
 
     @OneToMany(mappedBy = "ticket")
     private List<Transaction> transactions;
 
-    public long getTicketId() {
-      return ticketId;
+    public long getTicketID() {
+      return ticketID;
     }
 
-    public void setTicketId(long ticketId) {
-      this.ticketId = ticketId;
+    public void setTicketID(long ticketID) {
+      this.ticketID = ticketID;
     }
 
     public String getUniqueCode() {

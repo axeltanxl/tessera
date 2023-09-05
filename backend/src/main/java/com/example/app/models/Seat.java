@@ -14,7 +14,7 @@ import jakarta.persistence.GenerationType;
 public class Seat {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long seatId;
+  private long seatID;
 
   private String category;
   private String section;
@@ -22,18 +22,18 @@ public class Seat {
   private int seatNo;
   
   @ManyToOne
-  @JoinColumn(name="venueId")
+  @JoinColumn(name="venueID")
   private Venue venue;
 
   @OneToMany(mappedBy = "seat")
   private List<Ticket> tickets;
 
-  public long getSeatId() {
-    return seatId;
+  public long getSeatID() {
+    return seatID;
   }
 
-  public void setSeatId(long seatId) {
-    this.seatId = seatId;
+  public void setSeatID(long seatID) {
+    this.seatID = seatID;
   }
 
   public String getCategory() {
