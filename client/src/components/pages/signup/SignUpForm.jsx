@@ -36,7 +36,7 @@ const SignUpForm = ({actionName, action}) => {
     const onSubmit = (data) => {
         console.log(data)
         setIsLoading(true)
-        action();
+        action(data);
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
