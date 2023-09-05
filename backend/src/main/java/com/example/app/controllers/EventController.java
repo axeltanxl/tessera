@@ -18,19 +18,20 @@ import com.example.app.repositories.EventRepository;
 @RequestMapping("/api/v1/events")
 public class EventController {
 
-    @Autowired
-    private EventRepository eventRepository;
+  @Autowired
+  private EventRepository eventRepository;
 
-    @GetMapping(path = "")
-    public ResponseEntity<List<Event>> getAllEvents() {
-        List<Event> result = eventRepository.findAll();
+  @GetMapping(path = "")
+  public ResponseEntity<List<Event>> getAllEvents() {
+    List<Event> result = eventRepository.findAll();
 
-        return ResponseEntity.ok(result);
-    }
+    return ResponseEntity.ok(result);
+  }
 
-    @PostMapping(path = "/add")
-    public ResponseEntity<Object> addEvent(@RequestBody Event event) {
-      eventRepository.save(event);
-      return new ResponseEntity<Object>("Event created successfully.", HttpStatus.CREATED);
-    }
+  @PostMapping(path = "")
+  public ResponseEntity<Object> addEvent(@RequestBody Event event) {
+    eventRepository.save(event);
+
+    return new ResponseEntity<Object>("Event created successfully.", HttpStatus.CREATED);
+  }
 }
