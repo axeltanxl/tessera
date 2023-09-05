@@ -17,6 +17,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long eventID;
 
+    private String name;
     private String category;
     private String description;
     private Date startDate;
@@ -24,6 +25,13 @@ public class Event {
     private int duration;
     private String pricePerCategory;
     private int maxSlots;
+
+    @OneToMany(mappedBy = "event")
+    private List<Order> orders;
+
+    @ManyToOne
+    @JoinColumn(name = "venueID")
+    private Venue venue;
 
     public long getEventID() {
       return eventID;
@@ -105,12 +113,11 @@ public class Event {
       this.venue = venue;
     }
 
-    @OneToMany(mappedBy = "event")
-    private List<Order> orders;
+    public String getName() {
+      return name;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "venueId")
-    private Venue venue;
-
-    
+    public void setName(String name) {
+      this.name = name;
+    }
 }
