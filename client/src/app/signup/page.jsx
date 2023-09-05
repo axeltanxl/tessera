@@ -1,6 +1,12 @@
 'use client'
 import SignUpForm from "@/components/pages/signup/SignUpForm";
 import Link from "next/link"
+import axios from "axios";
+
+const login = async(data) => {
+    const res = await axios.post("http://localhost:8080/api/v1/auth/register", data)
+    console.log(res);
+}
 
 const Page = () => {
     return (
@@ -14,7 +20,7 @@ const Page = () => {
 
 
         <div className="bg-primary p-8 flex flex-col items-center rounded-b-lg">
-            <SignUpForm action={(data) => console.log(data)} actionName={"Sign Up"}/>
+            <SignUpForm action={(data) => {login(data)}} actionName={"Sign Up"}/>
             <div className="flex py-8 gap-2">
                 <p>Already have an account?</p> 
                 <Link href="/login" className="underline text-cyan-600">Log in</Link>
