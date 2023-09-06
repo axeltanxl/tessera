@@ -2,6 +2,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import {
   Form,
@@ -19,9 +20,9 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { loginSchema } from "./loginSchema"
 import { Icons } from "@/components/ui/icons/icons"
 
-const LoginForm = () => {
+const LoginForm = ({action}) => {
     const [isLoading, setIsLoading] = useState(false);
-
+    const router = useRouter();
     const form = useForm({
         defaultValues : {
             email : "",
@@ -32,15 +33,15 @@ const LoginForm = () => {
 
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
-    const onSubmit = (data) => {
+    const onSubmit = async(data) => {
         console.log(data)
 
         setIsLoading(true)
-
+        await action(data);
+        router.push('/');
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
-
         
         toast({
       title: "You submitted the following values:",
@@ -79,7 +80,7 @@ const LoginForm = () => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
