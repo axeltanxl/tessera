@@ -20,7 +20,7 @@ public class Ticket {
     
     @ManyToOne
     @JoinColumn(name="orderID")
-    private Order order;
+    private CustOrder order;
 
     @ManyToOne
     @JoinColumn(name="seatID")
@@ -45,11 +45,11 @@ public class Ticket {
       this.uniqueCode = uniqueCode;
     }
 
-    public Order getOrder() {
+    public CustOrder getOrder() {
       return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(CustOrder order) {
       this.order = order;
     }
 
