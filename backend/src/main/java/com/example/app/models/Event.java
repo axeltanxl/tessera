@@ -3,6 +3,8 @@ package com.example.app.models;
 import java.sql.Date;
 
 import java.util.*;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +21,7 @@ public class Event {
 
     private String name;
     private String category;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Date startDate;
     private Date endDate;
@@ -27,7 +30,7 @@ public class Event {
     private int maxSlots;
 
     @OneToMany(mappedBy = "event")
-    private List<Order> orders;
+    private List<CustOrder> orders;
 
     @ManyToOne
     @JoinColumn(name = "venueID")
@@ -97,11 +100,11 @@ public class Event {
       this.maxSlots = maxSlots;
     }
 
-    public List<Order> getOrders() {
+    public List<CustOrder> getCustOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setCustOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 

@@ -22,7 +22,7 @@ public class EventController {
   @Autowired
   private EventRepository eventRepository;
 
-  @GetMapping(path = "")
+  @GetMapping
   public ResponseEntity<List<Event>> getAllEvents() {
     List<Event> result = eventRepository.findAll();
 
