@@ -10,7 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Order {
+public class CustOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderID;
@@ -32,10 +32,10 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<Ticket> tickets;
     
-    public Order() {
+    public CustOrder() {
     }
 
-    public Order(int price) {
+    public CustOrder(int price) {
         this.price = price;
     }
 
