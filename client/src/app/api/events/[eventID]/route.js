@@ -4,14 +4,13 @@ import { PrismaClient } from "@prisma/client";
 // npx prisma db pull
 // npx prisma migrate dev
 
-export async function GET(request){
+export async function GET(request, {params : {eventID}}){
     const prisma = new PrismaClient();
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-    console.log("id: ", id)
+
+    console.log("id: ", eventID)
     const eventDetails = await prisma.event.findUnique({
         where : {
-            eventID : 1
+            eventID : eventID
         }
     })
     const json = JSON.stringify(eventDetails , (key, value) => {
