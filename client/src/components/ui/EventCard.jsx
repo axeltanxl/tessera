@@ -8,17 +8,17 @@ import {
   } from "@material-tailwind/react";
    
   export function EventCard({details}) {
-    const {id, title, description, category, startDate, src} = details;
+    const {id, title, description, category, startDate, endDate, src} = details;
     return (
-      <Card className="w-full rounded z-0">
-        <CardHeader shadow={false} floated={false} className="h-52">
+      <Card className="w-full rounded z-0 bg-[#F5F7FB]">
+        <CardHeader shadow={false} floated={false} className="h-52 bg-[#F5F7FB]">
           <img
             src={src}
             alt="card-image"
             className="h-full w-full object-cover rounded p-2"
           />
         </CardHeader>
-        <CardBody className="p-2 sm:p-2 pl-4 pb-0 bg-[#FDFBFF]">
+        <CardBody className="p-2 sm:p-2 pl-4 pb-0 bg-[#F5F7FB]">
           <div className="mb-2 flex items-center justify-between">
             <Typography color="blue-gray" className="font-semibold">
               {title}
@@ -31,10 +31,16 @@ import {
             variant="small"
             color="gray"
             className="font-normal opacity-75"
+          >{startDate} to {endDate}
+          </Typography>
+          <Typography
+            variant="small"
+            color="gray"
+            className="font-normal opacity-75"
           >{category}
           </Typography>
         </CardBody>
-        <CardFooter className="pt-0 flex justify-center bg-[#FDFBFF] pb-2">
+        <CardFooter className="pt-0 flex justify-center bg-[#F5F7FB] pb-2">
           <Button
             ripple={false}
             fullWidth={false}

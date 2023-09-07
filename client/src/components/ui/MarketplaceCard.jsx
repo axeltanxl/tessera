@@ -10,7 +10,7 @@ import {
 export function MarketplaceCard({ details }) {
     const { id, title, description, category, startDate, src, item, price } = details;
     return (
-        <Card className="w-full rounded z-0">
+        <Card className="w-full rounded z-0 bg-[#F5F7FB]">
             <CardHeader shadow={false} floated={false} className="h-52 bg-[#F5F7FB]">
                 <img
                     src={src}
