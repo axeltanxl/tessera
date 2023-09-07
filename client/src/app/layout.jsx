@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       <body>
         <div className="min-h-screen flex flex-col relative bg-primary">
             <Navbar />
-        <main className="mx-auto w-full px-10 py-5 bg-primary">
+        <main className="mx-auto h-full w-full px-10 py-5 bg-primary">
             {children}
         </main>
     </div>
