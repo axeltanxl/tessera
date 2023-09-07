@@ -15,20 +15,22 @@ import com.example.app.models.Event;
 import com.example.app.repositories.EventRepository;
 
 @RestController
-@RequestMapping("/api/v1/events")
+@RequestMapping("/api/v1")
 public class EventController {
 
   @Autowired
   private EventRepository eventRepository;
 
-  @GetMapping(path = "")
+  @GetMapping(path = "/events")
   public ResponseEntity<List<Event>> getAllEvents() {
     List<Event> result = eventRepository.findAll();
+    System.out.println("ASDSDAD?");
+    System.out.println(result);
 
     return ResponseEntity.ok(result);
   }
 
-  @PostMapping(path = "")
+  @PostMapping(path = "/events/add")
   public ResponseEntity<Object> addEvent(@RequestBody Event event) {
     eventRepository.save(event);
 
