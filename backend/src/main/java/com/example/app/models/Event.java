@@ -4,6 +4,8 @@ import java.sql.Date;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,12 +34,20 @@ public class Event {
     @OneToMany(mappedBy = "event")
     private List<CustOrder> orders;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "venueID")
     private Venue venue;
 
     public long getEventID() {
       return eventID;
+    }
+
+    @Override
+    public String toString() {
+      return "Event [eventID=" + eventID + ", name=" + name + ", category=" + category + ", description=" + description
+          + ", startDate=" + startDate + ", endDate=" + endDate + ", duration=" + duration + ", pricePerCategory="
+          + pricePerCategory + ", maxSlots=" + maxSlots + ", orders=" + orders + ", venue=" + venue + "]";
     }
 
     public void setEventID(long eventID) {
