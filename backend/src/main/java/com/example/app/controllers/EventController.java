@@ -31,6 +31,7 @@ public class EventController {
 
   @PostMapping(path = "")
   public ResponseEntity<Object> addEvent(@RequestBody Event event) {
+    System.out.println("this is the venueID" + event.getVenue().getVenueID());
     eventRepository.save(event);
 
     // return new ResponseEntity<Object>("Event created successfully.", HttpStatus.CREATED);
@@ -39,13 +40,15 @@ public class EventController {
   }
 
   @GetMapping(path = "/{eventID}")
-  public ResponseEntity<Object> getEvent(@PathVariable("eventID") Long id){
+  public ResponseEntity<Event> getEvent(@PathVariable("eventID") Long id){
     Optional<Event> event = eventRepository.findById(id);
 
-    System.out.println("this is the event:" + event.get());
+    System.out.println("this is the event:" + event.get().toString());
 
-    System.out.println("this is the event's ID" + event.get().getEventID());
-    
+    if (!event.isPresent()){
+      return ResponseEntity.notFound().build();
+    }
+
     return ResponseEntity.ok(event.get());
   }
 }
