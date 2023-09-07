@@ -29,7 +29,6 @@ const Products = () => {
                    <DisplayProduct price={price} key={price.id}/>
                 )
             })}
-           
         </div>
     )
 }
