@@ -3,6 +3,8 @@ package com.example.app.models;
 import java.sql.Date;
 
 import java.util.*;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +21,7 @@ public class Event {
 
     private String name;
     private String category;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Date startDate;
     private Date endDate;
