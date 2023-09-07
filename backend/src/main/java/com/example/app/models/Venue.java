@@ -2,6 +2,8 @@ package com.example.app.models;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
@@ -21,6 +23,7 @@ public class Venue {
     @OneToMany(mappedBy = "venue")
     private List<Seat> seats;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "venue")
     private List<Event> events;
 
