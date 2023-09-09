@@ -39,8 +39,11 @@ public class SecurityConfig {
             .cors(withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
+                .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/admin/**")).hasAuthority("ADMIN")
+
                 .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
+
                 .anyRequest().authenticated()
             )
             // stateless authentication 
