@@ -79,10 +79,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         } catch (Exception ex) {
             // Handle any exceptions here
+            System.out.println(ex.getMessage());
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Please login before accessing this page");
+            return;
         }
+        // } catch () {
+
+        // }
 
         // Continue the filter chain
-        filterChain.doFilter(request, response);
+        // filterChain.doFilter(request, response);
     }
 
 }
