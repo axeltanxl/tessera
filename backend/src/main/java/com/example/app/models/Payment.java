@@ -17,11 +17,11 @@ public class Payment {
     private int isSuccessful;
 
     @ManyToOne
-    @JoinColumn(name = "orderId")
-    private Order order;
+    @JoinColumn(name = "orderID")
+    private CustOrder order;
 
     @ManyToOne
-    @JoinColumn(name = "transactionId")
+    @JoinColumn(name = "transactionID")
     private Transaction transaction;
 
     public Payment() {
@@ -56,11 +56,19 @@ public class Payment {
         this.isSuccessful = isSuccessful;
     }
 
-    public Order getOrder() {
+    public CustOrder getOrder() {
       return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(CustOrder order) {
       this.order = order;
+    }
+
+    public Transaction getTransaction() {
+      return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+      this.transaction = transaction;
     }
 }
