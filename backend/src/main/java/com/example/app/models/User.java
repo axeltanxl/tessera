@@ -41,7 +41,7 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    private List<CustOrder> orders;
 
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
@@ -85,11 +85,11 @@ public class User implements UserDetails {
         return true;
     }
 
-    public List<Order> getOrders() {
+    public List<CustOrder> getOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 
