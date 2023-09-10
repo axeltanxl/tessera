@@ -3,15 +3,16 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 
-
-const DisplayProduct = ({price}) => {
-
-    const handleBuy = async (e) => {
+const DisplayProduct = ({price, eventID}) => {
+    const pricePerCat = JSON.parse(price);
+    const handleBuy = async (e, qty, cat) => {
         e.preventDefault();
-        // console.log("clicked")
-        const { data } = await axios.post('/api/payment', 
+        const { data } = await axios.post('/api/checkout', 
         {
-            priceId : price.id
+            "eventID" : 1,
+            "category" : cat,
+            "quantity" : qty,
+            "images" : "https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2020/09/09/s3-2.png"
         },
         {
             headers : {
@@ -27,17 +28,25 @@ const DisplayProduct = ({price}) => {
 
     return (
         <div className="border-red-500 border-2">
-        <p>name : {price.nickname}</p>
+        <p>eventID : {eventID}</p>
 
-        price : {(price.unit_amount / 100).toLocaleString('en-US', {
-            style : 'currency',
-            currency : 'SGD'
-        })}
+        {
+            Object.keys(pricePerCat).map((cat) => {
+                const unitAmount = (pricePerCat[cat] / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+                const qty = 2;
+                return (<div key={cat}>
+                    <p>cat: {cat}</p>
+                    <p>qty: {qty}</p>
+                    <p>price: {unitAmount}</p>
+                    <Button variant="outlined" 
+                    className="border-black border-2"
+                    onClick={(e) => handleBuy(e, qty, cat)}
+                    >buy</Button>
+                </div>)
+            })
+        }
 
-    <Button variant="outlined" 
-        className="border-black border-2"
-        onClick={handleBuy}
-        >buy</Button>
+    
     </div>
     )
 }

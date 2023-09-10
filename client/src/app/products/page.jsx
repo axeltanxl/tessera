@@ -10,7 +10,7 @@ const Products = () => {
     const [ prices, setPrices] = useState();
     
     const fetchPrices = async () => {
-        const { data } = await axios.get('/api/getProducts');
+        const { data } = await axios.get('/api/events');
         setPrices(data);
         console.log(data);
     }
@@ -22,11 +22,11 @@ const Products = () => {
     return (
         <div className="flex flex-col gap-4">
             <p className="font-bold text-lg">products page temp</p>
-
+    
             {prices && prices.map((price) => {
-                console.log(price.metadata)
+                console.log(price.pricePerCategory)
                 return (
-                   <DisplayProduct price={price} key={price.id}/>
+                   <DisplayProduct price={price.pricePerCategory} key={price.eventID} eventID={price.eventID}/>
                 )
             })}
         </div>
