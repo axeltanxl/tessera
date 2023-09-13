@@ -21,6 +21,9 @@ public class Middleware {
     @Value("${jwt.secret}")
     private String jwtSecret; // Load from application properties or YAML
 
+    @Value("${jwt.expiry}")
+    private long jwtExpiry;
+
     // @Value("${jwt.expiration}")
     // private long jwtExpiration; // Load from application properties or YAML
 
@@ -39,7 +42,7 @@ public class Middleware {
             .setClaims(extraClaims)
             .setSubject(userDetails.getUsername())
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .setExpiration(new Date(System.currentTimeMillis() + jwtExpiry))
             .signWith(getSignInKey(), SignatureAlgorithm.HS512)
             .compact();
     }
