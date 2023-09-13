@@ -25,6 +25,13 @@ const EventDetails = async () => {
         soldOut, venue
     }  = await getEvent();
 
+    const price = {
+        catA : 100,
+        catB : 110,
+        catC : 120,
+        catD : 130,
+    }
+
     return (
     <div className="w-full min-h-screen">
         

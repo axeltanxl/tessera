@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model event {
+  duration         Int
+  endDate          DateTime? @db.Date
+  maxSlots         Int
+  startDate        DateTime? @db.Date
+  eventID          BigInt    @id @default(autoincrement())
+  venueId          BigInt?
+  category         String?   @db.VarChar(255)
+  description      String?   @db.VarChar(255)
+  pricePerCategory String?   @db.VarChar(255)
+
+  @@index([venueId], map: "FK8dsn6rcp0jul7b1n6ptqq254u")
+}
+
+model payment {
+  isSuccessful  Int
+  orderId       BigInt?
+  paymentID     BigInt  @id @default(autoincrement())
+  transactionId BigInt?
+  paymentMethod String? @db.VarChar(255)
+
+  @@index([transactionId], map: "FKcxjivqinmjlvl5kf7drm3v0x1")
+}
+
+model ticket {
+  orderId    BigInt?
+  seatId     BigInt?
+  ticketId   BigInt  @id @default(autoincrement())
+  uniqueCode String? @db.VarChar(255)
+}
+
+model transaction {
+  buyerId       BigInt?
+  date          DateTime? @db.DateTime(6)
+  sellerId      BigInt?
+  ticketId      BigInt?
+  transactionId BigInt    @id @default(autoincrement())
+
+  @@index([ticketId], map: "FK4yye6rl1o135ufx6apdoso1wy")
+  @@index([sellerId], map: "FKf3ici1pjsybx245j0r04870qe")
+  @@index([buyerId], map: "FKlnek713drw6aw7t88xgod6hai")
+}
+
+model user {
+  contactNum Int
+  userID     BigInt     @id @default(autoincrement())
+  address    String?    @db.VarChar(255)
+  email      String?    @db.VarChar(255)
+  name       String?    @db.VarChar(255)
+  password   String?    @db.VarChar(255)
+  role       user_role?
+}
+
+model venue {
+  capacity Int
+  venueId  BigInt  @id @default(autoincrement())
+  name     String? @db.VarChar(255)
+}
+
+enum user_role {
+  ADMIN
+  USER
+}
