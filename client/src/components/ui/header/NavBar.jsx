@@ -12,7 +12,6 @@ const Navbar = () => {
   }
   const menuLeft = [
     { name: "Events", url: "/Events" },
-    { name: "Categories", url: "/Categories" },
     { name: "Marketplace", url: "/Marketplace" },
     { name: "FAQ ", url: "/FAQ" },
   ];
@@ -22,7 +21,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className="sticky w-full h-10 z-50 pt-2">
+    <nav className="sticky top-0 w-full h-14 z-50 pt-2 bg-primary drop-shadow-sm">
       <div className="flex justify-between items-center h-full w-full px-4 md:px-10 2xl:px-24">
         <div className="flex items-center">
           {/*Left side */}
