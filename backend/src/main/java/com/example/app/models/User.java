@@ -2,7 +2,10 @@ package com.example.app.models;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,11 +16,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.validation.constraints.NotNull;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity // This tells Hibernate to make a table out of this class
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +40,11 @@ public class User {
     private int contactNum;
     private String address;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    private List<CustOrder> orders;
 
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
@@ -40,70 +52,47 @@ public class User {
     @OneToMany(mappedBy = "seller")
     private List<Transaction> sellerTransactions;
 
-    public User() {
+    // ALL from UserDetails (Spring Boot default - Security)
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    public User(String name, String email, String password, int contactNum, String address) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.contactNum = contactNum;
-        this.address = address;
-    }
-
-    public long getUserID() {
-        return userID;
-    }
-
-    public void setUserID(long userID) {
-        this.userID = userID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
+    @Override
+    public String getUsername() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    @Override
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public int getContactNum() {
-        return contactNum;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setContactNum(int contactNum) {
-        this.contactNum = contactNum;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public String getAddress() {
-        return address;
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public List<Order> getOrders() {
+    public List<CustOrder> getOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 
