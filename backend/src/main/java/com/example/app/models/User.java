@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.validation.constraints.NotNull;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +33,9 @@ public class User implements UserDetails {
     private long userID;
 
     private String name;
+    @NotNull(message = "Email cannot be empty")
     private String email;
+    @NotNull(message = "Password cannot be empty")
     private String password;
     private int contactNum;
     private String address;
