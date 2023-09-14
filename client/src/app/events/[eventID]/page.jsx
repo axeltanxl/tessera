@@ -19,23 +19,16 @@ export const getEvent = async () =>{
 
 const EventDetails = async () => {
     const { id, name, poster,
-        category , description,
+        category , description, ticketImg,
         startDate, endDate, ticketSaleDate,
         pricePerCategory, maxSlots,
         soldOut, venue
     }  = await getEvent();
-
-    const price = {
-        catA : 100,
-        catB : 110,
-        catC : 120,
-        catD : 130,
-    }
-
     return (
     <div className="w-full min-h-screen">
-        
-        <div className="w-full h-2/3 bg-[url('/images/swift_tickets.jpeg')] -z-10 ">
+        <div 
+            style={{backgroundImage:`url(${ticketImg})`}} //makes bg dynamic
+            className="w-full h-2/3 -z-10 ">
             <div className='w-full h-full bg-gradient-to-b flex justify-center items-center from-transparent to-primary'>
                 <Image
                     src={poster}
