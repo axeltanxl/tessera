@@ -2,10 +2,12 @@ package com.example.app.controllers;
 
 import java.util.*;
 
+import org.hibernate.mapping.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,20 +23,21 @@ import com.example.app.repositories.EventRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/events")
+@RequestMapping("/api/v1")
 public class EventController {
 
   @Autowired
   private EventRepository eventRepository;
 
-  @GetMapping
+  @GetMapping("/events")
   public ResponseEntity<List<Event>> getAllEvents() {
     List<Event> result = eventRepository.findAll();
 
     return ResponseEntity.ok(result);
   }
 
-  @PostMapping(path = "")
+  @PostMapping(path = "/admin/addEvents")
+  @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<Object> addEvent(@RequestBody @Valid Event event) {
     try {
       eventRepository.save(event);
@@ -47,7 +50,7 @@ public class EventController {
     }
   }
 
-  @GetMapping(path = "/{eventID}")
+  @GetMapping(path = "/events/{eventID}")
   public ResponseEntity<Event> getEvent(@PathVariable("eventID") Long id){
     Optional<Event> event = eventRepository.findById(id);
 
