@@ -2,10 +2,11 @@ package com.example.app.models;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +15,7 @@ import jakarta.persistence.GenerationType;
 public class Venue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long venueId;
+    private long venueID;
 
     private String name;
     private int capacity;
@@ -22,6 +23,7 @@ public class Venue {
     @OneToMany(mappedBy = "venue")
     private List<Seat> seats;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "venue")
     private List<Event> events;
 
@@ -33,12 +35,12 @@ public class Venue {
         this.capacity = capacity;
     }
 
-    public long getVenueId() {
-      return venueId;
+    public long getVenueID() {
+      return venueID;
     }
 
-    public void setVenueId(long venueId) {
-      this.venueId = venueId;
+    public void setVenueID(long venueID) {
+      this.venueID = venueID;
     }
 
     public String getName() {

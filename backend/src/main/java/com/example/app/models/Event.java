@@ -3,6 +3,10 @@ package com.example.app.models;
 import java.sql.Date;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +25,7 @@ public class Event {
     @NotNull(message = "Event name cannot be null")
     private String name;
     private String category;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Date startDate;
     private Date endDate;
@@ -28,8 +33,23 @@ public class Event {
     private String pricePerCategory;
     private int maxSlots;
 
+    @OneToMany(mappedBy = "event")
+    private List<CustOrder> orders;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "venueID")
+    private Venue venue;
+
     public long getEventID() {
       return eventID;
+    }
+
+    @Override
+    public String toString() {
+      return "Event [eventID=" + eventID + ", name=" + name + ", category=" + category + ", description=" + description
+          + ", startDate=" + startDate + ", endDate=" + endDate + ", duration=" + duration + ", pricePerCategory="
+          + pricePerCategory + ", maxSlots=" + maxSlots + ", orders=" + orders + ", venue=" + venue + "]";
     }
 
     public void setEventID(long eventID) {
@@ -92,11 +112,11 @@ public class Event {
       this.maxSlots = maxSlots;
     }
 
-    public List<Order> getOrders() {
+    public List<CustOrder> getCustOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setCustOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 
@@ -108,12 +128,11 @@ public class Event {
       this.venue = venue;
     }
 
-    @OneToMany(mappedBy = "event")
-    private List<Order> orders;
+    public String getName() {
+      return name;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "venueId")
-    private Venue venue;
-
-    
+    public void setName(String name) {
+      this.name = name;
+    }
 }
