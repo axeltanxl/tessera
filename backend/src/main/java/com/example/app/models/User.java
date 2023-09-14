@@ -4,8 +4,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
-import java.util.*;
-import jakarta.persistence.Column;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.validation.constraints.NotNull;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +24,9 @@ public class User {
     private long userID;
 
     private String name;
+    @NotNull(message = "Email cannot be empty")
     private String email;
+    @NotNull(message = "Password cannot be empty")
     private String password;
     private int contactNum;
     private String address;
