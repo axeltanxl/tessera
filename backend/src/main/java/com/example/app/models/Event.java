@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -21,6 +22,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long eventID;
 
+    @NotNull(message = "Event name cannot be null")
     private String name;
     private String category;
     @Column(columnDefinition = "TEXT")
