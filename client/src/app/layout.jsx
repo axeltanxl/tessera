@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.className}>
+    <html lang="en" className={`${poppins.className} bg-primary`}>
       <body className='bg-primary'>
         <div className="min-h-screen flex flex-col relative bg-primary">
             <Navbar />

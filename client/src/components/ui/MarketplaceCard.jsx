@@ -38,6 +38,12 @@ export function MarketplaceCard({ details }) {
                             className="font-normal opacity-75"
                         >{item}
                         </Typography>
+                        <Typography
+                            variant="small"
+                            color="gray"
+                            className="font-normal opacity-75"
+                        >{category}
+                        </Typography>
                     </div>
                     <div className="flex flex-col">
                         <Button

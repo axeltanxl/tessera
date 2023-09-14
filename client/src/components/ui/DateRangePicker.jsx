@@ -33,26 +33,28 @@ export function DateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal h-8 border-[#B4C1DB] rounded-full hover:bg-[#F5F7FB]",
+              "justify-start text-left font-normal h-8 border-[#B4C1DB] rounded-full hover:bg-[#F5F7FB]",
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
+            <CalendarIcon className="mr-0 sm:mr-2 h-4 w-4" />
+            <div className="hidden sm:flex">
+              {date?.from ? (
+                date.to ? (
+                  <>
+                    {format(date.from, "LLL dd, y")} -{" "}
+                    {format(date.to, "LLL dd, y")}
+                  </>
+                ) : (
+                  format(date.from, "LLL dd, y")
+                )
               ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
+                <span>Pick a date</span>
+              )}
+            </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 bg-[#FDFBFF]" align="start">
+        <PopoverContent className="w-auto p-0 bg-[#FDFBFF] z-40" align="start">
           <Calendar
             initialFocus
             mode="range"
@@ -61,9 +63,22 @@ export function DateRangePicker({
             onSelect={setDate}
             numberOfMonths={2}
             disabled={(day) => isPastDate(day) && !isToday(day)}
+            className="hidden md:block"
           />
-          <div className="flex "></div>
-          <button>Apply</button>
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={date?.from}
+            selected={date}
+            onSelect={setDate}
+            numberOfMonths={1}
+            disabled={(day) => isPastDate(day) && !isToday(day)}
+            className="block md:hidden"
+          />
+          <div className="flex justify-center align-center">
+          <button class="bg-[#F5F7FB] px-2 py-1 rounded-sm mb-4 text-sm text-gray-700 mr-2">Clear</button>
+          <button class="bg-amber-300 px-2 py-1 rounded-sm mb-4 text-sm text-gray-700">Apply</button>
+          </div>
         </PopoverContent>
       </Popover>
     </div>
