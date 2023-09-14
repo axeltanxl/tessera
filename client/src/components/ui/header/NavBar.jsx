@@ -11,9 +11,9 @@ const Navbar = () => {
     setMenuOpen(!menuOpen);
   }
   const menuLeft = [
-    { name: "Events", url: "/Events" },
-    { name: "Marketplace", url: "/Marketplace" },
-    { name: "FAQ ", url: "/FAQ" },
+    { name: "Events", url: "/events" },
+    { name: "Marketplace", url: "/marketplace" },
+    { name: "FAQ ", url: "/faq" },
   ];
 
   const menuRight = [
