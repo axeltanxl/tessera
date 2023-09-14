@@ -15,31 +15,31 @@ import jakarta.persistence.GenerationType;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long transactionId;
+    private long transactionID;
 
     private Date date;
 
     @ManyToOne
-    @JoinColumn(name="ticketId")
+    @JoinColumn(name="ticketID")
     private Ticket ticket;
 
     @ManyToOne
-    @JoinColumn(name = "buyerId")
+    @JoinColumn(name = "buyerID")
     private User buyer;
 
     @ManyToOne
-    @JoinColumn(name = "sellerId")
+    @JoinColumn(name = "sellerID")
     private User seller;
 
     @OneToMany(mappedBy = "transaction")
     private List<Payment> payments;
 
-    public long getTransactionId() {
-      return transactionId;
+    public long getTransactionID() {
+      return transactionID;
     }
 
-    public void setTransactionId(long transactionId) {
-      this.transactionId = transactionId;
+    public void setTransactionID(long transactionID) {
+      this.transactionID = transactionID;
     }
 
     public Date getDate() {

@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.validation.constraints.NotNull;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +33,9 @@ public class User implements UserDetails {
     private long userID;
 
     private String name;
+    @NotNull(message = "Email cannot be empty")
     private String email;
+    @NotNull(message = "Password cannot be empty")
     private String password;
     private int contactNum;
     private String address;
@@ -41,7 +44,7 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    private List<CustOrder> orders;
 
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
@@ -85,11 +88,11 @@ public class User implements UserDetails {
         return true;
     }
 
-    public List<Order> getOrders() {
+    public List<CustOrder> getOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 
