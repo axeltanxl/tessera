@@ -8,7 +8,7 @@ const poppins = Poppins({
   variable: '--font-poppins'
 })
 function MyApp({ Component, pageProps }) {
-  return <main className={poppins.className}>
+  return <main className={`${poppins.className} bg-primary`}>
     <Navbar/>
     <Component {...pageProps} />
   </main>
