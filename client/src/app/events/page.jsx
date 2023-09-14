@@ -4,7 +4,7 @@ import { EventCard } from '@/components/ui/EventCard';
 import { RadioDropdown } from '@/components/ui/RadioDropdown';
 import { DateRangePicker } from '@/components/ui/DateRangePicker';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+
 const allEvents = [
     {   
         id: 5,
@@ -57,13 +57,10 @@ const allEvents = [
 const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
 const Events = () => {
-    const router = useRouter();
+
     const [category, setCategory] = useState("All events");
     const handleCategoryChange = (data) => {
         setCategory(data);
-        // router.push(`/events/${data}`);
-        // const { cat } = router.query;
-        // console.log("cat: ", cat);
     }
 
     useEffect(() => {

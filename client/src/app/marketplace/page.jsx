@@ -1,3 +1,4 @@
+'use client';
 import { MarketplaceCard } from "@/components/ui/MarketplaceCard";
 import Head from 'next/head';
 import { RadioDropdown } from "@/components/ui/RadioDropdown";
@@ -149,7 +150,6 @@ const Marketplace = () => {
                     ) : (<div className='mt-16'>No tickets under this category yet.</div>)}
                 
             </div>
-            <div className="overlay ">hi</div>
         </section>)
 }
 
