@@ -6,6 +6,7 @@ import {
     Typography,
     Button,
 } from "@material-tailwind/react";
+import Link from "next/link";
 
 export function MarketplaceCard({ details }) {
     const { id, title, description, category, startDate, src, item, price } = details;
@@ -46,12 +47,14 @@ export function MarketplaceCard({ details }) {
                         </Typography>
                     </div>
                     <div className="flex flex-col">
-                        <Button
-                            ripple={false}
-                            fullWidth={false}
-                            className="bg-[#FAD749] px-4 py-1 rounded shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
-                        >Buy
-                        </Button>
+                        <Link href={`/marketplace/${id}`}>
+                            <Button
+                                ripple={false}
+                                fullWidth={false}
+                                className="bg-[#FAD749] px-4 py-1 rounded shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+                            >Buy
+                            </Button>
+                        </Link>
                         <Typography variant="small"
                             color="gray"
                             className="font-normal opacity-75 mt-3">${price}/ticket</Typography>
