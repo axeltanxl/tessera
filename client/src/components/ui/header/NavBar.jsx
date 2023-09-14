@@ -40,7 +40,7 @@ const Navbar = () => {
               {menuLeft.map(({ name, url }) => {
                 return (
                   <Link href={url} key={name}>
-                    <li className="ml-8 hover:border-b">
+                    <li className="ml-8 hover:opacity-60">
                       {name}
                     </li>
                   </Link>
