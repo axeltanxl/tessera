@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover"
 
 export function DateRangePicker({
-  className,
+  className, onDateChange
 }) {
   const [date, setDate] = React.useState({
     from: new Date(),
@@ -24,7 +24,7 @@ export function DateRangePicker({
 
   const today = new Date();
   const isPastDate = (day) => isBefore(day, today);
-
+  
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -60,7 +60,10 @@ export function DateRangePicker({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={(selectedDate) =>{
+              onDateChange(selectedDate);
+              setDate(selectedDate);
+            }}
             numberOfMonths={2}
             disabled={(day) => isPastDate(day) && !isToday(day)}
             className="hidden md:block"
@@ -70,15 +73,18 @@ export function DateRangePicker({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={(selectedDate) =>{
+              onDateChange(selectedDate);
+              setDate(selectedDate);
+            }}
             numberOfMonths={1}
             disabled={(day) => isPastDate(day) && !isToday(day)}
             className="block md:hidden"
           />
-          <div className="flex justify-center align-center">
-          <button class="bg-[#F5F7FB] px-2 py-1 rounded-sm mb-4 text-sm text-gray-700 mr-2">Clear</button>
-          <button class="bg-amber-300 px-2 py-1 rounded-sm mb-4 text-sm text-gray-700">Apply</button>
-          </div>
+          {/* <div className="flex justify-center align-center">
+            <button className="bg-[#F5F7FB] px-2 py-1 rounded-sm mb-4 text-sm text-gray-700 mr-2">Clear</button>
+            <button className="bg-amber-300 px-2 py-1 rounded-sm mb-4 text-sm text-gray-700">Apply</button>
+          </div> */}
         </PopoverContent>
       </Popover>
     </div>
