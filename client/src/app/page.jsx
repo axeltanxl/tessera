@@ -1,7 +1,12 @@
 'use client';
 import { EventCard } from "@/components/ui/EventCard";
 import Carousel from "@/components/ui/carousel"
+import { useSession } from "next-auth/react";
 export default function Home() {
+
+    const { data : session, status} = useSession();
+    console.log("home session:", session);
+
     const slides = [
         "/image-1.png",
         "/image-2.png",
