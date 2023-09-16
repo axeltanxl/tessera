@@ -19,8 +19,11 @@ import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { loginSchema } from "./loginSchema"
 import { Icons } from "@/components/ui/icons/icons"
+import { loginSpring } from "@/app/login/actions"
+import { signIn } from "next-auth/react";
 
-const LoginForm = ({action}) => {
+
+const LoginForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const form = useForm({
@@ -33,16 +36,22 @@ const LoginForm = ({action}) => {
 
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
-    const onSubmit = async(data) => {
+    const onSubmit = (data) => {
         console.log(data)
 
         setIsLoading(true)
-        await action(data);
+        // loginSpring(data);
+        const resB = signIn("credentials",{
+            email : data.email,
+            password : data.password,
+            redirect : false,
+        })
+        console.log("response: ", resB);
+
         router.push('/');
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
-        
         toast({
       title: "You submitted the following values:",
       description: (
