@@ -11,16 +11,16 @@ import Link from "next/link";
 export function MarketplaceCard({ details }) {
     const { id, title, description, category, startDate, src, item, price } = details;
     return (
-        <Card className="w-full rounded z-0 bg-[#F5F7FB]">
+        <Card className="w-full z-0 bg-[#F5F7FB] shadow-none">
             <CardHeader shadow={false} floated={false} className="h-52 bg-[#F5F7FB]">
                 <img
                     src={src}
                     alt="card-image"
-                    className="h-full w-full object-cover rounded p-2"
+                    className="h-full w-full object-cover rounded p-1"
                 />
             </CardHeader>
             <CardBody className="p-2 sm:p-2 sm:pl-4 pb-0 bg-[#F5F7FB]">
-                <div className="mb-2 flex items-center justify-between">
+                <div className="mb-2 flex justify-between">
                     <div className="flex flex-col">
                         <Typography color="blue-gray" className="font-semibold">
                             {title}
@@ -46,7 +46,7 @@ export function MarketplaceCard({ details }) {
                         >{category}
                         </Typography>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col justify-end text-right ml-1">
                         <Link href={`/marketplace/${id}`}>
                             <Button
                                 ripple={false}
