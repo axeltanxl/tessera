@@ -17,7 +17,7 @@ import com.example.app.models.Event;
 import com.example.app.repositories.EventRepository;
 
 @RestController
-@RequestMapping("/api/v2")
+@RequestMapping("/api/v1")
 public class EventController {
 
   @Autowired
