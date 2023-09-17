@@ -47,7 +47,7 @@ export default function Home() {
             <Carousel/>
             <div className="flex flex-col md:mx-20 mt-10">
                 <p className="text-xl mb-4 font-semibold">Trending Now</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
                         trendingPicks.map((item, index) => {
                             return (
@@ -60,7 +60,7 @@ export default function Home() {
             <div className="flex flex-col md:mx-20 mt-10">
                 <p className="text-xl mb-4 font-semibold">Selling fast on Marketplace</p>
                 <p className="text-[#1F6EB7] cursor-pointer">See more on Marketplace</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
                         trendingPicks.map((item, index) => {
                             return (
