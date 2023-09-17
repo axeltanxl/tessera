@@ -39,9 +39,9 @@ public class SecurityConfig {
             .cors(withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers(mvcMatcherBuilder.pattern("/api/v2.0.1/admin/**")).hasAuthority("ADMIN")
+                .requestMatchers(mvcMatcherBuilder.pattern("/api/v2/admin/**")).hasAuthority("ADMIN")
                 
-                .requestMatchers(mvcMatcherBuilder.pattern("/api/v2.0.1/auth/**")).permitAll()
+                .requestMatchers(mvcMatcherBuilder.pattern("/api/v2/auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
 
                 .anyRequest().authenticated()
