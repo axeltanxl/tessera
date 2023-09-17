@@ -2,12 +2,12 @@ package com.example.app.controllers;
 
 import java.util.*;
 
-import org.hibernate.mapping.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +36,7 @@ public class EventController {
     return ResponseEntity.ok(result);
   }
 
-  @PostMapping(path = "/admin/addEvents")
+  @PostMapping(path = "/admin/addEvent")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<Object> addEvent(@RequestBody @Valid Event event) {
     try {
@@ -61,7 +61,7 @@ public class EventController {
     return ResponseEntity.ok(event.get());
   }
 
-  @PutMapping(path = "/{eventID}")
+  @PutMapping(path = "/admin/updateEvent/{eventID}")
   public ResponseEntity<Object> updateEvent(@PathVariable("eventID") Long id, @RequestBody @Valid Event event) {
     try {
       Optional<Event> existingEvent = eventRepository.findById(id);
@@ -79,6 +79,23 @@ public class EventController {
       System.out.println("Error while adding an event: " + e.getMessage());
 
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while adding the event");
+    }
+  }
+
+  @DeleteMapping(path = "/admin/deleteEvent/{eventID}")
+  public ResponseEntity<Object> deleteEvent(@PathVariable("eventID") Long id) {
+    try {
+      if (!eventRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+      }
+
+      eventRepository.deleteById(id);
+
+      return ResponseEntity.status(HttpStatus.OK).body("Event deleted successfully.");
+    } catch (Exception e) {
+      System.out.println("Error while deleting event: " + e.getMessage());
+
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the event");
     }
   }
 }
