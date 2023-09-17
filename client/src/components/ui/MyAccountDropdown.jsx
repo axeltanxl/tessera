@@ -29,13 +29,10 @@ export default function MyAccountDropdown() {
                     <span className="hidden lg:block">My Account</span>
                 </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-white shadow-none border-[#B4C1DB]" align="end">
+            <DropdownMenuContent className="w-56 bg-[#FCFAFF] shadow-none border-[#B4C1DB]" align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        My Profile
-                    </DropdownMenuItem>
                     <DropdownMenuItem>
                         My Tickets
                     </DropdownMenuItem>
@@ -44,6 +41,9 @@ export default function MyAccountDropdown() {
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         Receive Transfer
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        My Profile
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
