@@ -19,13 +19,32 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MdLogout } from 'react-icons/md';
+import Link from 'next/link';
 
+const menuItems = [
+    {
+        link: "/account/tickets",
+        name: "My Tickets"
+    },
+    {
+        link: "/account/transfer-history",
+        name: "Transfer History"
+    },
+    {
+        link: "/account/receive-transfer",
+        name: "Receive Transfer"
+    },
+    {
+        link: "/account/profile",
+        name: "My Profile"
+    }
+]
 export default function MyAccountDropdown() {
     return (
-        <DropdownMenu>
+        <DropdownMenu >
             <DropdownMenuTrigger asChild>
-                <button className="px-2 py-1 rounded-full ml-2 flex items-center">
-                    <BiUserCircle size={25} className='mr-1'/>
+                <button className="px-2 py-1 rounded-full ml-2 flex items-center hover:bg-[#F5F7FB] outline-none">
+                    <BiUserCircle size={25} className='mr-1' />
                     <span className="hidden lg:block">My Account</span>
                 </button>
             </DropdownMenuTrigger>
@@ -33,18 +52,15 @@ export default function MyAccountDropdown() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        My Tickets
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Tranfer History
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        Receive Transfer
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        My Profile
-                    </DropdownMenuItem>
+                    {
+                        menuItems.map((item, index) => (
+                            <Link href={item.link} key={index}>
+                                <DropdownMenuItem className='hover:cursor-pointer'>
+                                    {item.name}
+                                </DropdownMenuItem>
+                            </Link>
+                        ))
+                    }
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
