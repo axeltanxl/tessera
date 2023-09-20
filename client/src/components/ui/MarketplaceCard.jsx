@@ -11,7 +11,7 @@ import Link from "next/link";
 export function MarketplaceCard({ details }) {
     const { id, title, description, category, startDate, src, item, price } = details;
     return (
-        <Card className="w-full z-0 bg-[#F5F7FB] shadow-none">
+        <Card className="w-full z-0 bg-[#F5F7FB] shadow-none hover:mix-blend-multiply">
             <CardHeader shadow={false} floated={false} className="h-52 bg-[#F5F7FB]">
                 <img
                     src={src}
