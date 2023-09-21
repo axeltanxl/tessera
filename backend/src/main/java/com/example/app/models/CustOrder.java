@@ -15,7 +15,7 @@ public class CustOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderID;
 
-    private String ticketCategory;
+    private int price;
     private int ticketQuantity;
 
     @ManyToOne
