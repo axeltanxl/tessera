@@ -84,12 +84,13 @@ const LoginForm = () => {
                         <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} /> 
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
+                    {/* className="shadow-inner shadow-gray-400" */}
                     <FormField
                     control={control}
                     name="password"
@@ -97,7 +98,7 @@ const LoginForm = () => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input type="password" placeholder="" {...field}/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
