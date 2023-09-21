@@ -1,7 +1,8 @@
 'use client'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 
 import {
   Form,
@@ -18,10 +19,17 @@ import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { loginSchema } from "./loginSchema"
 import { Icons } from "@/components/ui/icons/icons"
+import { signIn } from "next-auth/react"
+import axios from "axios"
+import { useSession } from "next-auth/react"
 
 const LoginForm = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const { data :session} = useSession()
+    console.log("session:", session);
 
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const [ isPending, startTransition ] = useTransition()
     const form = useForm({
         defaultValues : {
             email : "",
@@ -32,16 +40,26 @@ const LoginForm = () => {
 
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
-
         setIsLoading(true)
-
+        try {
+            const res = await axios.post("http://localhost:8080/api/v1/auth/login", data)
+            localStorage.setItem("jwt", res.data.token);
+            console.log(res.data.message);
+            const resB = await signIn("credentials",{
+                email : data.email,
+                password : data.password,
+                redirect : false,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        
+        router.push('/');
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
-
-        
         toast({
       title: "You submitted the following values:",
       description: (
@@ -79,7 +97,7 @@ const LoginForm = () => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
