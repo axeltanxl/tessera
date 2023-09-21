@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { loadStripe } from '@stripe/stripe-js';
-
+import CreateCanvas from "@/components/canvas/CreateCanvas";
 async function getData() {
     // You would usually fetch data from an API here.
     // const res = await fetch("https://api.github.com/");

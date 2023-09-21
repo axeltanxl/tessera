@@ -61,13 +61,11 @@ export default SuccessPage;
 
 const Thank = () => {
     return (
-        <div className="w-1/3  flex bg-accent p-8">
-            <p className="text-9xl">T</p>
-            <div className="flex flex-col justify-center">
-                <p className="text-7xl">HANK YOU</p>
-                <Separator/>
+        <div className="flex bg-accent p-8">
+            <div className="flex flex-col justify-center items-center">
+                <p className="text-5xl">THANK YOU</p>
                 <div className="flex items-center gap-2">
-                    <p className="text-lg">esseara</p>
+                    <p className="text-lg">for purchasing with Tessera</p>
                     <IoTicketOutline/>
                 </div>
             </div>
