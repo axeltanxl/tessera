@@ -138,19 +138,60 @@ const Confirmation = () => {
                 <div className="table-row2 table-header2">
                     <div className="table-cell2">Item</div>
                     <div className="table-cell2">Ticket Info</div>
-                    <div className="table-cell">Quantity</div>
-                    <div className="table-cell">Subtotal</div>
+                    <div className="table-cell">Details</div>
+                    <div className="table-cell">Price</div>
                 </div>
                 <div className="table-row2">
-                    <div className="table-cell2">Standard</div>
-                    <div className="table-cell2"></div>
                     <div className="table-cell2">
-                    <div>
-                        
+                        <div style={{textAlign:"center", fontWeight:"bold"}}>Taylor Swift: The Eras Tour 2024</div>
+                        <div style={{textAlign:"center"}}>8 March 2024 6-9pm, National Stadium Singapore</div>
                     </div>
+                    <div className="table-cell2">
+                            Row 1, Seat 1
                     </div>
-                    <div className="table-cell2">Your total bill is:</div>
-                    
+                    <div className="table-cell2">
+                            Category 1, Zone PA1
+                    </div>
+                    <div className="table-cell2">$348</div>
+                </div>
+                <div className="table-row2">
+                    <div className="table-cell2">
+                        <div style={{textAlign:"center", fontWeight:"bold"}}>Taylor Swift: The Eras Tour 2024</div>
+                        <div style={{textAlign:"center"}}>8 March 2024 6-9pm, National Stadium Singapore</div>
+                    </div>
+                    <div className="table-cell2">
+                            Row 1, Seat 2
+                    </div>
+                    <div className="table-cell2">
+                            Category 1, Zone PA1
+                    </div>
+                    <div className="table-cell2">$348</div>
+                </div>
+                <div className="table-row2">
+                    <div className="table-cell2">
+                        <div style={{textAlign:"center", fontWeight:"bold"}}>Taylor Swift: The Eras Tour 2024</div>
+                        <div style={{textAlign:"center"}}>8 March 2024 6-9pm, National Stadium Singapore</div>
+                    </div>
+                    <div className="table-cell2">
+                            Row 1, Seat 3
+                    </div>
+                    <div className="table-cell2">
+                            Category 1, Zone PA1
+                    </div>
+                    <div className="table-cell2">$348</div>
+                </div>
+                <div className="table-row2">
+                    <div className="table-cell2">
+                        <div style={{textAlign:"center", fontWeight:"bold"}}>Taylor Swift: The Eras Tour 2024</div>
+                        <div style={{textAlign:"center"}}>8 March 2024 6-9pm, National Stadium Singapore</div>
+                    </div>
+                    <div className="table-cell2">
+                            Row 1, Seat 4
+                    </div>
+                    <div className="table-cell2">
+                            Category 1, Zone PA1
+                    </div>
+                    <div className="table-cell2">$348</div>
                 </div>
             </div>
             </div>
