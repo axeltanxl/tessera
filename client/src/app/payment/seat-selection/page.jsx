@@ -1,5 +1,6 @@
+'use client'
 import React from "react";
-import SeatingPlan from "./SeatingPlan";
+import SeatingPlan from "@/components/ui/SeatingPlan";
 import {
     Accordion,
     AccordionContent,

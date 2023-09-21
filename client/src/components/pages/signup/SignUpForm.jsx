@@ -144,7 +144,7 @@ const SignUpForm = ({actionName, action}) => {
                     </Button>
                 </form>
             </Form>
-            );
+    );
 }
 
 export default SignUpForm;
