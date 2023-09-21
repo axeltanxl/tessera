@@ -2,6 +2,7 @@ package com.example.app.auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,9 +50,19 @@ public class AuthController {
         // return ResponseEntity.ok(service.authenticate(request));
 
         // Attempt to login the user
+        try {
             AuthenticationResponse authResp = service.authenticate(request);
 
             return ResponseEntity.ok(authResp);
+        } catch (BadCredentialsException credEx) {
+            
+            AuthenticationResponse errorResp = AuthenticationResponse.builder()
+                .message("Username/Password is invalid.")
+                .build();
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResp);
+        }
+        
 
     }
 
