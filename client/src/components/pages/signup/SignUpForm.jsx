@@ -43,7 +43,7 @@ const SignUpForm = ({actionName, action}) => {
         router.push('/');
         setTimeout(() => {
             setIsLoading(false)
-        }, 3000)
+        }, 5000)
 
 
         toast({
@@ -78,7 +78,8 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className=""/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            {/* <Input placeholder="" {...field} className=""/> */}
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -91,7 +92,8 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Contact Number</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className=""/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            {/* <Input placeholder="" {...field} className=""/> */}
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -104,7 +106,8 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className=""/>
+                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            {/* <Input placeholder="" {...field} className=""/> */}
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -118,7 +121,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormLabel>Password</FormLabel>
                         <FormControl>
                             <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
-                            <Input placeholder="" {...field} className=""/>
+                            {/* <Input placeholder="" {...field} className=""/> */}
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -132,7 +135,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
                             <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400 focus:shadow-inner focus:shadow-gray-400"/>
-                            <Input placeholder="" {...field} className=""/>
+                            {/* <Input placeholder="" {...field} className=""/> */}
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
