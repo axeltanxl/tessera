@@ -1,10 +1,10 @@
 'use client'
 import React from 'react'
+import { useState } from 'react';
 import SideNav from '@/components/ui/accountNav/SideNav';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -67,6 +67,11 @@ const getTicketsWithSeat = [
   }
 ]
 const MyTickets = () => {
+  const [numTicketsSelected, setNumTicketsSelected] = useState(0);
+  const handleSelectTickets = (checked) => {
+    checked ? setNumTicketsSelected(numTicketsSelected + 1) : setNumTicketsSelected(numTicketsSelected - 1);
+    console.log("number of tickets selected:" + numTicketsSelected);
+  }
   return (
     <section className='flex mt-10'>
       <div className='mr-20 ml-10'>
@@ -77,7 +82,6 @@ const MyTickets = () => {
         <p className='font text-sm text-[#1F6EB7]'>Click on tickets to view QR code and ticket details</p>
         <div>
           <Table>
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
               <TableRow>
                 <TableHead className="font-semibold w-[300px]">Order Information</TableHead>
@@ -111,11 +115,11 @@ const MyTickets = () => {
                       <p>${item.ticketQuantity * item.price}</p>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell> 
                     {getTicketsWithSeat.map((item, index) => (
-                      <div className='flex items-center'>
+                      <div className='flex items-center' key={index}>
                       <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo}/>
-                      <Checkbox />
+                      <Checkbox handleSelect={handleSelectTickets}/>
                       </div>
                     ))}
                   </TableCell>
