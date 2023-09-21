@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
 import { authenticated } from "../ProtectRoutes";
+import jwt_decode from "jwt-decode";
+
 // npx prisma db pull
 // npx prisma migrate dev
 
@@ -41,8 +43,8 @@ export async function POST(request){
     }
 
     const prisma = new PrismaClient();
-    const { eventID, quantity, category, images } = await request.json();
-    console.log("pricePerCategory:", eventID);
+    const { jwt, eventID, quantity, category, images } = await request.json();
+    console.log("jwt:", jwt);
     const {pricePerCategory} = await prisma.event.findUnique({
         where : {
             eventID : eventID
@@ -53,9 +55,34 @@ export async function POST(request){
     })
     const pricePerCat = JSON.parse(pricePerCategory);
     const unitPrice =  pricePerCat[category];
-    
+    const decoded = jwt_decode(jwt);
+    const email = decoded.sub
+    console.log("decoded:" , email);
+    const { userID } = await prisma.user.findFirst({
+        where : {
+            email : email 
+        },
+        select : {
+            userID : true,
+        }
+    })
+    console.log("decoded userid:" , userID);
 
-   
+    await prisma.custorder.create({
+        data: {
+            ticketCategory: category,
+            ticketQuantity: quantity,
+            eventID : eventID,
+            userID : userID,
+        },
+      })
+    // orderID
+    // ticketCategory
+    // ticketQuantity
+    // eventID 
+    // userID 
+
+    
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
         
     // stripe checkout session 
