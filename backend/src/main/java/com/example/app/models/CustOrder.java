@@ -35,8 +35,8 @@ public class CustOrder {
     public CustOrder() {
     }
 
-    public CustOrder(int price) {
-        this.price = price;
+    public CustOrder(String ticketCategory) {
+        this.ticketCategory = ticketCategory;
     }
 
     public int getTicketQuantity() {
@@ -79,12 +79,12 @@ public class CustOrder {
         this.orderID = orderID;
     }
 
-    public int getPrice() {
-        return price;
+    public String getTicketCategory() {
+        return ticketCategory;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setTicketCategory(String ticketCategory) {
+        this.ticketCategory = ticketCategory;
     }
 
     //Users r/s
