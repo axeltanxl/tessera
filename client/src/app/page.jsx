@@ -5,9 +5,9 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 export default function Home() {
 
-    const { data : session, status} = useSession();
+    const { data: session, status } = useSession();
     console.log("home session:", session);
-    if(status === "unauthenticated" || !session || !session.user){
+    if (status === "unauthenticated" || !session || !session.user) {
         redirect("/login");
     }
 
@@ -67,7 +67,7 @@ export default function Home() {
     ]
     return (
         <div className="z-0">
-            <Carousel/>
+            <Carousel />
             <div className="flex flex-col md:mx-20 mt-10">
                 <p className="text-xl mb-4 font-semibold">Trending Now</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
