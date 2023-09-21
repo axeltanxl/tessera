@@ -2,12 +2,19 @@
 import SignUpForm from "@/components/pages/signup/SignUpForm";
 import Link from "next/link"
 import axios from "axios";
+import { signIn } from "next-auth/react";
 
-const signup = async(data) => {
+// removed async await kw
+const signup = async (data) => {
     try {
         const res = await axios.post("http://localhost:8080/api/v1/auth/register", data)
         localStorage.setItem("jwt", res.data.token);
         console.log(res.data.message);
+        const resB = await signIn("credentials",{
+            email : data.email,
+            password : data.password,
+            redirect : false,
+        });
     } catch (error) {
         console.log(error);
     }
