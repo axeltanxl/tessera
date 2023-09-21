@@ -64,8 +64,10 @@ export default function MyAccountDropdown() {
                     }
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem >
-                    Sign Out <MdLogout size={20} className='ml-2' onClick={signOut} />
+                <DropdownMenuItem  onClick={() => {
+                        console.log("checkout")
+                        signOut()}} >
+                    Sign Out <MdLogout size={20} className='ml-2' />
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
