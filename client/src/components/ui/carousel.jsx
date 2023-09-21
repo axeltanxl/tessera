@@ -15,10 +15,10 @@ const Carousel = () => {
     const next = () => setCurr(curr => curr === slides.length - 1 ? 0 : curr + 1)
 
     const autoSlideInterval = 4000;
-    // useEffect(() => {
-    //     const slideInterval = setInterval(next, autoSlideInterval)
-    //     return () => clearInterval(slideInterval)
-    // },[])
+    useEffect(() => {
+        const slideInterval = setInterval(next, autoSlideInterval)
+        return () => clearInterval(slideInterval)
+    },[])
 
     return (
         <div className='hidden md:flex justify-center items-center rounded'>

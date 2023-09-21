@@ -6,15 +6,16 @@ import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, A
 import { BiUserCircle } from 'react-icons/bi';
 import { signOut } from "next-auth/react";
 
+import MyAccountDropdown from "../MyAccountDropdown";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleNav = () => {
     setMenuOpen(!menuOpen);
   }
   const menuLeft = [
-    { name: "Events", url: "/Events" },
-    { name: "Marketplace", url: "/Marketplace" },
-    { name: "FAQ ", url: "/FAQ" },
+    { name: "Events", url: "/events" },
+    { name: "Marketplace", url: "/marketplace" },
+    { name: "FAQ ", url: "/faq" },
   ];
 
   const menuRight = [
@@ -41,7 +42,7 @@ const Navbar = () => {
               {menuLeft.map(({ name, url }) => {
                 return (
                   <Link href={url} key={name}>
-                    <li className="ml-8 hover:border-b">
+                    <li className="ml-8 hover:opacity-60">
                       {name}
                     </li>
                   </Link>
@@ -55,9 +56,11 @@ const Navbar = () => {
           {/**Right side */}
           <SearchBar style={"hidden xs:block"} />
           <BiUserCircle size={25} className="cursor-pointer" />
-          <button 
+          {/* <button 
           onClick={signOut}
-          className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign Out</button>
+          className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign Out</button> */}
+          
+          <MyAccountDropdown />
         </div>
 
       </div>

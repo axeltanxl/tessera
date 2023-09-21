@@ -78,7 +78,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -91,7 +91,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Contact Number</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -104,7 +104,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
