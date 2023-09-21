@@ -17,17 +17,15 @@ export const metadata = {
 export default async function RootLayout({ children }) {
     const session = await getServerSession();
   return (
-      <html lang="en" className={poppins.className}>
-        <Provider session={session}>
-            <body className='bg-primary'>
-                <div className="min-h-screen flex flex-col relative bg-primary">
-                    <Navbar />
-                <main className="mx-auto w-full px-10 py-5 bg-primary mt-2">
-                    {children}
-                </main>
-            </div>
-            </body>
-        </Provider>
+    <html lang="en" className={`${poppins.className} bg-primary`}>
+      <body className='bg-primary'>
+        <div className="min-h-screen flex flex-col relative bg-primary">
+            <Navbar />
+        <main className="mx-auto w-full px-4 md:px-10 py-5 bg-primary mt-2">
+            {children}
+        </main>
+    </div>
+    </body>
     </html>
   )
 }
