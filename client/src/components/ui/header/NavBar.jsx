@@ -4,6 +4,8 @@ import Link from 'next/link'
 import SearchBar from "./SearchBar";
 import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, AiOutlineTwitter } from 'react-icons/ai';
 import { BiUserCircle } from 'react-icons/bi';
+import { signOut } from "next-auth/react";
+
 import MyAccountDropdown from "../MyAccountDropdown";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,6 +55,10 @@ const Navbar = () => {
         <div className="flex flex-row items-center">
           {/**Right side */}
           <SearchBar style={"hidden xs:block"} />
+          <BiUserCircle size={25} className="cursor-pointer" />
+          <button 
+          onClick={signOut}
+          className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign Out</button>
           
           <MyAccountDropdown />
         </div>
@@ -80,7 +86,9 @@ const Navbar = () => {
           })}
         </ul>
 
-        <button className="bg-amber-300 px-2 rounded-full">Sign in</button>
+        <button 
+        onClick={signOut}
+        className="bg-amber-300 px-2 rounded-full">Sign Out</button>
         <div className="flex flex-row justify-around pt-10 items-center">
           <AiOutlineInstagram size={30} className="cursor-pointer" />
           <AiOutlineFacebook size={30} className="cursor-pointer" />

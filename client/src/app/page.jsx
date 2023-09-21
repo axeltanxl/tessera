@@ -1,7 +1,21 @@
 'use client';
 import { EventCard } from "@/components/ui/EventCard";
 import Carousel from "@/components/ui/carousel"
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 export default function Home() {
+
+    const { data : session, status} = useSession();
+    console.log("home session:", session);
+    if(status === "unauthenticated" || !session || !session.user){
+        redirect("/login");
+    }
+
+    const slides = [
+        "/image-1.png",
+        "/image-2.png",
+        "/image-3.png"
+    ]
 
     const trendingPicks = [
         {
@@ -82,3 +96,5 @@ export default function Home() {
         </div>
     )
 }
+
+Home.requireAuth = true;

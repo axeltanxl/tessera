@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
-
+import { authenticated } from "../ProtectRoutes";
 // npx prisma db pull
 // npx prisma migrate dev
 
@@ -36,6 +36,10 @@ import Stripe from "stripe";
 
 
 export async function POST(request){
+    if(!authenticated){
+        return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
+    }
+
     const prisma = new PrismaClient();
     const { eventID, quantity, category, images } = await request.json();
     console.log("pricePerCategory:", eventID);
