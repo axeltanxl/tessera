@@ -17,6 +17,7 @@ model event {
   category         String?   @db.VarChar(255)
   description      String?   @db.VarChar(255)
   pricePerCategory String?   @db.VarChar(255)
+  name             String?   @db.VarChar(255)
 
   @@index([venueId], map: "FK8dsn6rcp0jul7b1n6ptqq254u")
 }
@@ -29,6 +30,7 @@ model payment {
   paymentMethod String? @db.VarChar(255)
 
   @@index([transactionId], map: "FKcxjivqinmjlvl5kf7drm3v0x1")
+  @@index([orderId], map: "FKb33lw05499g9grnvp6ufpjjwg")
 }
 
 model ticket {
@@ -36,6 +38,9 @@ model ticket {
   seatId     BigInt?
   ticketId   BigInt  @id @default(autoincrement())
   uniqueCode String? @db.VarChar(255)
+
+  @@index([seatId], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
+  @@index([orderId], map: "FKks8gd5eaa20qau296r9fgcc9n")
 }
 
 model transaction {
@@ -64,6 +69,28 @@ model venue {
   capacity Int
   venueId  BigInt  @id @default(autoincrement())
   name     String? @db.VarChar(255)
+}
+
+model custorder {
+  orderID        BigInt  @id @default(autoincrement())
+  ticketCategory String?
+  ticketQuantity Int
+  eventID        BigInt?
+  userID         BigInt?
+
+  @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
+  @@index([eventID], map: "FKr6tkc9du1r50obuqt1h761d2y")
+}
+
+model seat {
+  seatID   BigInt  @id @default(autoincrement())
+  category String? @db.VarChar(255)
+  seatRow  String? @db.VarChar(255)
+  seatNo   Int
+  section  String? @db.VarChar(255)
+  venueID  BigInt?
+
+  @@index([venueID], map: "FKfj8lt431up6yqyeakinimp591")
 }
 
 enum user_role {
