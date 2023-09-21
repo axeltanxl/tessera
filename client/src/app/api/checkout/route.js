@@ -42,6 +42,7 @@ export async function POST(request){
 
     const prisma = new PrismaClient();
     const { eventID, quantity, category, images } = await request.json();
+    console.log("pricePerCategory:", eventID);
     const {pricePerCategory} = await prisma.event.findUnique({
         where : {
             eventID : eventID
