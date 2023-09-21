@@ -4,16 +4,16 @@ import Link from 'next/link'
 import SearchBar from "./SearchBar";
 import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, AiOutlineTwitter } from 'react-icons/ai';
 import { BiUserCircle } from 'react-icons/bi';
-
+import MyAccountDropdown from "../MyAccountDropdown";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleNav = () => {
     setMenuOpen(!menuOpen);
   }
   const menuLeft = [
-    { name: "Events", url: "/Events" },
-    { name: "Marketplace", url: "/Marketplace" },
-    { name: "FAQ ", url: "/FAQ" },
+    { name: "Events", url: "/events" },
+    { name: "Marketplace", url: "/marketplace" },
+    { name: "FAQ ", url: "/faq" },
   ];
 
   const menuRight = [
@@ -40,7 +40,7 @@ const Navbar = () => {
               {menuLeft.map(({ name, url }) => {
                 return (
                   <Link href={url} key={name}>
-                    <li className="ml-8 hover:border-b">
+                    <li className="ml-8 hover:opacity-60">
                       {name}
                     </li>
                   </Link>
@@ -53,8 +53,8 @@ const Navbar = () => {
         <div className="flex flex-row items-center">
           {/**Right side */}
           <SearchBar style={"hidden xs:block"} />
-          <BiUserCircle size={25} className="cursor-pointer" />
-          <button className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign in</button>
+          
+          <MyAccountDropdown />
         </div>
 
       </div>
