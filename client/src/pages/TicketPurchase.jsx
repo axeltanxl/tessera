@@ -18,7 +18,7 @@ const TicketPurchase = ()  => {
     const changeQuant = (q) => {
         setSelectedQuant(q.target.value);
     };
-
+    const total = selectedPrice * selectedQuant;
     return (
         <div>
             <Accordion type="multiple" style={{ width:"80%", marginLeft:"10%", marginRight:"10%"}}>
@@ -66,7 +66,10 @@ const TicketPurchase = ()  => {
                                     </select>
                                 </div>
                                 </div>
-                                <div className="table-cell">Your total bill is:<br></br>{selectedPrice}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* {selectedQuant}</div>
+                                {
+                                    isNaN(total) ?  (<div className="table-cell">Your total bill is:<br></br>$0</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
+                                }
+                                
                                 
                             </div>
                         </div>
