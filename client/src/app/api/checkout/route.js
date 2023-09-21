@@ -43,7 +43,7 @@ export async function POST(request){
     }
 
     const prisma = new PrismaClient();
-    const { jwt, eventID, quantity, category, images } = await request.json();
+    const { jwt, eventID, quantity, category, images, paymentMethod } = await request.json();
     console.log("jwt:", jwt);
     const {pricePerCategory} = await prisma.event.findUnique({
         where : {
@@ -57,7 +57,7 @@ export async function POST(request){
     const unitPrice =  pricePerCat[category];
     const decoded = jwt_decode(jwt);
     const email = decoded.sub
-    console.log("decoded:" , email);
+    // console.log("decoded:" , email);
     const { userID } = await prisma.user.findFirst({
         where : {
             email : email 
@@ -66,9 +66,9 @@ export async function POST(request){
             userID : true,
         }
     })
-    console.log("decoded userid:" , userID);
+    // console.log("decoded userid:" , userID);
 
-    await prisma.custorder.create({
+    const res = await prisma.custorder.create({
         data: {
             ticketCategory: category,
             ticketQuantity: quantity,
@@ -104,6 +104,18 @@ export async function POST(request){
         success_url : "http://localhost:3000/paymentFeedback/success",
         cancel_url : "http://localhost:3000/paymentFeedback/cancel"
     })
-    return NextResponse.json(session.url)
+
+    const out = {
+        webUrl :session.url,
+        paymentMethod : paymentMethod,
+        orderId : res.orderID
+    }
+    const json = JSON.stringify(out , (key, value) => {
+        return typeof value === 'bigint' ? value.toString() : value;
+    });
+    return new NextResponse(json, { 
+        status: 201, 
+        headers: { "Content-Type": "application/json" },
+       })
 
 }
