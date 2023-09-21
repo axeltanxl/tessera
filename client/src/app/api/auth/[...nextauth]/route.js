@@ -47,7 +47,7 @@ export const authOptions = {
 
     callbacks :{
         async jwt({token, user, session}){
-            console.log("jwt callback", {token, user, session})
+            // console.log("jwt callback", {token, user, session})
 
             if(user){
                 return {
@@ -58,7 +58,7 @@ export const authOptions = {
             return token;
         },
         async session ({session, token, user}){
-            console.log("session callback", {token, user, session})
+            // console.log("session callback", {token, user, session})
             if (token.user) {
                 session.user = token.user;
               }
@@ -74,7 +74,7 @@ export const authOptions = {
         maxAge: 60 * 60 * 24 * 30,
         // async encode() {},
         // async decode() {},
-      }
+      },
 }
 
 export const handler = NextAuth(authOptions);
