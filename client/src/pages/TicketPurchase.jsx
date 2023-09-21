@@ -23,7 +23,6 @@ const TicketPurchase = ()  => {
         setSelectedQuant(q.target.value);
     };
     const total = selectedPrice * selectedQuant;
-    console.log("total:", total);
     return (
         <div>
             <Accordion type="multiple" style={{ width:"80%", marginLeft:"10%", marginRight:"10%"}}>
