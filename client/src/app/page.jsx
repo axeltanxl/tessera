@@ -2,15 +2,19 @@
 import { EventCard } from "@/components/ui/EventCard";
 import Carousel from "@/components/ui/carousel"
 export default function Home() {
-    const slides = [
-        "/image-1.png",
-        "/image-2.png",
-        "/image-3.png"
-    ]
 
     const trendingPicks = [
         {
-            id: 5,
+            id: 1,
+            title: 'Taylor Swift The Eras Tour',
+            description: "",
+            category: 'Concert',
+            startDate: '1 Sep 2023',
+            endDate: '15 Sep 2023',
+            src: '/image-9.jpg'
+        },
+        {
+            id: 2,
             title: 'Mathilda The Musical',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
             category: 'Musical',
@@ -19,7 +23,7 @@ export default function Home() {
             src: '/image-5.jpg'
         },
         {
-            id: 6,
+            id: 3,
             title: 'Mari Kita Main Wayang by...',
             description: "It’s hijinks and humour abound in Mari Kita Main Wayang (Let’s Stage A Play)!",
             category: 'Theatre',
@@ -28,7 +32,7 @@ export default function Home() {
             src: '/image-7.jpg'
         },
         {
-            id: 5,
+            id: 4,
             title: 'Mathilda The Musical',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
             category: 'Musical',
@@ -37,7 +41,7 @@ export default function Home() {
             src: '/image-5.jpg'
         },
         {
-            id: 6,
+            id: 5,
             title: 'Mari Kita Main Wayang by...',
             description: "It’s hijinks and humour abound in Mari Kita Main Wayang (Let’s Stage A Play)!",
             category: 'Theatre',
@@ -52,7 +56,7 @@ export default function Home() {
             <Carousel/>
             <div className="flex flex-col md:mx-20 mt-10">
                 <p className="text-xl mb-4 font-semibold">Trending Now</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
                         trendingPicks.map((item, index) => {
                             return (
@@ -65,7 +69,7 @@ export default function Home() {
             <div className="flex flex-col md:mx-20 mt-10">
                 <p className="text-xl mb-4 font-semibold">Selling fast on Marketplace</p>
                 <p className="text-[#1F6EB7] cursor-pointer">See more on Marketplace</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
                         trendingPicks.map((item, index) => {
                             return (
