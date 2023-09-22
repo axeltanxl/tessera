@@ -55,7 +55,6 @@ const Navbar = () => {
         <div className="flex flex-row items-center">
           {/**Right side */}
           <SearchBar style={"hidden xs:block"} />
-          <BiUserCircle size={25} className="cursor-pointer" />
           {/* <button 
           onClick={signOut}
           className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign Out</button> */}

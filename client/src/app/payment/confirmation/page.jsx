@@ -268,9 +268,8 @@ const Confirmation = () => {
                     Cancel Order
                 </button>
 
-                <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}>
-                onClick={() => handleConfirmation(hardCodedValues)}
-                >
+                <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}
+                onClick={() => handleConfirmation(hardCodedValues)}>
                     Confirm
                 </button>
             </div>
