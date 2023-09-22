@@ -6,6 +6,7 @@ import { IoTicketOutline } from "react-icons/io5";
 import Image from "next/image";
 import { useReward } from 'react-rewards';
 import { useEffect } from "react";
+import axios from "axios";
 
 const SuccessPage = () => {
     const {reward: confettiRewardLeft } = useReward('confettiRewardLeft', 'confetti', {
@@ -22,6 +23,10 @@ const SuccessPage = () => {
     });
     
     useEffect(() => {
+        const orderId = localStorage.getItem("orderId");
+        const paymentMethod = localStorage.getItem("paymentMethod");
+        axios.post("/api/checkout/success", {paymentMethod : paymentMethod, orderId : orderId});
+
         confettiRewardLeft();
         confettiRewardRight();
     }, [])

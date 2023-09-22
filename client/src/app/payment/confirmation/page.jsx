@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect } from "react";
 import { useState } from "react";
+import axios from "axios";
 
 const infoName = "Neo Shyh Ruey";
 const infoEmail = "srneo.2022@scis.smu.edu.sg";
@@ -14,7 +15,34 @@ const paymentSpecifics = [
     { type: "Alipay", desc: "Applicable for Mainland China Accounts only", },
 ];
 
+const hardCodedValues = {
+    "jwt" : localStorage.getItem("jwt"),
+    "eventID" : 1,
+    "quantity" : 3, 
+    "category" : "catB", 
+    "images" : "https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2020/09/09/s3-2.png",
+    "paymentMethod" : "card",
+};
+
+
 const Confirmation = () => {
+
+    const handleConfirmation = async (data) => {
+        const res = await axios.post('/api/checkout', data, 
+        {
+            headers : {
+                "Content-Type" : "application/json",
+            },
+        });
+        console.log("order res",res.data)
+        localStorage.setItem("orderId", res.data.orderId);
+        localStorage.setItem("paymentMethod", res.data.paymentMethod);
+        const {webUrl} = res.data
+        window.location.assign(webUrl);
+        // very insecure pls change later change to webhook please
+    }
+
+
     const [paymentChoices, setPaymentChoices] = useState([
         "Credit Card / Debit Card",
         "Apple Pay",
@@ -239,7 +267,10 @@ const Confirmation = () => {
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order
                 </button>
+
                 <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}>
+                onClick={() => handleConfirmation(hardCodedValues)}
+                >
                     Confirm
                 </button>
             </div>
