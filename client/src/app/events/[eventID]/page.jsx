@@ -1,29 +1,46 @@
+"use client"
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Badge } from "@/components/ui/badge"
+import { axios } from "axios"
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
   } from "@/components/ui/hover-card"  
 import Image from 'next/image'
+import { useEffect } from 'react';
 
 
 export const getEvent = async () =>{
-    const res = await fetch("http://localhost:8080/api/v1/events/1");
+    const jwt = localStorage.getItem("jwt");
+    console.log("jwt")
+    console.log(jwt)
+    const res = await fetch("http://localhost:8080/api/v1/events/1", {
+        headers : {
+            "Authorization" : `Bearer ${jwt}`
+        }
+    });
+    // const res = axios.post("http://localhost:8080/api/v1/events/1",)
     console.log(res);
     const event = await res.json()
 
   return event
 }
 
-const EventDetails = async () => {
+const EventDetails = () => {
+    // const res = await getEvent();
+    // console.log("pricePerCatt")
+    // console.log(res);
+    useEffect(() => {
+        const res = getEvent();
+    },[])
     const { eventID, name, poster,
         category , description, ticketImg,
         startDate, endDate, ticketSaleDate,
         pricePerCategory, maxSlots,
         soldOut, venue
-    }  = await getEvent();
+    }  = res
     return (
     <div className="w-full min-h-screen">
         <div 

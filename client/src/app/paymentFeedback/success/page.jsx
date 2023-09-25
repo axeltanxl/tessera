@@ -25,7 +25,7 @@ const SuccessPage = () => {
     useEffect(() => {
         const orderId = localStorage.getItem("orderId");
         const paymentMethod = localStorage.getItem("paymentMethod");
-        axios.post("/api/checkout/success", {paymentMethod : paymentMethod, orderId : orderId});
+        // axios.post("/api/checkout/success", {paymentMethod : paymentMethod, orderId : orderId});
 
         confettiRewardLeft();
         confettiRewardRight();

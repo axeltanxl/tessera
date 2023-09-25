@@ -102,7 +102,11 @@ export async function POST(request){
         ],
         mode : 'payment', // one time payment
         success_url : "http://localhost:3000/paymentFeedback/success",
-        cancel_url : "http://localhost:3000/paymentFeedback/cancel"
+        cancel_url : "http://localhost:3000/paymentFeedback/cancel",
+        metadata : {
+            orderId : res.orderID,
+            paymentMethod : paymentMethod,
+        }
     })
 
     const out = {
