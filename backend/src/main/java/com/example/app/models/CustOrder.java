@@ -1,6 +1,10 @@
 package com.example.app.models;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,17 +22,21 @@ public class CustOrder {
     private String ticketCategory;
     private int ticketQuantity;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userID")
     private User user;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "eventID")
     private Event event;
-
+    
+    @JsonManagedReference
     @OneToMany(mappedBy = "order")
     private List<Payment> payments;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "order")
     private List<Ticket> tickets;
     

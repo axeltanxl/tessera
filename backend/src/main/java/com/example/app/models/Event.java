@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +34,7 @@ public class Event {
     private String pricePerCategory;
     private int maxSlots;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "event")
     private List<CustOrder> orders;
 

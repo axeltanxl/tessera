@@ -20,6 +20,7 @@ public class Venue {
     private String name;
     private int capacity;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "venue")
     private List<Seat> seats;
 

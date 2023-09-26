@@ -8,10 +8,6 @@ export async function GET(request, response){
 }
 
 export async function POST(request, response){
-    console.log("endpoint called")
-    // console.log(sig)
-    // const rawBody = await buffer(request);
-    // const body = JSON.parse(rawBody.toString());
     const body = await request.text();
     const sig = request.headers.get('stripe-signature');
     let event;
@@ -27,40 +23,53 @@ export async function POST(request, response){
         // response.status(400).send(`Webhook Error: ${err.message}`);
         return NextResponse.json({message : `Webhook Error: ${err.message}`}, {status : 400});
       }
-      switch (event.type) {
-        case 'payment_intent.succeeded':
-          const paymentIntentSucceeded = event.data.object;
-        //   console.log(paymentIntentSucceeded);
-          const {id} = paymentIntentSucceeded
-          // Then define and call a function to handle the event payment_intent.succeeded
-          break;
-          case 'charge.succeeded':
-            const chargeSucceeded = event.data.object;
-            const { payment_method_details } = chargeSucceeded
-            // here should also destructure orderId metadata passed
-            const orderId = 69;
+    
+    switch (event.type) {
+        
+    case 'payment_intent.succeeded':
+    case 'charge.succeeded':
+      const paymentIntentSucceeded = event.data.object;
+      const {id} = paymentIntentSucceeded
+      console.log(id)
+      try {
+          const paymentIntent =  await stripe.paymentIntents.retrieve(id);
+            const {orderId, paymentMethod} = paymentIntent.metadata;
+           // console.log(paymentIntent)
+            console.log("payment create");
+            console.log(orderId);
+            console.log(paymentMethod)
 
-            console.log(payment_method_details.type);
-            await prisma.payment.create({
-                data: {
-                    isSuccessful : 1,
-                    paymentMethod : payment_method_details.type,
-                    orderId : orderId,
+          
+          await prisma.payment.create({
+              data: {
+                  isSuccessful : 1,
+                  paymentMethod : paymentMethod,
+                  orderId : orderId,
                 },
             })
-            // await prisma.ticket.create({
-            // //     data: {
-            // //         eventDate : "date",
-            // //         uniqueCode : qrCode,
-            // //         seatID : seatID, 
-            // //     },
-            // // })
-            break;
-        // ... handle other event types
-        default:
-          console.log(`Unhandled event type ${event.type}`);
+      } catch (error) {
+        return NextResponse.json({message : "no order created "}, {status : 400});
       }
-    
+    //   case :
+          
+        //   const chargeSucceeded = event.data.object;
+        //   const { amount, email, payment_method_details } = chargeSucceeded
+          
+            // await prisma.ticket.create({
+                // //     data: {
+                    // //         eventDate : "date",
+                    // //         uniqueCode : qrCode,
+                    // //         seatID : seatID, 
+                    // //     },
+                    // // })
+                    break;
+                    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+          // Then define and call a function to handle the event payment_intent.succeeded
+              
       // Return a 200 response to acknowledge receipt of the event
     //   response.send();
     return NextResponse.json({message : "success yayy"}, {status : 200});
@@ -96,3 +105,11 @@ export async function POST(request, response){
 // EventDate
 // UniqueCode
 // SeatID (FK)
+
+
+
+
+
+
+
+
