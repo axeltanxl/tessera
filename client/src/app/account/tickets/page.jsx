@@ -13,7 +13,8 @@ import {
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import TicketCard from '@/components/ui/TicketCard';
-import { Checkbox } from "@/components/ui/checkbox"
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from 'next/link';
 
 const getOrders = [
   {
@@ -115,15 +116,17 @@ const MyTickets = () => {
                       <p>${item.ticketQuantity * item.price}</p>
                     </div>
                   </TableCell>
-                  <TableCell> 
+                  <TableCell>
                     {getTicketsWithSeat.map((item, index) => (
                       <div className='flex items-center' key={index}>
-                      <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo}/>
-                      <Checkbox handleSelect={handleSelectTickets}/>
+                        <Link href={`/account/tickets/${item.ticketID}`}>
+                          <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
+                        </Link>
+                        <Checkbox handleSelect={handleSelectTickets} />
                       </div>
                     ))}
                   </TableCell>
-                 
+
                 </TableRow>
               ))}
             </TableBody>
