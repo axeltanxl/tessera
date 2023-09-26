@@ -7,6 +7,8 @@ import Image from "next/image";
 import { useReward } from 'react-rewards';
 import { useEffect } from "react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 const SuccessPage = () => {
     const {reward: confettiRewardLeft } = useReward('confettiRewardLeft', 'confetti', {
@@ -30,6 +32,10 @@ const SuccessPage = () => {
         confettiRewardLeft();
         confettiRewardRight();
     }, [])
+    const { data: session, status } = useSession();
+    if (status === "unauthenticated" || !session || !session.user) {
+        redirect("/login");
+    }
 
     return (
     <div className="w-full flex flex-col justify-center items-center gap-8">
