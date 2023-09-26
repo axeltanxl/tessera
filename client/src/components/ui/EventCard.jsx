@@ -10,12 +10,12 @@ import {
 import Link from "next/link";
 
 export function EventCard({ details }) {
-  const { id, title, description, category, startDate, endDate, src } = details;
+  const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = details;
   return (
     <Card className="w-full z-0 bg-[#F5F7FB] shadow-none hover:cursor-pointer hover:mix-blend-multiply">
       <CardHeader shadow={false} floated={false} className="h-52 bg-[#F5F7FB]">
         <img
-          src={src}
+          src={'./image-9.jpg'}
           alt="card-image"
           className="h-full w-full object-cover rounded p-1"
         />
@@ -23,7 +23,7 @@ export function EventCard({ details }) {
       <CardBody className="p-2 sm:p-2 pl-4 pb-0 bg-[#F5F7FB]">
         <div className="mb-2 flex items-center justify-between">
           <Typography color="blue-gray" className="font-semibold">
-            {title}
+            {name}
           </Typography>
           {/* <Typography color="blue-gray" className="font-medium">
               $95.00
@@ -43,7 +43,7 @@ export function EventCard({ details }) {
         </Typography>
       </CardBody>
       <CardFooter className="pt-0 flex justify-center bg-[#F5F7FB] pb-4">
-        <Link href={`/events/${id}`}>
+        <Link href={`/events/${eventID}`}>
           <Button
             ripple={false}
             fullWidth={false}
