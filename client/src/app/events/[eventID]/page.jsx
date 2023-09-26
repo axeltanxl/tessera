@@ -76,15 +76,15 @@ function EventDetails() {
                             <div className="mb-4 font-semibold inline">{name}</div>
                             <Link href="/payment/seat-selection">
                                 <Button variant="outlined" className="text-primary bg-secondary hover:bg-secondary inline" disabled={soldOut}>
-                                    {soldOut ? "Sold out" : "Buy Tickets"}
+                                    {soldOut ? "Sold out" : "Buy tickets"}
                                 </Button></Link>
                         </div>
 
-                        <p className='text-md'>Event from {startDate} to {endDate} </p>
-                        <p className='text-md'>Venue: {venueID} </p>
+                        <p className='text-md font-semibold'>Event from {startDate} to {endDate} </p>
+                        <p className='text-md font-semibold'>Venue {venueID} </p>
                         {/* <p className='text-md'>Ticket sale start: {ticketSaleDate} </p> */}
                         <div className='flex items-center gap-2'>
-                            <p className='text-md'>Category: </p>
+                            <p className='text-md font-semibold'>Category </p>
                             <Badge variant="outline" className="text-primary bg-secondary">{category}</Badge>
                         </div>
                         <p className='text-md'>{description}</p>
@@ -95,7 +95,7 @@ function EventDetails() {
                 <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
                     <p className="text-xl mt-2 font-semibold">Pricing</p>
                     <Separator />
-                    <div className='w-full flex gap-4'>
+                    {/* <div className='w-full flex gap-4'>
                         {
                             pricePerCategory ? (Object.entries(JSON.parse(pricePerCategory)).map(([cat, price], index) => {
                                 console.log("cat:", cat);
@@ -110,7 +110,7 @@ function EventDetails() {
                                                     <p>CAT</p>
                                                     <p className='text-4xl'>{cat}</p>
                                                 </div>
-                                                <div className="w-2/3 space-y-1">
+                                                <div className="w-2/3 ">
                                                     <h4 className="text-sm font-semibold">Price: ${price}</h4>
                                                 </div>
                                             </div>
@@ -120,7 +120,7 @@ function EventDetails() {
                             })
                             ) : (<div>loading...</div>)
                         }
-                    </div>
+                    </div> */}
                 </div>
 
                 <div aria-label='event map' className='w-full flex justify-center items-center'>
