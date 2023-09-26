@@ -1,5 +1,6 @@
+'use client'
 import React from "react";
-import SeatingPlan from "./SeatingPlan";
+import SeatingPlan from "@/components/ui/SeatingPlan";
 import {
     Accordion,
     AccordionContent,
@@ -21,6 +22,8 @@ const TicketPurchase = ()  => {
     const total = selectedPrice * selectedQuant;
     return (
         <div>
+            <div style={{fontWeight:"bold", textAlign:"center"}}>Taylor Swift: The Eras Tour 2024</div>
+            <div style ={{textAlign:"center", border:"1px solid grey", borderRadius:"10px", padding:"1%", marginTop:"2rem", marginBottom:"2rem", width:"80%", marginLeft:"10%"}}>8 March 2024 6-9pm, National Stadium Singapore</div>
             <Accordion type="multiple" style={{ width:"80%", marginLeft:"10%", marginRight:"10%"}}>
                 <AccordionItem value="select-zone">
                     <AccordionTrigger

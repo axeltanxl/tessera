@@ -43,7 +43,7 @@ const SignUpForm = ({actionName, action}) => {
         router.push('/');
         setTimeout(() => {
             setIsLoading(false)
-        }, 3000)
+        }, 5000)
 
 
         toast({
@@ -65,7 +65,7 @@ const SignUpForm = ({actionName, action}) => {
                             <FormItem>
                             <FormLabel>Name</FormLabel>
                             <FormControl>
-                                <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                                <Input placeholder="" {...field} />
                             </FormControl>
                             <FormMessage className="text-red-400"/>
                             </FormItem>
@@ -117,7 +117,6 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
                             <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
@@ -131,7 +130,6 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                            <Input type="password" placeholder="" {...field} className="shadow-inner shadow-gray-400 focus:shadow-inner focus:shadow-gray-400"/>
                             <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
@@ -144,7 +142,7 @@ const SignUpForm = ({actionName, action}) => {
                     </Button>
                 </form>
             </Form>
-            );
+    );
 }
 
 export default SignUpForm;

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MdLogout } from 'react-icons/md';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 const menuItems = [
     {
@@ -63,7 +64,9 @@ export default function MyAccountDropdown() {
                     }
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem  onClick={() => {
+                        console.log("checkout")
+                        signOut()}} >
                     Sign Out <MdLogout size={20} className='ml-2' />
                 </DropdownMenuItem>
             </DropdownMenuContent>
