@@ -5,7 +5,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
 
     const seatingPlan = [
 
-        { category: "CAT 1", price: 348, zones: [
+        { category: 1, price: 348, zones: [
             {zoneId: "PA1", style: { top:"100%",left:"22%",height:"70%",width:"8%",backgroundColor:"#FFDB0E" }},
             {zoneId: "PA2", style: { top:"100%",right:"22%",height:"70%",width:"8%",backgroundColor:"#FFDB0E" }},
             {zoneId: "PB1", style: { top:"100%",left:"22%",height:"70%",width:"12%",marginTop:"4%",backgroundColor:"#FFDB0E" }},
@@ -30,7 +30,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "PG4", style: { top:"100%",right:"30%",height:"100%",width:"12%",marginTop:"25%",backgroundColor:"#FFDB0E" }},
             {zoneId: "PG5", style: { top:"100%",right:"30%",height:"100%",width:"12%",marginTop:"30%",backgroundColor:"#FFDB0E" }},
         ] },
-        { category: "CAT 2", price: 328, zones: [
+        { category: 2, price: 328, zones: [
             {zoneId: "PH1", style: { top:"100%",left:"25%",height:"100%",width:"10%",marginTop:"36%",backgroundColor:"#68CDFF" }},
             {zoneId: "PH2", style: { top:"100%",left:"35%",height:"100%",width:"10%",marginTop:"36%",backgroundColor:"#68CDFF" }},
             {zoneId: "PH3", style: { top:"100%",left:"45%",height:"100%",width:"10%",marginTop:"36%",backgroundColor:"#68CDFF" }},
@@ -43,7 +43,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "100", style: { top:"100%",left:"40%",height:"100%",width:"10%",marginTop:"42%",backgroundColor:"#68CDFF" }},
             {zoneId: "150", style: { top:"100%",right:"40%",height:"100%",width:"10%",marginTop:"42%",backgroundColor:"#68CDFF" }},
         ] },
-        { category: "CAT 3", price: 288, zones: [
+        { category: 3, price: 288, zones: [
             {zoneId: "200", style: { top:"100%",left:"40%",height:"100%",width:"10%",marginTop:"48%",backgroundColor:"#FF6A68" }},
             {zoneId: "250", style: { top:"100%",right:"40%",height:"100%",width:"10%",marginTop:"48%",backgroundColor:"#FF6A68" }},
             {zoneId: "106", style: { top:"100%",right:"15%",height:"100%",width:"8%",marginTop:"18%",backgroundColor:"#FF6A68" }},
@@ -55,7 +55,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "158", style: { top:"100%",left:"15%",height:"100%",width:"6%",marginTop:"6%",backgroundColor:"#FF6A68" }},
             {zoneId: "159", style: { top:"100%",left:"15%",height:"100%",width:"6%",backgroundColor:"#FF6A68" }},
         ] },
-        { category: "CAT 4", price: 248, zones: [
+        { category: 4, price: 248, zones: [
             {zoneId: "152", style: { top:"100%",left:"15%",height:"100%",width:"8%",marginTop:"42%",backgroundColor:"#68FFAC" }},
             {zoneId: "153", style: { top:"100%",left:"15%",height:"100%",width:"8%",marginTop:"36%",backgroundColor:"#68FFAC" }},
             {zoneId: "154", style: { top:"100%",left:"15%",height:"100%",width:"8%",marginTop:"30%",backgroundColor:"#68FFAC" }},
@@ -65,7 +65,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "104", style: { top:"100%",right:"15%",height:"100%",width:"8%",marginTop:"30%",backgroundColor:"#68FFAC" }},
             {zoneId: "105", style: { top:"100%",right:"15%",height:"100%",width:"8%",marginTop:"24%",backgroundColor:"#68FFAC" }},
         ] },
-        { category: "CAT 5", price: 168, zones: [
+        { category: 5, price: 168, zones: [
             {zoneId: "252", style: { top:"100%",left:"8%",height:"100%",width:"6%",marginTop:"42%",backgroundColor:"#C168FF" }},
             {zoneId: "253", style: { top:"100%",left:"8%",height:"100%",width:"6%",marginTop:"36%",backgroundColor:"#C168FF" }},
             {zoneId: "254", style: { top:"100%",left:"8%",height:"100%",width:"6%",marginTop:"30%",backgroundColor:"#C168FF" }},
@@ -75,7 +75,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "204", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"30%",backgroundColor:"#C168FF" }},
             {zoneId: "205", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"24%",backgroundColor:"#C168FF" }},
         ] },
-        { category: "CAT 6", price: 108, zones: [
+        { category: 6, price: 108, zones: [
             {zoneId: "206", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"18%",backgroundColor:"#FFAF68"}},
             {zoneId: "207", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"12%",backgroundColor:"#FFAF68" }},
             {zoneId: "208", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"6%",backgroundColor:"#FFAF68" }},
@@ -101,19 +101,19 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
       setSelectedCat(cat);
     }
 
-
+    console.log({selectedCat},{selectedPrice})
     return (
         <div>
             <h1 className="text-center">Seating Plan</h1><br/>
             <div className="stage">STAGE</div>
             <div className="seating-plan">
-                {seatingPlan.map((category, categoryIndex) => (
-                    <div key={categoryIndex}>
+                {seatingPlan.map((cat, catIndex) => (
+                    <div key={catIndex}>
                         <div className="row">
-                            {category.zones.map((zone, zoneIndex) => (
+                            {cat.zones.map((zone, zoneIndex) => (
                                 <div
                                     key={zoneIndex} className={`zone ${selectedZone === zone.zoneId ? "selected" : ""}`}
-                                    style={zone.style} onClick={ () => {selectZone(zone.zoneId);selectCat(category);selectPrice(category.price);} }>
+                                    style={zone.style} onClick={ () => {selectZone(zone.zoneId);selectCat(cat.category);selectPrice(cat.price);} }>
                                       {zone.zoneId}
                                 </div>
                                 

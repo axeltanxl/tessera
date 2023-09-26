@@ -7,19 +7,18 @@ import {
     AccordionItem,
     AccordionTrigger,
   } from "@/components/ui/accordion"
+import usePaymentFormContext from "../hooks/usePaymentFormContext";
 import { useState } from "react";
 
 
 const TicketPurchase = ()  => {
-    const [selectedZone, setSelectedZone] = useState();
-    const [selectedCat, setSelectedCat] = useState();
-    const [selectedPrice, setSelectedPrice] = useState();
-    const [selectedQuant, setSelectedQuant] = useState();
+    const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
 
-    const changeQuant = (q) => {
-        setSelectedQuant(q.target.value);
-    };
-    const total = selectedPrice * selectedQuant;
+    const total = {selectedQuant}*{selectedPrice};
+
+    const handleNext = () => setPage(prev => prev + 1)
+
+    console.log({selectedCat}, {selectedPrice}, {selectedQuant},{selectedZone})
     return (
         <div>
             <div style={{fontWeight:"bold", textAlign:"center"}}>Taylor Swift: The Eras Tour 2024</div>
@@ -60,7 +59,7 @@ const TicketPurchase = ()  => {
                                 <div className="table-cell">${selectedPrice}</div>
                                 <div className="table-cell">
                                 <div>
-                                    <select id="dropdown" value={selectedQuant} onChange={changeQuant} >
+                                    <select id="dropdown" value={selectedQuant} onChange={(e) => {setSelectedQuant(e.target.value)}} >
                                         <option value="">Select</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -70,10 +69,8 @@ const TicketPurchase = ()  => {
                                 </div>
                                 </div>
                                 {
-                                    isNaN(total) ?  (<div className="table-cell">Your total bill is:<br></br>$0</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
+                                    isNaN({total}) ?  (<div className="table-cell">Your total bill is:<br></br>$0</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
                                 }
-                                
-                                
                             </div>
                         </div>
                     </AccordionContent>
@@ -81,7 +78,7 @@ const TicketPurchase = ()  => {
             </Accordion>
 
             
-            <button disabled= {!{selectedPrice}} style={{width:"10%", borderRadius:"5px", marginLeft:"45%", marginTop:"1rem",
+            <button disabled= {!{selectedPrice}} onClick={handleNext} style={{width:"10%", borderRadius:"5px", marginLeft:"45%", marginTop:"1rem",
             backgroundColor:"#2e6ad7", color:"white", marginBottom:"3rem"}}>Proceed</button>
 
             <style jsx>{`

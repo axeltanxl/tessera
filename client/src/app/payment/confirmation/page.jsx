@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
+import usePaymentFormContext from "../hooks/usePaymentFormContext";
 
 const infoName = "Neo Shyh Ruey";
 const infoEmail = "srneo.2022@scis.smu.edu.sg";
@@ -9,10 +10,10 @@ const infoHp = "+65 93394099";
 
 const paymentSpecifics = [
     { type: "Credit Card / Debit Card", desc: "Credit Cards (Visa / MasterCard / American Express), Atome, GrabPay are accepted", },
-    { type: "Apple Pay", desc: "Compatible with Apple Devices on the web in Safari", },
-    { type: "UnionPay", desc: "UnionPay", },
-    { type: "WeChat Pay", desc: "Applicable for Mainland China Accounts only", },
-    { type: "Alipay", desc: "Applicable for Mainland China Accounts only", },
+    // { type: "Apple Pay", desc: "Compatible with Apple Devices on the web in Safari", },
+    // { type: "UnionPay", desc: "UnionPay", },
+    // { type: "WeChat Pay", desc: "Applicable for Mainland China Accounts only", },
+    // { type: "Alipay", desc: "Applicable for Mainland China Accounts only", },
 ];
 
 const hardCodedValues = {
@@ -26,6 +27,9 @@ const hardCodedValues = {
 
 
 const Confirmation = () => {
+
+    const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
+    const handlePrev = () => setPage(prev => prev - 1)
 
     const handleConfirmation = async (data) => {
         const res = await axios.post('/api/checkout', data, 
@@ -45,10 +49,10 @@ const Confirmation = () => {
 
     const [paymentChoices, setPaymentChoices] = useState([
         "Credit Card / Debit Card",
-        "Apple Pay",
-        "UnionPay",
-        "WeChat Pay",
-        "Alipay",
+        // "Apple Pay",
+        // "UnionPay",
+        // "WeChat Pay",
+        // "Alipay",
     ]);
 
     const getDescriptionForPayment = (paymentType) => {
@@ -85,7 +89,7 @@ const Confirmation = () => {
             venue: "National Stadium",
             row: 1,
             seatNo: 22,
-            category: "A",
+            category:"A",
             section: "PA1",
             price: 300
         },
@@ -137,7 +141,10 @@ const Confirmation = () => {
         //api call
 
     }, [rerender]);
+
+    
     return (
+        
         <div>
             <div style={{
                 width: "80%", marginLeft: "10%", marginRight: "10%", textAlign: "center", marginTop: "1rem",
@@ -214,10 +221,9 @@ const Confirmation = () => {
                         <select
                             value={selectedDeliveryMethod}
                             onChange={handleDeliveryMethodChange}
-                            style={{ width: "100%", padding: "0.5rem", backgroundColor: "#f3f3f3" }}
-                            disabled={!selectedPayment} // Disable the select if no payment method is selected
+                            style={{ width: "100%", padding: "0.5rem", backgroundColor: "#f3f3f3" }}// Disable the select if no payment method is selected
                         >
-                            <option value="">Select a delivery method</option>
+                            <option value="op">Select a delivery method</option>
                             {deliveryMethods.map((method, index) => (
                                 <option key={index} value={method}>
                                     {method}
@@ -259,11 +265,11 @@ const Confirmation = () => {
                             </div>
                         </div>
                     ))}
-
                 </div>
             </div>
 
-            <div style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
+
+            <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order
                 </button>
