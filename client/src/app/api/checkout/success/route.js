@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { authenticated } from "../../ProtectRoutes";
-import { buffer } from "micro";
 import Stripe from "stripe";
 
 export async function GET(request, response){
