@@ -86,6 +86,8 @@ export async function POST(request){
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
         
     // stripe checkout session 
+    console.log("metadata");
+    console.log(res.orderID, paymentMethod)
     const session = await stripe.checkout.sessions.create({
         line_items : [
             {
@@ -102,7 +104,13 @@ export async function POST(request){
         ],
         mode : 'payment', // one time payment
         success_url : "http://localhost:3000/paymentFeedback/success",
-        cancel_url : "http://localhost:3000/paymentFeedback/cancel"
+        cancel_url : "http://localhost:3000/paymentFeedback/cancel",
+        payment_intent_data : {
+            metadata : {
+                orderId : res.orderID,
+                paymentMethod : paymentMethod,
+            },
+        }
     })
 
     const out = {
