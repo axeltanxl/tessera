@@ -3,7 +3,16 @@ import { EventCard } from "@/components/ui/EventCard";
 import Carousel from "@/components/ui/carousel"
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-export default function Home() {
+import { useEffect, useState } from 'react';
+
+export const getEvents = async () => {
+    const res = await fetch("http://localhost:8080/api/v1/events");
+    console.log(res);
+    const events = await res.json()
+
+    return events
+}
+function Home() {
 
     const { data: session, status } = useSession();
     console.log("home session:", session);
@@ -11,60 +20,37 @@ export default function Home() {
         redirect("/login");
     }
 
-    const slides = [
-        "/image-1.png",
-        "/image-2.png",
-        "/image-3.png"
-    ]
+    const [events, setEvents] = useState([]);
+    console.log("events:", events);
+    const token = localStorage.getItem('jwt');
+    console.log("token:", token);
+    useEffect(() => {
+        if (status === "authenticated" && session && session.user) {
+            async function fetchData() {
+                try {
 
-    const trendingPicks = [
-        {
-            id: 1,
-            title: 'Taylor Swift The Eras Tour',
-            description: "",
-            category: 'Concert',
-            startDate: '1 Sep 2023',
-            endDate: '15 Sep 2023',
-            src: '/image-9.jpg'
-        },
-        {
-            id: 2,
-            title: 'Mathilda The Musical',
-            description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Musical',
-            startDate: '1 Sep 2023',
-            endDate: '15 Sep 2023',
-            src: '/image-5.jpg'
-        },
-        {
-            id: 3,
-            title: 'Mari Kita Main Wayang by...',
-            description: "It’s hijinks and humour abound in Mari Kita Main Wayang (Let’s Stage A Play)!",
-            category: 'Theatre',
-            startDate: '1 Sep 2023',
-            endDate: '15 Sep 2023',
-            src: '/image-7.jpg'
-        },
-        {
-            id: 4,
-            title: 'Mathilda The Musical',
-            description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Musical',
-            startDate: '1 Sep 2023',
-            endDate: '15 Sep 2023',
-            src: '/image-5.jpg'
-        },
-        {
-            id: 5,
-            title: 'Mari Kita Main Wayang by...',
-            description: "It’s hijinks and humour abound in Mari Kita Main Wayang (Let’s Stage A Play)!",
-            category: 'Theatre',
-            startDate: '1 Sep 2023',
-            endDate: '15 Sep 2023',
-            src: '/image-7.jpg'
-        },
+                    const headers = {
+                        Authorization: `Bearer ${token}`,
+                    };
+                    const res = await fetch("http://localhost:8080/api/v1/events", {
+                        method: 'GET',
+                        headers,
+                    });
+                    if (res.ok) {
+                        const eventsData = await res.json();
+                        setEvents(eventsData);
+                    } else {
+                        console.error("API request failed.");
+                    }
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                }
+            }
 
-    ]
+            fetchData();
+        }
+    }, [status, session]);
+
     return (
         <div className="z-0">
             <Carousel />
@@ -72,9 +58,9 @@ export default function Home() {
                 <p className="text-xl mb-4 font-semibold">Trending Now</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
-                        trendingPicks.map((item, index) => {
+                        events.map((item, index) => {
                             return (
-                                <EventCard details={item} key={index} />
+                                <EventCard details={item} key={item.eventID} />
                             )
                         })
                     }
@@ -85,9 +71,9 @@ export default function Home() {
                 <p className="text-[#1F6EB7] cursor-pointer">See more on Marketplace</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
-                        trendingPicks.map((item, index) => {
+                        events.map((item, index) => {
                             return (
-                                <EventCard details={item} key={index} />
+                                <EventCard details={item} key={item.eventID} />
                             )
                         })
                     }
@@ -96,5 +82,5 @@ export default function Home() {
         </div>
     )
 }
-
+export default Home;
 Home.requireAuth = true;
