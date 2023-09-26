@@ -4,14 +4,15 @@ import SideNav from '@/components/ui/accountNav/SideNav'
 
 const ReceiveTransfer = () => {
   return (
-    <div className='flex '>
-            <div className='mr-10'>
-                <SideNav activeTab={2}/>
-            </div>
-            <div>
-                <div>Receive Transfer</div>
-            </div>
-        </div>
+    <section className='flex mt-10'>
+      <div className='mr-20 ml-10'>
+        <SideNav activeTab={2} />
+      </div>
+
+      <div>Receive Transfer</div>
+
+    </section>
+
   )
 }
 

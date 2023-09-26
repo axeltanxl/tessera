@@ -84,9 +84,9 @@ const EventDetails = () => {
                     <Separator/>
                     <div className='w-full flex gap-4'>
                         {
-                            Object.keys(pricePerCategory).map((cat) => {
+                            Object.keys(pricePerCategory).map((cat, index) => {
                                 return (
-                                <HoverCard >
+                                <HoverCard key={index}>
                                 <HoverCardTrigger asChild>
                                     <Button variant="link" className="text-primary bg-secondary hover:bg-secondary">Cat {cat}</Button>
                                 </HoverCardTrigger>
