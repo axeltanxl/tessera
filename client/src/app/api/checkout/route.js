@@ -43,7 +43,7 @@ export async function POST(request){
     }
 
     const prisma = new PrismaClient();
-    const { jwt, eventID, quantity, category, images, paymentMethod } = await request.json();
+    const { name, jwt, eventID, quantity, category, images, paymentMethod } = await request.json();
     console.log("jwt:", jwt);
     const {pricePerCategory} = await prisma.event.findUnique({
         where : {
@@ -95,7 +95,7 @@ export async function POST(request){
                     currency : "sgd",
                     unit_amount : unitPrice,
                     product_data :{
-                        name : "example_product",
+                        name : name,
                         images : [images]
                     },
                 },
