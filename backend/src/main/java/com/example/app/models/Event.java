@@ -34,11 +34,11 @@ public class Event {
     private String pricePerCategory;
     private int maxSlots;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="order-event")
     @OneToMany(mappedBy = "event")
     private List<CustOrder> orders;
 
-    @JsonBackReference
+    @JsonBackReference(value="venue-event")
     @ManyToOne
     @JoinColumn(name = "venueID")
     private Venue venue;
