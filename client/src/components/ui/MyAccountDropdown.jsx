@@ -40,17 +40,17 @@ const menuItems = [
         name: "My Profile"
     }
 ]
-export default function MyAccountDropdown() {
+export default function MyAccountDropdown({session}) {
     return (
         <DropdownMenu >
             <DropdownMenuTrigger asChild>
                 <button className="px-2 py-1 rounded-full ml-2 flex items-center hover:bg-[#F5F7FB] outline-none">
-                    <BiUserCircle size={25} className='mr-1' />
-                    <span className="hidden lg:block">My Account</span>
+                {!!session && <BiUserCircle size={25} className='mr-1' />}
+                    <span className="hidden lg:block">{!!session ? "My Account" : "Log in "}</span>
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-[#FCFAFF] shadow-none border-[#B4C1DB]" align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>My Acccount</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     {
