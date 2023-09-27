@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.validation.constraints.NotNull;
@@ -46,15 +47,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-order")
     @OneToMany(mappedBy = "user")
     private List<CustOrder> orders;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-buyer")
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-seller")
     @OneToMany(mappedBy = "seller")
     private List<Transaction> sellerTransactions;
 

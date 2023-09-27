@@ -22,17 +22,17 @@ public class Ticket {
 
     private String uniqueCode;
     
-    @JsonBackReference
+    @JsonBackReference(value="order-ticket")
     @ManyToOne
     @JoinColumn(name="orderID")
     private CustOrder order;
 
-    @JsonBackReference
+    @JsonBackReference(value="ticket-seats")
     @ManyToOne
     @JoinColumn(name="seatID")
     private Seat seat;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="transaction-ticket")
     @OneToMany(mappedBy = "ticket")
     private List<Transaction> transactions;
 

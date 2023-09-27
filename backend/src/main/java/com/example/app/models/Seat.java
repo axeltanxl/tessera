@@ -27,12 +27,12 @@ public class Seat {
   private String row;
   private int seatNo;
   
-  @JsonBackReference
+  @JsonBackReference(value="venue-seats")
   @ManyToOne
   @JoinColumn(name="venueID")
   private Venue venue;
 
-  @JsonManagedReference
+  @JsonManagedReference(value="ticket-seats")
   @OneToMany(mappedBy = "seat")
   private List<Ticket> tickets;
 
