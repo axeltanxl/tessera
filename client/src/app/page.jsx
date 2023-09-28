@@ -1,12 +1,14 @@
 'use client';
 import { EventCard } from "@/components/ui/EventCard";
 import Carousel from "@/components/ui/carousel"
+import { axiosSpring } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from 'react';
 
 export const getEvents = async () => {
     const res = await fetch("http://localhost:8080/api/v1/events");
+    // const res = await axiosSpring("events");
     console.log(res);
     const events = await res.json()
 
@@ -29,15 +31,17 @@ function Home() {
             async function fetchData() {
                 try {
 
-                    const headers = {
-                        Authorization: `Bearer ${token}`,
-                    };
-                    const res = await fetch("http://localhost:8080/api/v1/events", {
-                        method: 'GET',
-                        headers,
-                    });
-                    if (res.ok) {
-                        const eventsData = await res.json();
+                    // const headers = {
+                    //     Authorization: `Bearer ${token}`,
+                    // };
+                    // const res = await fetch("http://localhost:8080/api/v1/events", {
+                    //     method: 'GET',
+                    //     headers,
+                    // });
+                    const res = await axiosSpring("/events");
+                    console.log(res);
+                    if (res.status === 200) {
+                        const eventsData = res.data
                         setEvents(eventsData);
                     } else {
                         console.error("API request failed.");

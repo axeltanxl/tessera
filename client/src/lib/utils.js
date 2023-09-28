@@ -2,6 +2,8 @@ import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import { signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs))
@@ -21,10 +23,11 @@ export const jwtHasExpired = (jwt) => {
 }
 
 export const axiosSpring = axios.create({
-    baseURL: process.env.SPRING_BACKEND,
+    // baseURL: process.env.SPRING_BACKEND,
+    baseURL : "http://localhost:8080/api/v1",
     headers: { 
         "Access-Control-Allow-Origin": "*",
-        "Authorization" : localStorage.getItem("jwt")
+        "Authorization" : `Bearer ${localStorage.getItem("jwt")}`
     },
     withCredentials: false,
   });
@@ -37,3 +40,18 @@ export const axiosNext = axios.create({
 
 
 
+axiosSpring.interceptors.response.use((response) => {
+    return response;
+}, (error) => {
+    if (!error.response) {
+        alert('NETWORK ERROR')
+    } else {
+        console.log("errrrr")
+        const code = error.response.status
+        if (code === 400 || code === 401 || code === 403) {
+            console.log("error")
+            signOut();
+        }
+        return Promise.reject(error)
+    }
+});
