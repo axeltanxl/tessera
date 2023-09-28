@@ -6,6 +6,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.app.configs.Middleware;
 import com.example.app.models.User;
 import com.example.app.models.UserDTO;
-import com.example.app.models.UserUpdateDTO;
 
 import com.example.app.repositories.UserRepository;
 
@@ -52,60 +53,45 @@ public class UserController {
     @PostMapping("/update/{userID}")
     public ResponseEntity<Object> updateUser(@PathVariable("userID") Long userID, @RequestBody User reqUser) {
         
+                System.out.println("Authentication: " );
+        // Get the currently authenticated user from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
         Optional<User> getUser = userRepo.findById(userID);
 
-        // if (!getUser.isPresent()) {
-        //     return ResponseEntity.notFound().build();
-        // }
-
-        // User updateUser = getUser.get();
-        // // Update the entity with new values
-        // updateUser.setContactNum(reqUser.getContactNum());
-        // updateUser.setAddress(reqUser.getAddress());
-        // updateUser.setEmail(reqUser.getEmail());
-
-        // System.out.println("TEST: " + updateUser);
-        // //Don't let them change Name. Why must change?
-        // // updateUser.setName(reqUser.);
-
-        // userRepo.save(updateUser);
-
-         if (!getUser.isPresent()) {
+        if (!getUser.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        final ModelMapper modelMapper = new ModelMapper();
+        User updateUser = getUser.get();
 
-        // Convert User entity to UserDTO, excluding the password
-        UserUpdateDTO userUpdate = modelMapper.map(getUser, UserUpdateDTO.class);
-
-        // Update the entity with new values
-        userUpdate.setContactNum(reqUser.getContactNum());
-        userUpdate.setAddress(reqUser.getAddress());
-
-        if (reqUser.getEmail() == null) {
-            userUpdate.setEmail(getUser.get().getEmail());
-        } else {
-            userUpdate.setEmail(reqUser.getEmail());
+        // Check if the currently authenticated user matches the user being updated
+        if (!(authenticatedUser.getUserID() == updateUser.getUserID())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
         }
 
-        userUpdate.setPassword(getUser.get().getPassword());
+        // Update the entity with new values
+        updateUser.setContactNum(reqUser.getContactNum());
 
-    System.out.println("ASD");
-
-        System.out.println(userUpdate.getUserID() == getUser.get().getUserID());
+        // Ternary operator to set value if not null
+        updateUser.setAddress(reqUser.getAddress() != null ? reqUser.getAddress() : updateUser.getAddress());
+        updateUser.setEmail(reqUser.getEmail() != null ? reqUser.getEmail() : updateUser.getEmail());
 
         //Don't let them change Name. Why must change?
         // updateUser.setName(reqUser.);
-        User userObj = modelMapper.map(userUpdate, User.class);
 
-        userRepo.save(userObj);
+        userRepo.save(updateUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("User updated successfully");
     }
     
     @PostMapping("/updatePwd/{userID}")
     public ResponseEntity<Object> updateUserPassword(@PathVariable("userID") Long userID, 
     @RequestBody User reqUser) {
+
+        // Get the currently authenticated user from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
         
         Optional<User> getUser = userRepo.findById(userID);
 
@@ -114,8 +100,15 @@ public class UserController {
         }
 
         User updateUser = getUser.get();
+
+        // Check if the currently authenticated user matches the user being updated
+        if (!(authenticatedUser.getUserID() == updateUser.getUserID())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
+        }
+
         // Update the entity with new values
-        updateUser.setPassword(passwordEncoder.encode(reqUser.getPassword()));
+        updateUser.setPassword(reqUser.getPassword() != null ? passwordEncoder.encode(reqUser.getPassword()) 
+        : updateUser.getPassword());
 
         userRepo.save(updateUser);
         return ResponseEntity.status(HttpStatus.OK).body("User password updated successfully");
