@@ -53,19 +53,16 @@ public class UserController {
     @PostMapping("/update/{userID}")
     public ResponseEntity<Object> updateUser(@PathVariable("userID") Long userID, @RequestBody User reqUser) {
         
-                System.out.println("Authentication: " );
         // Get the currently authenticated user from the security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User authenticatedUser = (User) authentication.getPrincipal();
 
         Optional<User> getUser = userRepo.findById(userID);
-
         if (!getUser.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
         User updateUser = getUser.get();
-
         // Check if the currently authenticated user matches the user being updated
         if (!(authenticatedUser.getUserID() == updateUser.getUserID())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
