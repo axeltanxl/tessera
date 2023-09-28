@@ -6,6 +6,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.app.configs.Middleware;
 import com.example.app.models.User;
 import com.example.app.models.UserDTO;
+
 import com.example.app.repositories.UserRepository;
 
 @RestController
@@ -50,17 +53,27 @@ public class UserController {
     @PostMapping("/update/{userID}")
     public ResponseEntity<Object> updateUser(@PathVariable("userID") Long userID, @RequestBody User reqUser) {
         
-        Optional<User> getUser = userRepo.findById(userID);
+        // Get the currently authenticated user from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
 
+        Optional<User> getUser = userRepo.findById(userID);
         if (!getUser.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
         User updateUser = getUser.get();
+        // Check if the currently authenticated user matches the user being updated
+        if (!(authenticatedUser.getUserID() == updateUser.getUserID())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
+        }
+
         // Update the entity with new values
         updateUser.setContactNum(reqUser.getContactNum());
-        updateUser.setAddress(reqUser.getAddress());
-        updateUser.setEmail(reqUser.getEmail());
+
+        // Ternary operator to set value if not null
+        updateUser.setAddress(reqUser.getAddress() != null ? reqUser.getAddress() : updateUser.getAddress());
+        updateUser.setEmail(reqUser.getEmail() != null ? reqUser.getEmail() : updateUser.getEmail());
 
         //Don't let them change Name. Why must change?
         // updateUser.setName(reqUser.);
@@ -72,6 +85,10 @@ public class UserController {
     @PostMapping("/updatePwd/{userID}")
     public ResponseEntity<Object> updateUserPassword(@PathVariable("userID") Long userID, 
     @RequestBody User reqUser) {
+
+        // Get the currently authenticated user from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
         
         Optional<User> getUser = userRepo.findById(userID);
 
@@ -80,8 +97,15 @@ public class UserController {
         }
 
         User updateUser = getUser.get();
+
+        // Check if the currently authenticated user matches the user being updated
+        if (!(authenticatedUser.getUserID() == updateUser.getUserID())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
+        }
+
         // Update the entity with new values
-        updateUser.setPassword(passwordEncoder.encode(reqUser.getPassword()));
+        updateUser.setPassword(reqUser.getPassword() != null ? passwordEncoder.encode(reqUser.getPassword()) 
+        : updateUser.getPassword());
 
         userRepo.save(updateUser);
         return ResponseEntity.status(HttpStatus.OK).body("User password updated successfully");
