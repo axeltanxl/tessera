@@ -69,7 +69,7 @@ public class UserController {
         }
 
         // Update the entity with new values
-        updateUser.setContactNum(reqUser.getContactNum());
+        updateUser.setContactNum(reqUser.getContactNum() != null ? reqUser.getContactNum() : updateUser.getContactNum());
 
         // Ternary operator to set value if not null
         updateUser.setAddress(reqUser.getAddress() != null ? reqUser.getAddress() : updateUser.getAddress());
