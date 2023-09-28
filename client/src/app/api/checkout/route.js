@@ -57,7 +57,6 @@ export async function POST(request){
     const unitPrice =  pricePerCat[category];
     const decoded = jwt_decode(jwt);
     const email = decoded.sub
-    // console.log("decoded:" , email);
     const { userID } = await prisma.user.findFirst({
         where : {
             email : email 
