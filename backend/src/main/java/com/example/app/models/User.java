@@ -43,7 +43,7 @@ public class User implements UserDetails {
     private String email;
     @NotNull(message = "Password cannot be empty")
     private String password;
-    private int contactNum;
+    private String contactNum;
     private String address;
 
     @Enumerated(EnumType.STRING)
