@@ -20,13 +20,13 @@ export const authOptions = {
               if(!credentials.email || ! credentials.password){
                 throw new Error("Please input an email an password");
               }
-              console.log("credentials:", credentials);
+            //   console.log("credentials:", credentials);
               const user = await prisma.user.findFirst({
                 where :{
                     email : credentials.email,
                 }
               })
-              console.log("Userplease: ", user)
+            //   console.log("Userplease: ", user)
               if (!user || !user?.password) {
                 throw new Error("No user found");
               }
