@@ -52,6 +52,7 @@ const LoginForm = () => {
                 password : data.password,
                 redirect : false,
             });
+            console.log(resB)
         } catch (error) {
             console.log(error);
         }
