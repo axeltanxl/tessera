@@ -26,7 +26,7 @@ const Carousel = () => {
                 <div className='flex transition-transform ease-out duration-900' style={{ transform: `translateX(-${curr * 100}%)` }}>
                     {slides.map((s, index) => {
                         return (
-                            <img src={s} key="index" alt="image" className='object-contain' />
+                            <img src={s} key={index} alt="image" className='object-contain' />
                         )
                     })}
                 </div>

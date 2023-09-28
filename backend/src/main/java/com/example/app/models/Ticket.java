@@ -6,6 +6,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,14 +22,17 @@ public class Ticket {
 
     private String uniqueCode;
     
+    @JsonBackReference(value="order-ticket")
     @ManyToOne
     @JoinColumn(name="orderID")
     private CustOrder order;
 
+    @JsonBackReference(value="ticket-seats")
     @ManyToOne
     @JoinColumn(name="seatID")
     private Seat seat;
 
+    @JsonManagedReference(value="transaction-ticket")
     @OneToMany(mappedBy = "ticket")
     private List<Transaction> transactions;
 

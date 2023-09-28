@@ -5,10 +5,12 @@ import axios from "axios";
 
 const DisplayProduct = ({price, eventID}) => {
     const pricePerCat = JSON.parse(price);
+    const jwt = localStorage.getItem("jwt");
     const handleBuy = async (e, qty, cat) => {
         e.preventDefault();
         const { data } = await axios.post('/api/checkout', 
         {
+            "jwt" : jwt,
             "eventID" : 1,
             "category" : cat,
             "quantity" : qty,
