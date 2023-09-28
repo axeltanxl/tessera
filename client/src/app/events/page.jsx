@@ -7,58 +7,46 @@ import { useEffect, useState } from 'react';
 import { select } from '@material-tailwind/react';
 import { Shower } from '@mui/icons-material';
 
-const allEvents = [
-    {
-        id: 1,
-        title: 'Mathilda The Musical',
-        description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-        category: 'Musicals',
-        startDate: '2023-01-12 00:00:00',
-        endDate: '2023-02-12 00:00:00',
-        src: '/image-5.jpg'
-    },
-    {
-        id: 2,
-        title: 'Mari Kita Main Wayang by...',
-        description: "It’s hijinks and humour abound in Mari Kita Main Wayang (Let’s Stage A Play)!",
-        category: 'Festivals',
-        startDate: '2023-07-20 00:00:00',
-        endDate: '2023-08-20 00:00:00',
-        src: '/image-7.jpg'
-    },
-    {
-        id: 3,
-        title: 'Mathilda The Musical',
-        description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-        category: 'Musicals',
-        startDate: '2023-07-25 00:00:00',
-        endDate: '2023-10-20 00:00:00',
-        src: '/image-5.jpg'
-    },
-    {
-        id: 4,
-        title: 'Mari Kita Main Wayang by...',
-        description: "It’s hijinks and humour abound in Mari Kita Main Wayang (Let’s Stage A Play)!",
-        category: 'Theatre',
-        startDate: '2023-07-14 00:00:00',
-        endDate: '2023-07-16 00:00:00',
-        src: '/image-7.jpg'
-    },
-    {
-        id: 5,
-        title: 'Taylor Swift The Eras Tour',
-        description: '6 shows in Singapore!',
-        category: 'Concerts',
-        startDate: '2024-03-02 00:00:00',
-        endDate: '2024-03-09 00:00:00',
-        src: '/image-9.jpg'
-    }
 
-]
+export const getEvents = async () => {
+    const res = await fetch("http://localhost:8080/api/v1/events");
+    console.log(res);
+    const events = await res.json()
+
+    return events
+}
 
 const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
-const Events = () => {
+function Events() {
+    const [events, setEvents] = useState([]);
+console.log("get events:", events);
+const token = localStorage.getItem('jwt');
+// console.log("token:", token);
+useEffect(() => {
+    async function fetchData() {
+        try {
+
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            const res = await fetch("http://localhost:8080/api/v1/events", {
+                method: 'GET',
+                headers,
+            });
+            if (res.ok) {
+                const eventsData = await res.json();
+                setEvents(eventsData);
+            } else {
+                console.error("API request failed.");
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    }
+
+    fetchData();
+}, []);
 
     const [category, setCategory] = useState("All events");
     const [startDateSelected, setStartDateSelected] = useState(null);
@@ -87,9 +75,10 @@ const Events = () => {
     }
 
     useEffect(() => {
-        let showEvents = allEvents;
+        let showEvents = events;
+        console.log("showEvents:", showEvents);
         if (category !== "All events") {
-            showEvents = allEvents.filter((item) => item.category === category);
+            showEvents = events.filter((item) => item.category === category);
         }
 
         if (startDateSelected && endDateSelected) {
@@ -100,7 +89,8 @@ const Events = () => {
             })
         }
         setFilteredEvents(showEvents);
-    }, [category, startDateSelected, endDateSelected]);
+        console.log("filteredEvents:", filteredEvents);
+    }, [category, startDateSelected, endDateSelected, events]);
 
     return (<section className="bg-primary h-full">
         <Head>
