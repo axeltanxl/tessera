@@ -18,6 +18,4 @@ public class UserDTO {
     private String username;
     private int contactNum;
     private String address;
-
-
 }

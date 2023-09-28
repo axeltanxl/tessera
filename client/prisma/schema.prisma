@@ -13,70 +13,70 @@ model event {
   maxSlots         Int
   startDate        DateTime? @db.Date
   eventID          BigInt    @id @default(autoincrement())
-  venueId          BigInt?
   category         String?   @db.VarChar(255)
-  description      String?   @db.VarChar(255)
+  description      String?   @db.Text
   pricePerCategory String?   @db.VarChar(255)
-  name             String?   @db.VarChar(255)
+  name             String    @db.VarChar(255)
+  venueID          BigInt?
 
-  @@index([venueId], map: "FK8dsn6rcp0jul7b1n6ptqq254u")
+  @@index([venueID], map: "FKfkg0rjjt6ca7ck5mojidks7r7")
 }
 
 model payment {
   isSuccessful  Int
-  orderId       BigInt?
   paymentID     BigInt  @id @default(autoincrement())
-  transactionId BigInt?
   paymentMethod String? @db.VarChar(255)
+  orderID       BigInt?
+  transactionID BigInt?
 
-  @@index([transactionId], map: "FKcxjivqinmjlvl5kf7drm3v0x1")
-  @@index([orderId], map: "FKb33lw05499g9grnvp6ufpjjwg")
+  @@index([orderID], map: "FKb33lw05499g9grnvp6ufpjjwg")
+  @@index([transactionID], map: "FKmuaxt57agmtuiovehhauvchmq")
 }
 
 model ticket {
-  orderId    BigInt?
-  seatId     BigInt?
-  ticketId   BigInt  @id @default(autoincrement())
   uniqueCode String? @db.VarChar(255)
+  orderID    BigInt?
+  seatID     BigInt?
+  ticketID   BigInt  @id @default(autoincrement())
 
-  @@index([seatId], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
-  @@index([orderId], map: "FKks8gd5eaa20qau296r9fgcc9n")
+  @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
+  @@index([orderID], map: "FKks8gd5eaa20qau296r9fgcc9n")
 }
 
 model transaction {
-  buyerId       BigInt?
   date          DateTime? @db.DateTime(6)
-  sellerId      BigInt?
-  ticketId      BigInt?
-  transactionId BigInt    @id @default(autoincrement())
+  buyerID       BigInt?
+  sellerID      BigInt?
+  ticketID      BigInt?
+  transactionID BigInt    @id @default(autoincrement())
 
-  @@index([ticketId], map: "FK4yye6rl1o135ufx6apdoso1wy")
-  @@index([sellerId], map: "FKf3ici1pjsybx245j0r04870qe")
-  @@index([buyerId], map: "FKlnek713drw6aw7t88xgod6hai")
+  @@index([sellerID], map: "FK2nlddhdsd1n20718nunwqyp69")
+  @@index([buyerID], map: "FK7j96qpqvnqa1wplxx8g64t1x4")
+  @@index([ticketID], map: "FKdcjhq8tyb6mwfawkmomggmlag")
 }
 
 model user {
   contactNum Int
   userID     BigInt     @id @default(autoincrement())
   address    String?    @db.VarChar(255)
-  email      String?    @db.VarChar(255)
+  email      String     @db.VarChar(255)
   name       String?    @db.VarChar(255)
-  password   String?    @db.VarChar(255)
+  password   String     @db.VarChar(255)
   role       user_role?
 }
 
 model venue {
   capacity Int
-  venueId  BigInt  @id @default(autoincrement())
   name     String? @db.VarChar(255)
+  venueID  BigInt  @id @default(autoincrement())
 }
 
 model custorder {
   orderID        BigInt  @id @default(autoincrement())
-  ticketCategory String?
   ticketQuantity Int
   eventID        BigInt?
   userID         BigInt?
+  ticketCategory String? @db.VarChar(255)
 
   @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
   @@index([eventID], map: "FKr6tkc9du1r50obuqt1h761d2y")

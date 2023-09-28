@@ -72,6 +72,15 @@ const LoginForm = () => {
             await loginToSpring(data);
             await loginToNext(data);
             router.push('/');
+            // const res = await axios.post("http://localhost:8080/api/v1/auth/login", data)
+            // localStorage.setItem("jwt", res.data.token);
+            // console.log(res.data.message);
+            // const resB = await signIn("credentials",{
+            //     email : data.email,
+            //     password : data.password,
+            //     redirect : false,
+            // });
+            // console.log(resB)
         } catch (error) {
             console.log(error);
         }
