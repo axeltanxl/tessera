@@ -1,6 +1,10 @@
 package com.example.app.models;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,28 +19,32 @@ public class CustOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderID;
 
-    private int price;
+    private String ticketCategory;
     private int ticketQuantity;
 
+    @JsonBackReference(value="user-order")
     @ManyToOne
     @JoinColumn(name = "userID")
     private User user;
 
+    @JsonBackReference(value="order-event")
     @ManyToOne
     @JoinColumn(name = "eventID")
     private Event event;
-
+    
+    @JsonManagedReference(value="order-payment")
     @OneToMany(mappedBy = "order")
     private List<Payment> payments;
 
+    @JsonManagedReference(value="order-ticket")
     @OneToMany(mappedBy = "order")
     private List<Ticket> tickets;
     
     public CustOrder() {
     }
 
-    public CustOrder(int price) {
-        this.price = price;
+    public CustOrder(String ticketCategory) {
+        this.ticketCategory = ticketCategory;
     }
 
     public int getTicketQuantity() {
@@ -79,12 +87,12 @@ public class CustOrder {
         this.orderID = orderID;
     }
 
-    public int getPrice() {
-        return price;
+    public String getTicketCategory() {
+        return ticketCategory;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setTicketCategory(String ticketCategory) {
+        this.ticketCategory = ticketCategory;
     }
 
     //Users r/s
