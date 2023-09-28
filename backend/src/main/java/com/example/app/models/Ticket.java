@@ -36,6 +36,10 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket")
     private List<Transaction> transactions;
 
+    @JsonManagedReference(value="ticketListing-ticket")
+    @OneToMany(mappedBy = "ticket")
+    private List<TicketListing> ticketListings;
+
     public long getTicketID() {
       return ticketID;
     }
