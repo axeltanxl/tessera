@@ -7,6 +7,10 @@ import jakarta.persistence.OneToMany;
 
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,18 +23,22 @@ public class Transaction {
 
     private Date date;
 
+    @JsonBackReference(value="transaction-ticket")
     @ManyToOne
     @JoinColumn(name="ticketID")
     private Ticket ticket;
 
+    @JsonBackReference(value="user-buyer")
     @ManyToOne
     @JoinColumn(name = "buyerID")
     private User buyer;
 
+    @JsonBackReference(value="user-seller")
     @ManyToOne
     @JoinColumn(name = "sellerID")
     private User seller;
 
+    @JsonManagedReference(value="transaction-payment")
     @OneToMany(mappedBy = "transaction")
     private List<Payment> payments;
 
