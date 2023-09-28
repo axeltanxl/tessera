@@ -103,6 +103,14 @@ public class Event {
       return pricePerCategory;
     }
 
+    public String getDisplayImage() {
+      return displayImage;
+    }
+
+    public void setDisplayImage(String displayImage) {
+      this.displayImage = displayImage;
+    }
+
     public void setPricePerCategory(String pricePerCategory) {
       this.pricePerCategory = pricePerCategory;
     }
