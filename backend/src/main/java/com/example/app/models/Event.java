@@ -33,6 +33,7 @@ public class Event {
     private int duration;
     private String pricePerCategory;
     private int maxSlots;
+    private String displayImage;
 
     @JsonManagedReference(value="order-event")
     @OneToMany(mappedBy = "event")
