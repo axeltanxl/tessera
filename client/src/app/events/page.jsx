@@ -20,33 +20,33 @@ const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
 function Events() {
     const [events, setEvents] = useState([]);
-console.log("get events:", events);
-const token = localStorage.getItem('jwt');
-// console.log("token:", token);
-useEffect(() => {
-    async function fetchData() {
-        try {
+    console.log("get events:", events);
+    const token = localStorage.getItem('jwt');
+    // console.log("token:", token);
+    useEffect(() => {
+        async function fetchData() {
+            try {
 
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-            const res = await fetch("http://localhost:8080/api/v1/events", {
-                method: 'GET',
-                headers,
-            });
-            if (res.ok) {
-                const eventsData = await res.json();
-                setEvents(eventsData);
-            } else {
-                console.error("API request failed.");
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch("http://localhost:8080/api/v1/events", {
+                    method: 'GET',
+                    headers,
+                });
+                if (res.ok) {
+                    const eventsData = await res.json();
+                    setEvents(eventsData);
+                } else {
+                    console.error("API request failed.");
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
             }
-        } catch (error) {
-            console.error("An error occurred:", error);
         }
-    }
 
-    fetchData();
-}, []);
+        fetchData();
+    }, []);
 
     const [category, setCategory] = useState("All events");
     const [startDateSelected, setStartDateSelected] = useState(null);
@@ -81,11 +81,24 @@ useEffect(() => {
             showEvents = events.filter((item) => item.category === category);
         }
 
-        if (startDateSelected && endDateSelected) {
+        if (startDateSelected || endDateSelected) {
             showEvents = showEvents.filter((item) => {
                 const startDate = new Date(item.startDate);
                 const endDate = new Date(item.endDate);
-                return startDate <= endDateSelected && endDate >= startDateSelected;
+                const selectedStartDate = new Date(startDateSelected);
+                let selectedEndDate = new Date(endDateSelected);
+                if (isNaN(selectedEndDate)) { //if selectedEndDate is invalid / not selected properly
+                    selectedEndDate = selectedStartDate; 
+                }
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
+                selectedStartDate.setHours(0, 0, 0, 0);
+                selectedEndDate.setHours(0, 0, 0, 0);
+                console.log("startDate:", startDate);
+                console.log("endDate:", endDate);
+                console.log("selectedStartDate:", selectedStartDate);
+                console.log("selectedEndDate:", selectedEndDate);
+                return startDate <= selectedEndDate && endDate >= selectedStartDate;
             })
         }
         setFilteredEvents(showEvents);

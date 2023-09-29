@@ -10,22 +10,23 @@ import {
 import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-console.log("hello")
-// export const getEvent = async () =>{
-//     const res = await fetch("http://localhost:8080/api/v1/events/1");
-//     console.log(res);
-//     const event = await res.json()
+import { format } from 'date-fns';
 
-//   return event
-// }
-console.log("hello2")
+function formatDate(inputDate) {
+    if (inputDate !== undefined && inputDate !== null) {
+        const formattedDate = format(new Date(inputDate), 'dd MMM yyyy');
+        return formattedDate;
+    }
+}
+
+
 function EventDetails() {
     const [event, setEvent] = useState([]);
     const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
     console.log("eventID:", eventID);
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
-    console.log("token:", token);
+    // console.log("token:", token);
 
     const soldOut = false;
     useEffect(() => {
@@ -80,7 +81,7 @@ function EventDetails() {
                                 </Button></Link>
                         </div>
 
-                        <p className='text-md font-semibold'>Event from {startDate} to {endDate} </p>
+                        <p className='text-md font-semibold'>Event from {formatDate(startDate)} to {formatDate(endDate)} </p>
                         <p className='text-md font-semibold'>Venue {venueID} </p>
                         {/* <p className='text-md'>Ticket sale start: {ticketSaleDate} </p> */}
                         <div className='flex items-center gap-2'>
