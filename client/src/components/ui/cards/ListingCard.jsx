@@ -18,7 +18,7 @@ const ListingCard = ({ details }) => {
                     <Button
                         ripple={false}
                         fullWidth={false}
-                        className="bg-accent text-sm font-normal text-black p-1 w-20 rounded-md shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+                        className="bg-accent text-sm font-normal text-black px-1 w-16 rounded-md shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
                     >
                         Buy
                     </Button>
