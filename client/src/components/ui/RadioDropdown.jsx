@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
  
-export function RadioDropdown({name, dropdownItems, handleChange}) {
-  const [position, setPosition] = React.useState("All events");
+export function RadioDropdown({name, dropdownItems, handleChange, defaultValue}) {
+  const [position, setPosition] = React.useState(defaultValue);
   console.log("position:", position);
   
   return (

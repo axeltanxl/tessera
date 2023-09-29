@@ -1,5 +1,5 @@
 'use client';
-import { EventCard } from "@/components/ui/EventCard";
+import { EventCard } from "@/components/ui/cards/EventCard";
 import Carousel from "@/components/ui/carousel"
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";

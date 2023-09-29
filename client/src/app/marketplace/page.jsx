@@ -1,5 +1,5 @@
 'use client';
-import { MarketplaceCard } from "@/components/ui/MarketplaceCard";
+import { MarketplaceCard } from "@/components/ui/cards/MarketplaceCard";
 import Head from 'next/head';
 import { RadioDropdown } from "@/components/ui/RadioDropdown";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
@@ -8,52 +8,46 @@ import SearchBar from "@/components/ui/header/SearchBar";
 const Marketplace = () => {
     const allListings = [
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 1,
+            name: 'Taylor Swift The Eras Tour',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Music',
+            category: 'Concerts',
             startDate: '2023-07-14 00:00:00',
             endDate: '2023-07-14 00:00:00',
             src: '/image-9.jpg',
-            item: '4 x CAT 1 Standing Tickets',
-            price: '400'
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 2,
+            name: 'Mathilda The Musical',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Concert',
-            startDate: '2023-07-15 00:00:00',
-            endDate: '2023-07-15 00:00:00',
-            src: '/image-9.jpg',
-            item: '4 x CAT 1 Standing Tickets',
-            price: '400'
+            category: 'Musicals',
+            startDate: '2023-10-15 00:00:00',
+            endDate: '2023-12-15 00:00:00',
+            src: '/image-5.jpg',
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 3,
+            name: 'Fair Play',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
             category: 'Theatre',
             startDate: '2024-03-08 00:00:00',
             endDate: '2024-03-08 00:00:00',
-            src: '/image-9.jpg',
-            item: '4 x CAT 1 Standing Tickets',
-            price: '400'
+            src: '/image-8.jpg',
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 4,
+            name: 'Jam Night',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Sports',
+            category: 'Festivals',
             startDate: '2024-03-08 00:00:00',
             endDate: '2024-03-08 00:00:00',
-            src: '/image-9.jpg',
+            src: '/temp.jpg',
             item: '4 x CAT 1 Standing Tickets',
             price: '400'
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 5,
+            name: 'Taylor Swift The Eras Tour',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
             category: 'Concerts',
             startDate: '2024-03-08 00:00:00',
@@ -63,55 +57,50 @@ const Marketplace = () => {
             price: '400'
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 6,
+            name: 'Taylor Swift The Eras Tour',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Concert',
-            startDate: '8 March 2024',
+            category: 'Concerts',
+            startDate: '2024-03-08 00:00:00',
+            endDate: '2024-03-08 00:00:00',
             src: '/image-9.jpg',
             item: '4 x CAT 1 Standing Tickets',
             price: '400'
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 7,
+            name: 'Taylor Swift The Eras Tour',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Concert',
-            startDate: '8 March 2024',
+            category: 'Concerts',
+            startDate: '2024-03-08 00:00:00',
+            endDate: '2024-03-08 00:00:00',
             src: '/image-9.jpg',
             item: '4 x CAT 1 Standing Tickets',
             price: '400'
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 8,
+            name: 'Taylor Swift The Eras Tour',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Concert',
-            startDate: '8 March 2024',
+            category: 'Concerts',
+            startDate: '2024-03-08 00:00:00',
+            endDate: '2024-03-08 00:00:00',
             src: '/image-9.jpg',
             item: '4 x CAT 1 Standing Tickets',
             price: '400'
         },
         {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
+            eventID: 9,
+            name: 'Taylor Swift The Eras Tour',
             description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Concert',
-            startDate: '8 March 2024',
+            category: 'Concerts',
+            startDate: '2024-03-08 00:00:00',
+            endDate: '2024-03-08 00:00:00',
             src: '/image-9.jpg',
             item: '4 x CAT 1 Standing Tickets',
             price: '400'
         },
-        {
-            id: 5,
-            title: 'Taylor Swift The Eras Tour',
-            description: "Matilda The Musical is the multi-award winning musical from the Royal Shakespeare Company, inspired by the beloved book by the incomparable Roald Dah. With book by Dennis Kelly and original songs by Tim Minchin, Matilda The Musical is the story of an extraordinary little girl who, armed with a vivid imagination and a sharp mind, dares to take a stand and change her own destiny.Winner of 101 international awards, including 24 for Best Musical, Matilda The Musical has been delighting audiences in London’s West End and across the world for over a decade.",
-            category: 'Concert',
-            startDate: '8 March 2024',
-            src: '/image-9.jpg',
-            item: '4 x CAT 1 Standing Tickets',
-            price: '400'
-        },
+        
     ]
     const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
     const [category, setCategory] = useState("All events");
@@ -147,11 +136,21 @@ const Marketplace = () => {
             showMarketplace = allListings.filter((item) => item.category === category);
         }
 
-        if (startDateSelected && endDateSelected) {
-            showMarketplace = showMarketplace.filter((item) => {
+        if (startDateSelected || endDateSelected) {
+            showEvents = showEvents.filter((item) => {
                 const startDate = new Date(item.startDate);
                 const endDate = new Date(item.endDate);
-                return startDate <= endDateSelected && endDate >= startDateSelected;
+                const selectedStartDate = new Date(startDateSelected);
+                let selectedEndDate = new Date(endDateSelected);
+                if (isNaN(selectedEndDate)) { //if selectedEndDate is invalid / not selected properly
+                    selectedEndDate = selectedStartDate; 
+                }
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
+                selectedStartDate.setHours(0, 0, 0, 0);
+                selectedEndDate.setHours(0, 0, 0, 0);
+                
+                return startDate <= selectedEndDate && endDate >= selectedStartDate;
             })
         }
         setFilteredListings(showMarketplace);
@@ -169,7 +168,7 @@ const Marketplace = () => {
 
                 <div className='mb-2 flex flex-row'>
                     <div className='mr-2 xs:mr-4'>
-                        <RadioDropdown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} />
+                        <RadioDropdown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} defaultValue={"All events"}/>
                     </div>
                     <div className='mr-2 xs:mr-4'>
                         <DateRangePicker onDateChange={handleDateChange} isMarketplace/>

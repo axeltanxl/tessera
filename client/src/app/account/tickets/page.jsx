@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table"
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
-import TicketCard from '@/components/ui/TicketCard';
+import TicketCard from '@/components/ui/cards/TicketCard';
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from 'next/link';
 

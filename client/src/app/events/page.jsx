@@ -1,6 +1,6 @@
 'use client';
 import Head from 'next/head';
-import { EventCard } from '@/components/ui/EventCard';
+import { EventCard } from '@/components/ui/cards/EventCard';
 import { RadioDropdown } from '@/components/ui/RadioDropdown';
 import { DateRangePicker } from '@/components/ui/DateRangePicker';
 import { useEffect, useState } from 'react';
@@ -94,10 +94,7 @@ function Events() {
                 endDate.setHours(0, 0, 0, 0);
                 selectedStartDate.setHours(0, 0, 0, 0);
                 selectedEndDate.setHours(0, 0, 0, 0);
-                console.log("startDate:", startDate);
-                console.log("endDate:", endDate);
-                console.log("selectedStartDate:", selectedStartDate);
-                console.log("selectedEndDate:", selectedEndDate);
+                
                 return startDate <= selectedEndDate && endDate >= selectedStartDate;
             })
         }
@@ -117,7 +114,7 @@ function Events() {
                         <RadioDropdown name={"All events"} dropdownItems={allEventsDropdownOptions} />
                     </div> */}
                     <div className='mr-2 xs:mr-4'>
-                        <RadioDropdown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} />
+                        <RadioDropdown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} defaultValue={"All events"}/>
                     </div>
                     <div className='mr-2 xs:mr-4'>
                         <DateRangePicker onDateChange={handleDateChange} />
