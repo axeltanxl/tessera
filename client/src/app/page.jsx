@@ -5,6 +5,7 @@ import { axiosSpring } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from 'react';
+import { toast } from "@/components/ui/use-toast";
 
 export const getEvents = async () => {
     const res = await fetch("http://localhost:8080/api/v1/events");
@@ -50,7 +51,6 @@ function Home() {
                     console.error("An error occurred:", error);
                 }
             }
-
             fetchData();
         }
     }, [status, session]);

@@ -14,43 +14,39 @@ import { toast } from "@/components/ui/use-toast"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Icons } from "@/components/ui/icons/icons"
-import { useRouter } from "next/navigation"
-import { axiosSpring } from "@/lib/utils"
+import { updateDetails } from "@/app/account/profile/actions"
+import { accDetSchema } from "./accDetSchema"
 
-
-
-const AccDet = ({details, updateDetails}) => {
+const AccDet = ({details}) => {
     const preFill = JSON.parse(details);
     console.log(preFill)
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
     const form = useForm({
         defaultValues : {
             name : preFill.name,
-            email : preFill.username,
+            email : preFill.email,
             contactNum : preFill.contactNum,
             address:  preFill.address,
         },
-        // resolver : yupResolver(signUpSchema)
+        resolver : yupResolver(accDetSchema)
     })
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
     const onSubmit = async(data) => {
-        console.log(data)
+        console.log(errors)
+        const status = await updateDetails(preFill.userID, data);
         setIsLoading(true)
         setTimeout(() => {
             setIsLoading(false)
         }, 5000)
 
-
-        toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-secondary bg-black">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+        if(status === 200){
+            setIsLoading(false)
+            toast({ 
+                variant: "success",
+                title: "Successfully updated details",
+            })
+        }
     }
     return (
             <Form {...form}>

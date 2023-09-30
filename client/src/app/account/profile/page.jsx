@@ -2,7 +2,10 @@ import { Separator } from "@/components/ui/separator"
 import SignUpForm from "@/components/pages/signup/SignUpForm"
 import SideNav from "@/components/ui/accountNav/SideNav"
 import AccDet from "@/components/pages/account/AccDet"
-import { fetchDetails } from "./actions"
+import { fetchDetails, updateDetails } from "./actions"
+import AccPw from "@/components/pages/account/AccPw"
+import {  updatePw } from "@/app/account/profile/actions"
+
 // import { axiosSpring } from "@/lib/utils"
 
 // const action = async (data, userId) => {
@@ -11,7 +14,8 @@ import { fetchDetails } from "./actions"
 // }   
 
 const Profile = async () => {
-    const details = JSON.stringify(await fetchDetails());
+    const jsonDetails = await fetchDetails()
+    const details = JSON.stringify(jsonDetails);
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -26,9 +30,14 @@ const Profile = async () => {
                 </div>
                 <Separator />
                 <div className="w-full flex flex-col">
-                    <div className="w-3/5 bg-primary p-8 flex flex-col items-center rounded-b-lg">
+                    <div className="w-full bg-primary p-8 flex justify-around rounded-b-lg">
                         {/* <SignUpForm actionName={"Update Profile"} fillDetails action={action}/> */}
-                        <AccDet details={details}/>
+                        <div className="w-2/5 flex">
+                            <AccDet details={details} />
+                        </div>
+                        <div className="w-2/5 flex">
+                            <AccPw userId={jsonDetails.userID} updatePw={updatePw}/>
+                        </div>
                     </div>
                 </div>
             </div>

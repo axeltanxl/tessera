@@ -81,7 +81,15 @@ const LoginForm = () => {
             //     redirect : false,
             // });
             // console.log(resB)
+            toast({ 
+                title: "Welcome back!",
+            })
         } catch (error) {
+            setIsLoading(false)
+            toast({ 
+                variant: "destructive",
+                title: "Failed to log in",
+            })
             console.log(error);
         }
 
@@ -89,15 +97,6 @@ const LoginForm = () => {
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
-
-        toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-secondary bg-black">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
     }
     return (
     <div className="w-full drop-shadow-lg">

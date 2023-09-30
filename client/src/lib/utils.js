@@ -27,7 +27,8 @@ export const axiosSpring = axios.create({
     baseURL : "http://localhost:8080/api/v1",
     headers: { 
         "Access-Control-Allow-Origin": "*",
-        "Authorization" : `Bearer ${localStorage.getItem("jwt")}`
+        "Authorization" : `Bearer ${localStorage.getItem("jwt")}`,
+        "Content-Type" : "application/json",
     },
     withCredentials: false,
   });

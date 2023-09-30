@@ -1,5 +1,7 @@
+"use server"
 import { cookies } from "next/headers"
 // import { signOut } from "next-auth/react"
+import { revalidatePath } from 'next/cache'
 
 
 export const fetchDetails = async () => {
@@ -16,17 +18,35 @@ export const fetchDetails = async () => {
     return details;
 }
 
-export const updateDetails = async ({userID, newDetails}) => {
+export const updateDetails = async (userID, newDetails) => {
     const token = cookies().get("jwt_spring").value;
-    console.log(`${process.env.SPRING_BACKEND}/users/update/${userID}`)
     const res = await fetch(`${process.env.SPRING_BACKEND}/users/update/${userID}`, 
     {
         method: 'PUT',
-        headers : {"Authorization": `Bearer ${token}`,}
+        headers : {
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({...newDetails}),
     });
-    if(!res.ok){
-        throw new Error('Failed to fetch data')
-    }
-    // const details = res.json();
-    // return details;
+    console.log(res.status);
+    revalidatePath("/account/profile")
+    return res.status
+}
+
+export const updatePw = async (userID, newDetails) => {
+    const token = cookies().get("jwt_spring").value;
+    console.log(`${process.env.SPRING_BACKEND}/users/updatePwd/${userID}`)
+    console.log(newDetails)
+    const res = await fetch(`${process.env.SPRING_BACKEND}/users/updatePwd/${userID}`, 
+    {
+        method: 'PUT',
+        headers : {
+            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({...newDetails}),
+    });
+    console.log(res.status);
+    return res.status
 }
