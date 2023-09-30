@@ -4,7 +4,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
+import jakarta.persistence.OneToOne;
 
 import java.util.*;
 
@@ -41,6 +41,9 @@ public class Transaction {
     @JsonManagedReference(value="transaction-payment")
     @OneToMany(mappedBy = "transaction")
     private List<Payment> payments;
+
+    @OneToOne(mappedBy = "transaction")
+    private TicketListing ticketListing;
 
     public long getTransactionID() {
       return transactionID;
