@@ -48,9 +48,9 @@ axiosSpring.interceptors.response.use((response) => {
     } else {
         console.log("errrrr")
         const code = error.response.status
-        if (code === 400 || code === 401 || code === 403) {
-            console.log("error")
-            signOut();
+        if (code === 401 || code === 403) {
+            // alert("jwt invalid or missing")
+            // signOut();
         }
         return Promise.reject(error)
     }
