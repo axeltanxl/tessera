@@ -45,16 +45,6 @@ const SignUpForm = ({actionName, action}) => {
         setTimeout(() => {
             setIsLoading(false)
         }, 5000)
-
-
-        toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-secondary bg-black">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
     }
     return (
             <Form {...form}>
