@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -70,7 +69,7 @@ public class UserController {
         }
 
         // Update the entity with new values
-        updateUser.setContactNum(reqUser.getContactNum());
+        updateUser.setContactNum(reqUser.getContactNum() != null ? reqUser.getContactNum() : updateUser.getContactNum());
 
         // Ternary operator to set value if not null
         updateUser.setAddress(reqUser.getAddress() != null ? reqUser.getAddress() : updateUser.getAddress());
@@ -80,10 +79,10 @@ public class UserController {
         // updateUser.setName(reqUser.);
 
         userRepo.save(updateUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User updated successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
     }
     
-    @PostMapping("/updatePwd/{userID}")
+    @PutMapping("/updatePwd/{userID}")
     public ResponseEntity<Object> updateUserPassword(@PathVariable("userID") Long userID, 
     @RequestBody User reqUser) {
 
