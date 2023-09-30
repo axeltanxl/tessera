@@ -13,7 +13,7 @@ Project Documentation:
 ## Built with
 | NextJS | TailwindCSS | Spring Boot | MySQL | AWS | Stripe
 |--------|-------------|-------------|-------|-----|------|
-| <img height="100px" src="https://images.ctfassets.net/c63hsprlvlya/IacLLeOBR5WCvdCPqKuff/6860b5cc464c4f54703a2befa3f706b4/nextjs3.webp" /> | <img height="100px" src="https://miro.medium.com/v2/resize:fit:1400/1*oPL8C-i04sqAUoOS_da9aA.jpeg" /> | <img height="100px" src="https://e4developer.com/wp-content/uploads/2018/01/spring-boot.png" /> | <img height="100px" src="https://v5c2e8r4.stackpathcdn.com/wp-content/uploads/2014/09/mysql-logo.jpg" /> | <img height="100px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLrR2Lbll5DQAPXM5pSY0Mv8I_IOd1vblUNqAcVecJMQ383rJOtXb2Az9WRYSG1ojakew&usqp=CAU" /> | <img height="100px" src="https://media.designrush.com/inspiration_images/135142/conversions/_1511452770_462_stripe-mobile.jpg" />
+| <img height="80px" src="https://images.ctfassets.net/c63hsprlvlya/IacLLeOBR5WCvdCPqKuff/6860b5cc464c4f54703a2befa3f706b4/nextjs3.webp" /> | <img height="80px" src="https://miro.medium.com/v2/resize:fit:1400/1*oPL8C-i04sqAUoOS_da9aA.jpeg" /> | <img height="80px" src="https://e4developer.com/wp-content/uploads/2018/01/spring-boot.png" /> | <img height="80px" src="https://v5c2e8r4.stackpathcdn.com/wp-content/uploads/2014/09/mysql-logo.jpg" /> | <img height="80px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLrR2Lbll5DQAPXM5pSY0Mv8I_IOd1vblUNqAcVecJMQ383rJOtXb2Az9WRYSG1ojakew&usqp=CAU" /> | <img height="80px" src="https://media.designrush.com/inspiration_images/135142/conversions/_1511452770_462_stripe-mobile.jpg" />
 
 ## How to Run this Code
 
