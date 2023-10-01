@@ -39,6 +39,19 @@ public class TicketListController {
         return ResponseEntity.ok(ticketLists);
     }
 
+    //For the public who wants to see all the listings for 1 event
+    @GetMapping("ticketListings/event/{eventID}")
+    public ResponseEntity<List<TicketListing>> getAllListingsByEventID(@PathVariable long eventID) {
+
+        List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventID(eventID);
+
+        if (ticketListsByEventID.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ticketListsByEventID);
+    }
+
     /* UNUSED METHOD */
     // @Autowired
     // private Middleware midWare;

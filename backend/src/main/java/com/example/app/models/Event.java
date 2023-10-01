@@ -39,6 +39,10 @@ public class Event {
     @OneToMany(mappedBy = "event")
     private List<CustOrder> orders;
 
+    @JsonManagedReference(value="ticketListing-event")
+    @OneToMany(mappedBy = "event")
+    private List<TicketListing> ticketListings;
+
     @JsonBackReference(value="venue-event")
     @ManyToOne
     @JoinColumn(name = "venueID")
