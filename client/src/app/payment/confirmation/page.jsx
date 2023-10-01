@@ -17,20 +17,24 @@ const paymentSpecifics = [
 ];
 
 // 
-const hardCodedValues = {
-    "name" : "Taylor Swift Concert Tickets 2023",
-    "jwt" : localStorage.getItem("jwt"),
-    "eventID" : 1,
-    "quantity" : 3, 
-    "category" : "B", 
-    "images" : "https://static.ticketmaster.sg/images/activity/24_taylorswift_092ae54e8468e29b5300f692d2391d03.jpg",
-    "paymentMethod" : "card",
-};
+
 // https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2020/09/09/s3-2.png
 
 const Confirmation = () => {
 
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
+    
+    const hardCodedValues = {
+        "name" : "Taylor Swift Concert Tickets 2023",
+        "jwt" : localStorage.getItem("jwt"),
+        "eventID" : 1,
+        "quantity" : {selectedQuant}, 
+        "category" : {selectedCat}, 
+        "images" : "https://static.ticketmaster.sg/images/activity/24_taylorswift_092ae54e8468e29b5300f692d2391d03.jpg",
+        "paymentMethod" : "card",
+    };
+
+    
     const handlePrev = () => setPage(prev => prev - 1)
 
     const handleConfirmation = async (data) => {
@@ -132,6 +136,7 @@ const Confirmation = () => {
     
     const [rerender, setRerender] = useState(true);
     const [checkoutTickets, setCheckoutTickets] = useState(getTicketsCheckout);
+    
     const handleRemoveCheckoutTicket = (ticketID) => {
         console.log("to remove:", ticketID)
         const newList = checkoutTickets.filter((item) => item.ticketID != ticketID);
