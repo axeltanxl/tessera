@@ -103,14 +103,16 @@ const MarketplaceListing = () => {
             row: 22,
             seat: 24,
             date: "9 March 2024, 6 - 9pm",
-            price: 320},
+            price: 320
+        },
         {
             cat: 'A',
             zone: 'PA',
             row: 22,
             seat: 25,
             date: "9 March 2024, 6 - 9pm",
-            price: 320},
+            price: 320
+        },
     ]
 
     return (
@@ -144,25 +146,28 @@ const MarketplaceListing = () => {
                     </div>
                 </div>
             </div>
-            <div className='px-20 py-8 flex'>
-                <div className='mr-2 xs:mr-4'>
-                    <RadioDropdown name={"Date"} dropdownItems={dates} defaultValue={"Date"} />
+            <div className='px-20 py-8 flex justify-between'>
+                <div className='flex'>
+                    <div className='mr-2 xs:mr-4'>
+                        <RadioDropdown name={"Date"} dropdownItems={dates} defaultValue={"Date"} />
+                    </div>
+                    <div className='mx-2 xs:mr-4'>
+                        <RadioDropdown name={"CAT"} dropdownItems={cat} defaultValue={"CAT"} />
+                    </div>
+                    <div className='mx-2 xs:mr-4'>
+                        <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} />
+                    </div>
+                    <button className='inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background hover:text-accent-foreground px-4 py-2 rounded-full border-[#B4C1DB] h-8 hover:bg-[#F5F7FB] w-30'
+                        onClick={handleReset}
+                    >
+                        Reset
+                    </button>
                 </div>
-                <div className='mx-2 xs:mr-4'>
-                    <RadioDropdown name={"CAT"} dropdownItems={cat} defaultValue={"CAT"} />
-                </div>
-                <div className='mx-2 xs:mr-4'>
-                    <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} />
-                </div>
-                <button className='inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background hover:text-accent-foreground px-4 py-2 rounded-full border-[#B4C1DB] h-8 hover:bg-[#F5F7FB] w-30'
-                    onClick={handleReset}
-                >
-                    Reset 
-                </button>
+                <button className="bg-black text-white text-sm px-2 rounded-lg">View seat map</button>
             </div>
             <div className='px-20'>
                 <div className='grid grid-cols-4 gap-4'>
-                {fakeData.map((item, index) => <ListingCard details={item} key={index}/>)}
+                    {fakeData.map((item, index) => <ListingCard details={item} key={index} />)}
                 </div>
             </div>
         </section>)

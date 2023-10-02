@@ -137,7 +137,7 @@ const Marketplace = () => {
         }
 
         if (startDateSelected || endDateSelected) {
-            showEvents = showEvents.filter((item) => {
+            showMarketplace = showMarketplace.filter((item) => {
                 const startDate = new Date(item.startDate);
                 const endDate = new Date(item.endDate);
                 const selectedStartDate = new Date(startDateSelected);
