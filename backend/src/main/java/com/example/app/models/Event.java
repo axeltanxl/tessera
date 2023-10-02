@@ -48,6 +48,10 @@ public class Event {
     @JoinColumn(name = "venueID")
     private Venue venue;
 
+    @JsonManagedReference(value="event-run")
+    @OneToMany(mappedBy = "event")
+    private List<Run> runs;
+
     public long getEventID() {
       return eventID;
     }
