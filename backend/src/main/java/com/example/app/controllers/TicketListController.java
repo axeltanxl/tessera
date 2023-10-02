@@ -1,6 +1,9 @@
 package com.example.app.controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.app.models.Run;
+import com.example.app.models.Seat;
+import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
+import com.example.app.models.TicketListingWithSeat;
+import com.example.app.repositories.RunRepository;
+import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
+import com.example.app.repositories.TicketRepository;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -19,6 +29,13 @@ public class TicketListController {
 
     @Autowired
     private TicketListRepository ticketListRepo; // Rename it to match the repository name
+
+    @Autowired
+    private TicketRepository ticketRepo;
+    @Autowired
+    private SeatRepository seatRepo;
+    @Autowired
+    private RunRepository runRepo;
 
     //For general public who wants to see each listing.
     @GetMapping("ticketListing/{listingID}")
@@ -41,7 +58,7 @@ public class TicketListController {
 
     //For the public who wants to see all the listings for 1 event
     @GetMapping("ticketListings/event/{eventID}")
-    public ResponseEntity<List<TicketListing>> getAllListingsByEventID(@PathVariable long eventID) {
+    public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
 
         List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventID(eventID);
 
@@ -49,7 +66,45 @@ public class TicketListController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(ticketListsByEventID);
+        // Create a map to group TicketListings by listingID
+        Map<Long, TicketListingWithSeat> ticketListingsMap = new HashMap<>();
+
+        for (TicketListing ticketListing : ticketListsByEventID) {
+            TicketListingWithSeat ticketListingWithSeat = new TicketListingWithSeat();
+            ticketListingWithSeat.setTicketListing(ticketListing);
+
+            // Fetch and associate the Seat with the TicketListing
+            Long ticketID = ticketListing.getTicket().getTicketID();
+            Optional<Ticket> optTicketObj = ticketRepo.findById(ticketID);
+
+            if (optTicketObj.isPresent()) {
+                Ticket ticket = optTicketObj.get();
+                Long seatID = ticket.getSeat().getSeatID();
+                Optional<Seat> optSeatObj = seatRepo.findById(seatID);
+
+                if (optSeatObj.isPresent()) {
+                    Seat seat = optSeatObj.get();
+                    ticketListingWithSeat.setSeat(seat);
+                }
+            }
+
+            // Fetch and associate the Run with the TicketListing
+            Long runID = ticketListing.getRun().getRunID(); // Assuming you have a getter for the Run in TicketListing
+            Optional<Run> optRunObj = runRepo.findById(runID);
+
+            if (optRunObj.isPresent()) {
+                Run run = optRunObj.get();
+                ticketListingWithSeat.setRun(run);
+            }
+
+            // Add the TicketListingWithSeat to the map
+            ticketListingsMap.put(ticketListing.getListingID(), ticketListingWithSeat);
+        }
+
+        // Convert values of the map (TicketListingWithSeat objects) into a list
+        List<TicketListingWithSeat> ticketListsWithSeats = new ArrayList<>(ticketListingsMap.values());
+
+        return ResponseEntity.ok(ticketListsWithSeats);
     }
 
     /* UNUSED METHOD */
