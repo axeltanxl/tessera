@@ -14,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.validation.constraints.NotNull;
@@ -41,7 +40,7 @@ public class User implements UserDetails {
     private String email;
     @NotNull(message = "Password cannot be empty")
     private String password;
-    private int contactNum;
+    private String contactNum;
     private String address;
 
     @Enumerated(EnumType.STRING)
@@ -58,6 +57,10 @@ public class User implements UserDetails {
     @JsonManagedReference(value="user-seller")
     @OneToMany(mappedBy = "seller")
     private List<Transaction> sellerTransactions;
+
+    @JsonManagedReference(value="ticketListing-user")
+    @OneToMany(mappedBy = "user")
+    private List<TicketListing> ticketListings;
 
     // ALL from UserDetails (Spring Boot default - Security)
     @Override

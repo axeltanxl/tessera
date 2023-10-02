@@ -10,3 +10,9 @@ to set primary secondary all these colors for tailwind
 
 for testing stripe please see
 https://stripe.com/docs/testing
+
+
+stripe cli
+https://stripe.com/docs/stripe-cli
+stripe listen --forward-to localhost:3000/api/checkout/success
+stripe trigger payment_intent.succeeded
