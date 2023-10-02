@@ -10,19 +10,6 @@ function MarketplaceListing() {
     const url = usePathname();
     const parts = url.split("/");
     const eventID = parseInt(parts[3]);
-
-    const dates = ["8 Mar 2024", "9 Mar 2024", "10 Mar 2024"];
-    const cat = ["A", "B", "C", "D"];
-    const priceOptions = ["Low to High", "High to Low"];
-    const [filteredListings, setFilteredListings] = useState([]);
-
-    const handleDateChange = (selectedDate) => {
-    }
-    const handleReset = () => {
-
-    }
-    const token = localStorage.getItem('jwt');
-
     const [allListings, setAllListings] = useState([]);
     useEffect(() => {
         async function fetchData() {
@@ -49,103 +36,35 @@ function MarketplaceListing() {
     }, [])
     console.log("allListings:", allListings);
 
-    const fakeData = [
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 22,
-            date: "8 March 2024, 6 - 9pm",
-            price: 300
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 23,
-            date: "8 March 2024, 6 - 9pm",
-            price: 320,
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 24,
-            date: "8 March 2024, 6 - 9pm",
-            price: 310
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 25,
-            date: "8 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 22,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 23,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 24,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 25,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 22,
-            date: "8 March 2024, 6 - 9pm"
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 23,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 24,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-        {
-            cat: 'A',
-            zone: 'PA',
-            row: 22,
-            seat: 25,
-            date: "9 March 2024, 6 - 9pm",
-            price: 320
-        },
-    ]
+    const dates = ["8 Mar 2024", "9 Mar 2024", "10 Mar 2024"];
+    const cat = ["A", "B", "C", "D"];
+    const priceOptions = ["Low to High", "High to Low"];
+    const [sort, setSort] = useState('');
+    const [filteredListings, setFilteredListings] = useState([]);
+
+    const handleDateChange = (selectedDate) => {
+    }
+    const handlePriceFilterChange = (sortOption) => {
+        setSort(sortOption);
+    };
+    useEffect(() => {
+        const sortedArray = [...allListings];
+      
+        if (sort === 'Low to High') {
+          sortedArray.sort((a, b) => a.ticketListing.price - b.ticketListing.price);
+        } else if (sort === 'High to Low') {
+          sortedArray.sort((a, b) => b.ticketListing.price - a.ticketListing.price);
+        }
+      
+        // Update the filteredListings state with the sorted array
+        setFilteredListings(sortedArray);
+      }, [sort, allListings]);
+    const handleReset = () => {
+        setSort('');   
+    }
+    const token = localStorage.getItem('jwt');
+
+   
 
     return (
         <section className="bg-primary h-full">
@@ -187,7 +106,7 @@ function MarketplaceListing() {
                         <RadioDropdown name={"CAT"} dropdownItems={cat} defaultValue={"CAT"} />
                     </div>
                     <div className='mx-2 xs:mr-4'>
-                        <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} />
+                        <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} handleChange={handlePriceFilterChange} />
                     </div>
                     <button className='inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background hover:text-accent-foreground px-4 py-2 rounded-full border-[#B4C1DB] h-8 hover:bg-[#F5F7FB] w-30'
                         onClick={handleReset}
@@ -199,7 +118,7 @@ function MarketplaceListing() {
             </div>
             <div className='px-20'>
                 <div className='grid grid-cols-4 gap-4'>
-                    {fakeData.map((item, index) => <ListingCard details={item} key={index} />)}
+                    {filteredListings.map((item, index) => <ListingCard item={item} key={index} />)}
                 </div>
             </div>
         </section>)

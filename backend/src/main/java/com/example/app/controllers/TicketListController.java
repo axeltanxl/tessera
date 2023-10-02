@@ -57,7 +57,7 @@ public class TicketListController {
     }
 
     //For the public who wants to see all the listings for 1 event
-    @GetMapping("ticketListings/event/{eventID}")
+    @GetMapping("ticketListings/event/{eventID}")   
     public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
 
         List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventID(eventID);

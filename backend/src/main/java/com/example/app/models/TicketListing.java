@@ -48,7 +48,7 @@ public class TicketListing {
     private Transaction transaction;
 
     @JsonBackReference(value="run-ticketlisting")
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "runID")
     @JsonIgnoreProperties("ticketListing")
     private Run run;

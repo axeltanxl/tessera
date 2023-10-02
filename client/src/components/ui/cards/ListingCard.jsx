@@ -2,19 +2,34 @@ import React from 'react'
 import {
     Button,
 } from "@material-tailwind/react";
-const ListingCard = ({ details }) => {
-    const { cat, zone, row, seat, date, price } = details;
+import { format } from 'date-fns';
+
+function formatDate(inputDate) {
+    if (inputDate !== undefined && inputDate !== null) {
+        const formattedDate = format(new Date(inputDate), 'dd MMMM yyyy');
+        return formattedDate;
+    }
+}
+
+const ListingCard = ({ item }) => {
+    const seatCategory = item.seat.category;
+    const runDate = item.run.date;
+    const seatSection = item.seat.section;
+    const seatRow = item.seat.row;
+    const seatNumber = item.seat.seatNo;
+    const ticketListingPrice = item.ticketListing.price;
+
     return (
         <div className='bg-white border border-[#B4C1DB] p-4 rounded-lg inline-flex'>
             <div className='flex flex-col items-center'>
                 <p className='text-sm'>CAT</p>
-                <p className='text-2xl font-semibold'>{cat}</p>
+                <p className='text-2xl font-semibold'>{seatCategory}</p>
             </div>
             <div className="flex flex-col ml-4 ">
-                <p className='text-sm'>{date}</p>
-                <p className='text-sm'>Zone {zone} | Row {row} | Seat {seat}</p>
+                <p className='text-sm'>{formatDate(runDate)}</p>
+                <p className='text-sm'>Zone {seatSection} | Row {seatRow} | Seat {seatNumber}</p>
                 <div className='flex justify-between'>
-                    <p className='flex'>${price}</p>
+                    <p className='flex'>${ticketListingPrice}</p>
                     <Button
                         ripple={false}
                         fullWidth={false}
