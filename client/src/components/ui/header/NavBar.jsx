@@ -5,9 +5,11 @@ import SearchBar from "./SearchBar";
 import { AiOutlineMenu, AiOutlineClose, AiOutlineInstagram, AiOutlineFacebook, AiOutlineTwitter } from 'react-icons/ai';
 import { BiUserCircle } from 'react-icons/bi';
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import MyAccountDropdown from "../MyAccountDropdown";
 const Navbar = () => {
+    const { data: session, status } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const handleNav = () => {
     setMenuOpen(!menuOpen);
@@ -59,7 +61,7 @@ const Navbar = () => {
           onClick={signOut}
           className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign Out</button> */}
           
-          <MyAccountDropdown />
+          <MyAccountDropdown session={session}/>
         </div>
 
       </div>
