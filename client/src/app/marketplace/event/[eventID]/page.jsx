@@ -4,8 +4,13 @@ import { RadioDropdown } from '@/components/ui/RadioDropdown';
 import { DateRangePicker } from '@/components/ui/DateRangePicker';
 import ListingCard from '@/components/ui/cards/ListingCard';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation'
 
-const MarketplaceListing = () => {
+function MarketplaceListing() {
+    const url = usePathname();
+    const parts = url.split("/");
+    const eventID = parseInt(parts[3]);
+
     const dates = ["8 Mar 2024", "9 Mar 2024", "10 Mar 2024"];
     const cat = ["A", "B", "C", "D"];
     const priceOptions = ["Low to High", "High to Low"];
@@ -16,6 +21,33 @@ const MarketplaceListing = () => {
     const handleReset = () => {
 
     }
+    const token = localStorage.getItem('jwt');
+
+    const [allListings, setAllListings] = useState([]);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/users/ticketListings/event/${eventID}`, {
+                    method: 'GET',
+                    headers
+                });
+                if (res.ok) {
+                    const ticketListingData = await res.json();
+                    setAllListings(ticketListingData);
+                } else {
+                    console.error("API request failed");
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+
+        fetchData();
+    }, [])
+    console.log("allListings:", allListings);
 
     const fakeData = [
         {

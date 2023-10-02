@@ -11,18 +11,21 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { usePathname } from 'next/navigation'
 
 function formatDate(inputDate) {
     if (inputDate !== undefined && inputDate !== null) {
-        const formattedDate = format(new Date(inputDate), 'dd MMM yyyy');
+        const formattedDate = format(new Date(inputDate), 'dd MMMM yyyy');
         return formattedDate;
     }
 }
 
-
 function EventDetails() {
+    const url = usePathname();
+    const parts = url.split("/");
+    const eventID = parseInt(parts[2]);
     const [event, setEvent] = useState([]);
-    const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
+    const {category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
     console.log("eventID:", eventID);
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
@@ -36,7 +39,7 @@ function EventDetails() {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/1`, {
+                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
                     method: 'GET',
                     headers,
                 });
