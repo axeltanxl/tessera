@@ -8,4 +8,5 @@ import lombok.Setter;
 public class TicketListingWithSeat {
     private TicketListing ticketListing;
     private Seat seat;
+    private Run run;
 }

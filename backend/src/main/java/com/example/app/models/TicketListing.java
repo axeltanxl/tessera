@@ -45,4 +45,9 @@ public class TicketListing {
     @OneToOne
     @JoinColumn(name = "transactionID")
     private Transaction transaction;
+
+    @JsonBackReference
+    @OneToOne
+    @JoinColumn(name = "runID")
+    private Run run;
 }

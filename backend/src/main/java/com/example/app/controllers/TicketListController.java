@@ -30,7 +30,6 @@ public class TicketListController {
 
     @Autowired
     private TicketRepository ticketRepo;
-
     @Autowired
     private SeatRepository seatRepo;
 
