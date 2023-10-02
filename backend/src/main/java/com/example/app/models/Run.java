@@ -3,6 +3,7 @@ package com.example.app.models;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -26,7 +27,7 @@ public class Run {
     private Event event;
     private Date date;
 
-    @JsonBackReference
+    @JsonManagedReference(value="run-ticketlisting")
     @OneToOne(mappedBy = "run")
     private TicketListing ticketListing;
 }
