@@ -37,6 +37,11 @@ public class TicketListing {
     @JoinColumn(name = "ticketID")
     private Ticket ticket;
 
+    @JsonBackReference(value="ticketListing-event")
+    @ManyToOne
+    @JoinColumn(name = "eventID")
+    private Event event;
+
     @OneToOne
     @JoinColumn(name = "transactionID")
     private Transaction transaction;
