@@ -29,8 +29,8 @@ For first time users, create a application.properties file with the following de
 ```
 spring.jpa.hibernate.ddl-auto=update
 spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/tesseraDB
-spring.datasource.username=root
-spring.datasource.password=
+spring.datasource.username=#<TO FILL>
+spring.datasource.password=#<TO FILL>
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.show-sql: true
 
@@ -42,7 +42,6 @@ jwt.expiry=3600000
 spring.jpa.hibernate.naming.implicit-strategy=org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
 spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-logging.level.org.springframework.security=DEBUG
 ```
 
 Start the application:
