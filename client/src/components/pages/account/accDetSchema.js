@@ -23,12 +23,12 @@ export const accDetSchema = yup.object()
 export const pwSchema = yup.object()
     .shape(
         {
-        currentPassword: yup.string()
+        currPassword: yup.string()
             .required("This field is required"),
-        password: yup.string()
+        newPassword: yup.string()
             .required("This field is required"),
         confirmPassword: yup.string()
             .required("this field is required")
-            .oneOf([yup.ref('password'), null], 'Passwords must match')
+            .oneOf([yup.ref('newPassword'), null], 'Passwords must match')
         }
     ).required()

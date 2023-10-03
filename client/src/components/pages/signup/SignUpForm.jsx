@@ -40,7 +40,7 @@ const SignUpForm = ({actionName, action}) => {
     const onSubmit = async(data) => {
         console.log(data)
         setIsLoading(true)
-        await action(data, userId);
+        await action(data);
         router.push('/');
         setTimeout(() => {
             setIsLoading(false)
