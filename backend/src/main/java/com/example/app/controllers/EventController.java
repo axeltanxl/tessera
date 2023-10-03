@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.app.models.Event;
@@ -29,6 +32,9 @@ public class EventController {
   @Autowired
   private EventRepository eventRepository;
 
+  @Autowired
+  private ImageController imageController;
+
   @GetMapping("/events")
   public ResponseEntity<List<Event>> getAllEvents() {
     List<Event> result = eventRepository.findAll();
@@ -38,9 +44,20 @@ public class EventController {
 
   @PostMapping(path = "/admin/addEvent")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<Object> addEvent(@RequestBody @Valid Event event) {
+  public ResponseEntity<Object> addEvent(@RequestPart(value="data") Event event, @RequestPart(value="file") MultipartFile displayImage) {
     try {
-      eventRepository.save(event);
+      if (event == null || displayImage == null || displayImage.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Event data or image is empty.");
+      }
+      
+      Event savedEvent = eventRepository.save(event);
+      System.out.println("Successfully saved event");
+      String eventId = savedEvent.getEventID() + "";
+
+      String imageUrl = imageController.uploadImage(displayImage, eventId);
+
+      savedEvent.setDisplayImage(imageUrl);
+      eventRepository.save(savedEvent);
 
       return ResponseEntity.status(HttpStatus.CREATED).body("Event created successfully");
     } catch (Exception e) {
