@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.configs.Middleware;
+import com.example.app.models.PwUpdateDTO;
 import com.example.app.models.User;
 import com.example.app.models.UserDTO;
 
@@ -50,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok(userObj);
     }
 
-    @PutMapping("/update/{userID}")
+    @PutMapping("/{userID}/update")
     public ResponseEntity<Object> updateUser(@PathVariable("userID") Long userID, @RequestBody User reqUser) {
         
         // Get the currently authenticated user from the security context
@@ -82,9 +83,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
     }
     
-    @PutMapping("/updatePwd/{userID}")
+    @PutMapping("/{userID}/updatePwd")
     public ResponseEntity<Object> updateUserPassword(@PathVariable("userID") Long userID, 
-    @RequestBody User reqUser) {
+    @RequestBody PwUpdateDTO reqPw) {
 
         // Get the currently authenticated user from the security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,8 +104,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
         }
 
+        //does not match password
+        if (!passwordEncoder.matches(reqPw.getCurrPassword(), updateUser.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user password.");
+        }
+        
         // Update the entity with new values
-        updateUser.setPassword(reqUser.getPassword() != null ? passwordEncoder.encode(reqUser.getPassword()) 
+        updateUser.setPassword(reqPw.getNewPassword() != null ? passwordEncoder.encode(reqPw.getNewPassword()) 
         : updateUser.getPassword());
 
         userRepo.save(updateUser);
