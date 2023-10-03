@@ -22,8 +22,8 @@ const AccPw = ({userId, updatePw}) => {
     const [isLoading, setIsLoading] = useState(false);
     const form = useForm({
         defaultValues : {
-            currentPassword : "",
-            password : "",
+            currPassword : "",
+            newPassword : "",
             confirmPassword : "",
         },
         resolver : yupResolver(pwSchema)
@@ -37,7 +37,14 @@ const AccPw = ({userId, updatePw}) => {
             setIsLoading(false)
         }, 5000)
 
-        if(status === 200){
+        if(status === 400){
+            setIsLoading(false)
+            toast({ 
+                variant: "destructive",
+                title: "current password is incorrect",
+            })
+            reset();
+        }else if(status === 200){
             setIsLoading(false)
             toast({ 
                 variant: "success",
@@ -56,7 +63,7 @@ const AccPw = ({userId, updatePw}) => {
                 <form onSubmit={handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                     <FormField
                         control={control}
-                        name="currentPassword"
+                        name="currPassword"
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Current Password</FormLabel>
@@ -69,7 +76,7 @@ const AccPw = ({userId, updatePw}) => {
                         />
                     <FormField
                     control={control}
-                    name="password"
+                    name="newPassword"
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>New Password</FormLabel>

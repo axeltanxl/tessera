@@ -4,7 +4,7 @@ import SideNav from "@/components/ui/accountNav/SideNav"
 import AccDet from "@/components/pages/account/AccDet"
 import { fetchDetails, updateDetails } from "./actions"
 import AccPw from "@/components/pages/account/AccPw"
-import {  updatePw } from "@/app/account/profile/actions"
+import { updatePw } from "@/app/account/profile/actions"
 
 // import { axiosSpring } from "@/lib/utils"
 
