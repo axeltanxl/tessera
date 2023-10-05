@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
 import com.example.app.models.Seat;
+import com.example.app.models.SeatDTO;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
 import com.example.app.models.Run;
@@ -91,17 +92,23 @@ public class EventController {
       for (TicketListing eachTicketListing : ticketLists) {
         listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
       }
-
+    
       List<Seat> listOfSeats = new ArrayList<>();
       for (Ticket eachTicket : listOfTickets) {
         listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
       }
 
-      listOfSeats = listOfSeats.stream()
-                               .distinct()
-                               .collect(Collectors.toList());
+      final ModelMapper modelMapper = new ModelMapper();
+      List<SeatDTO> listOfSeatsDTO = listOfSeats.stream()
+      .map(eachSeat -> {
+        SeatDTO seatDTO = modelMapper.map(eachSeat, SeatDTO.class);
+        seatDTO.setEventID(eventID);
+        return seatDTO;
+      })
+      .distinct()
+      .collect(Collectors.toList());
                               
-      return ResponseEntity.ok(listOfSeats);
+      return ResponseEntity.ok(listOfSeatsDTO);
 
     } catch (Exception e) {
       System.out.println("Error getting categories: " + e.getMessage());
