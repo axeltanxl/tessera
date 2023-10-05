@@ -9,7 +9,7 @@ import {
   } from "@/components/ui/accordion"
 import usePaymentFormContext from "../hooks/usePaymentFormContext";
 import { useState } from "react";
-
+import Link from 'next/link'
 
 const TicketPurchase = ()  => {
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
@@ -69,7 +69,7 @@ const TicketPurchase = ()  => {
                                 </div>
                                 </div>
                                 {
-                                    isNaN({total}) ?  (<div className="table-cell">Your total bill is:<br></br>$0</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
+                                    isNaN({total}) ?  (<div className="table-cell">Your total bill is:<br></br>${selectedQuant * selectedPrice}</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
                                 }
                             </div>
                         </div>

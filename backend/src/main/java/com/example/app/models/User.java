@@ -40,23 +40,27 @@ public class User implements UserDetails {
     private String email;
     @NotNull(message = "Password cannot be empty")
     private String password;
-    private int contactNum;
+    private String contactNum;
     private String address;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-order")
     @OneToMany(mappedBy = "user")
     private List<CustOrder> orders;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-buyer")
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-seller")
     @OneToMany(mappedBy = "seller")
     private List<Transaction> sellerTransactions;
+
+    @JsonManagedReference(value="ticketListing-user")
+    @OneToMany(mappedBy = "user")
+    private List<TicketListing> ticketListings;
 
     // ALL from UserDetails (Spring Boot default - Security)
     @Override

@@ -40,10 +40,9 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/admin/**")).hasAuthority("ADMIN")
-                
                 .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/auth/**")).permitAll()
+                .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/events/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
-
                 .anyRequest().authenticated()
             )
             // stateless authentication 
@@ -58,7 +57,7 @@ public class SecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-		configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);

@@ -33,15 +33,24 @@ public class Event {
     private int duration;
     private String pricePerCategory;
     private int maxSlots;
+    private String displayImage;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="order-event")
     @OneToMany(mappedBy = "event")
     private List<CustOrder> orders;
 
-    @JsonBackReference
+    @JsonManagedReference(value="ticketListing-event")
+    @OneToMany(mappedBy = "event")
+    private List<TicketListing> ticketListings;
+
+    @JsonBackReference(value="venue-event")
     @ManyToOne
     @JoinColumn(name = "venueID")
     private Venue venue;
+
+    @JsonManagedReference(value="event-run")
+    @OneToMany(mappedBy = "event")
+    private List<Run> runs;
 
     public long getEventID() {
       return eventID;
@@ -102,6 +111,14 @@ public class Event {
       return pricePerCategory;
     }
 
+    public String getDisplayImage() {
+      return displayImage;
+    }
+
+    public void setDisplayImage(String displayImage) {
+      this.displayImage = displayImage;
+    }
+
     public void setPricePerCategory(String pricePerCategory) {
       this.pricePerCategory = pricePerCategory;
     }
@@ -136,5 +153,29 @@ public class Event {
 
     public void setName(String name) {
       this.name = name;
+    }
+
+    public List<CustOrder> getOrders() {
+      return orders;
+    }
+
+    public void setOrders(List<CustOrder> orders) {
+      this.orders = orders;
+    }
+
+    public List<TicketListing> getTicketListings() {
+      return ticketListings;
+    }
+
+    public void setTicketListings(List<TicketListing> ticketListings) {
+      this.ticketListings = ticketListings;
+    }
+
+    public List<Run> getRuns() {
+      return runs;
+    }
+
+    public void setRuns(List<Run> runs) {
+      this.runs = runs;
     }
 }

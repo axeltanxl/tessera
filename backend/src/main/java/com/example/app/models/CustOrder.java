@@ -1,6 +1,7 @@
 package com.example.app.models;
 
 import java.util.*;
+import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -21,22 +22,23 @@ public class CustOrder {
 
     private String ticketCategory;
     private int ticketQuantity;
+    private Date date;
 
-    @JsonBackReference
+    @JsonBackReference(value="user-order")
     @ManyToOne
     @JoinColumn(name = "userID")
     private User user;
 
-    @JsonBackReference
+    @JsonBackReference(value="order-event")
     @ManyToOne
     @JoinColumn(name = "eventID")
     private Event event;
     
-    @JsonManagedReference
+    @JsonManagedReference(value="order-payment")
     @OneToMany(mappedBy = "order")
     private List<Payment> payments;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="order-ticket")
     @OneToMany(mappedBy = "order")
     private List<Ticket> tickets;
     
@@ -103,5 +105,12 @@ public class CustOrder {
     public void setUser(User user) {
         this.user = user;
     }
-    
+
+    public Date getDate() {
+      return date;
+    }
+
+    public void setDate(Date date) {
+      this.date = date;
+    }
 }

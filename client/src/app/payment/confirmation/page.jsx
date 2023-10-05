@@ -16,19 +16,24 @@ const paymentSpecifics = [
     // { type: "Alipay", desc: "Applicable for Mainland China Accounts only", },
 ];
 
-const hardCodedValues = {
-    "jwt" : localStorage.getItem("jwt"),
-    "eventID" : 1,
-    "quantity" : 3, 
-    "category" : "B", 
-    "images" : "https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2020/09/09/s3-2.png",
-    "paymentMethod" : "card",
-};
+// 
 
+// https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2020/09/09/s3-2.png
 
 const Confirmation = () => {
 
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
+    const handleNext = () => setPage(prev => prev + 1);
+    const hardCodedValues = {
+        "name" : "Taylor Swift Concert Tickets 2023",
+        "jwt" : localStorage.getItem("jwt"),
+        "eventID" : 1,
+        "quantity" : parseInt(selectedQuant, 10), 
+        "category" : {selectedCat}, 
+        "images" : "https://static.ticketmaster.sg/images/activity/24_taylorswift_092ae54e8468e29b5300f692d2391d03.jpg",
+        "paymentMethod" : "card",
+    };
+    
     const handlePrev = () => setPage(prev => prev - 1)
 
     const handleConfirmation = async (data) => {
@@ -89,8 +94,8 @@ const Confirmation = () => {
             venue: "National Stadium",
             row: 1,
             seatNo: 22,
-            category:"A",
-            section: "PA1",
+            category:selectedCat,
+            section: selectedZone,
             price: 300
         },
         {
@@ -130,6 +135,7 @@ const Confirmation = () => {
     
     const [rerender, setRerender] = useState(true);
     const [checkoutTickets, setCheckoutTickets] = useState(getTicketsCheckout);
+    
     const handleRemoveCheckoutTicket = (ticketID) => {
         console.log("to remove:", ticketID)
         const newList = checkoutTickets.filter((item) => item.ticketID != ticketID);
@@ -142,7 +148,7 @@ const Confirmation = () => {
 
     }, [rerender]);
 
-    
+  
     return (
         
         <div>
@@ -179,7 +185,7 @@ const Confirmation = () => {
                 </div>
             </div>
 
-            <div style={{ fontSize: "12px" }}>
+            {/* <div style={{ fontSize: "12px" }}>
                 <div style={{ marginLeft: "10%", marginTop: "2rem" }}>Payment Methods</div>
                 <div style={{
                     width: "80%", marginLeft: "10%", marginRight: "10%",
@@ -232,7 +238,7 @@ const Confirmation = () => {
                         </select>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             <div style={{ marginTop: "1rem", width: "80%", marginLeft: "10%", marginTop: "5%" }}>
                 <div style={{ fontSize: "12px" }}>Order Details</div>
@@ -268,6 +274,12 @@ const Confirmation = () => {
                 </div>
             </div>
 
+            <div onClick={console.log(parseInt(selectedQuant, 10), selectedCat)}>
+                <button>
+                    hello
+                </button>
+            </div>
+
 
             <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
@@ -275,7 +287,7 @@ const Confirmation = () => {
                 </button>
 
                 <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}
-                onClick={() => handleConfirmation(hardCodedValues)}>
+                onClick={() => {handleConfirmation(hardCodedValues);handleNext();}}>
                     Confirm
                 </button>
             </div>
