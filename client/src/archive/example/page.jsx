@@ -4,7 +4,7 @@ import Link from "next/link";
 // import { loadStripe } from '@stripe/stripe-js';
 import { useSession, signOut, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../../app/api/auth/[...nextauth]/route";
 async function getData() {
     // You would usually fetch data from an API here.
     // const res = await fetch("https://api.github.com/");

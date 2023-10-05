@@ -4,7 +4,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
+import jakarta.persistence.OneToOne;
 
 import java.util.*;
 
@@ -23,24 +23,27 @@ public class Transaction {
 
     private Date date;
 
-    @JsonBackReference
+    @JsonBackReference(value="transaction-ticket")
     @ManyToOne
     @JoinColumn(name="ticketID")
     private Ticket ticket;
 
-    @JsonBackReference
+    @JsonBackReference(value="user-buyer")
     @ManyToOne
     @JoinColumn(name = "buyerID")
     private User buyer;
 
-    @JsonBackReference
+    @JsonBackReference(value="user-seller")
     @ManyToOne
     @JoinColumn(name = "sellerID")
     private User seller;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="transaction-payment")
     @OneToMany(mappedBy = "transaction")
     private List<Payment> payments;
+
+    @OneToOne(mappedBy = "transaction")
+    private TicketListing ticketListing;
 
     public long getTransactionID() {
       return transactionID;

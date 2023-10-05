@@ -9,7 +9,7 @@ import {
   } from "@/components/ui/accordion"
 import usePaymentFormContext from "../hooks/usePaymentFormContext";
 import { useState } from "react";
-
+import Link from 'next/link'
 
 const TicketPurchase = ()  => {
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
@@ -78,8 +78,13 @@ const TicketPurchase = ()  => {
             </Accordion>
 
             
-            <button disabled= {!{selectedPrice}} onClick={handleNext} style={{width:"10%", borderRadius:"5px", marginLeft:"45%", marginTop:"1rem",
-            backgroundColor:"#2e6ad7", color:"white", marginBottom:"3rem"}}>Proceed</button>
+            <button disabled= {!{selectedPrice}} style={{width:"10%", borderRadius:"5px", marginLeft:"45%", marginTop:"1rem",
+            backgroundColor:"#2e6ad7", color:"white", marginBottom:"3rem"}}
+            >
+                <Link href="/payment/confirmation">
+                Proceed
+                </Link>
+            </button>
 
             <style jsx>{`
                 .table {

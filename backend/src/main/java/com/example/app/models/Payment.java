@@ -18,12 +18,12 @@ public class Payment {
     private String paymentMethod;
     private int isSuccessful;
 
-    @JsonBackReference
+    @JsonBackReference(value="order-payment")
     @ManyToOne
     @JoinColumn(name = "orderID")
     private CustOrder order;
 
-    @JsonBackReference
+    @JsonBackReference(value="transaction-payment")
     @ManyToOne
     @JoinColumn(name = "transactionID")
     private Transaction transaction;
