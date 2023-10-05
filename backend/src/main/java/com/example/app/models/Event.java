@@ -154,4 +154,28 @@ public class Event {
     public void setName(String name) {
       this.name = name;
     }
+
+    public List<CustOrder> getOrders() {
+      return orders;
+    }
+
+    public void setOrders(List<CustOrder> orders) {
+      this.orders = orders;
+    }
+
+    public List<TicketListing> getTicketListings() {
+      return ticketListings;
+    }
+
+    public void setTicketListings(List<TicketListing> ticketListings) {
+      this.ticketListings = ticketListings;
+    }
+
+    public List<Run> getRuns() {
+      return runs;
+    }
+
+    public void setRuns(List<Run> runs) {
+      this.runs = runs;
+    }
 }
