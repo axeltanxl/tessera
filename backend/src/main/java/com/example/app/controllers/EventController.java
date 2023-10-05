@@ -19,11 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
+import com.example.app.models.Seat;
+import com.example.app.models.Ticket;
+import com.example.app.models.TicketListing;
 import com.example.app.models.Run;
-import com.example.app.models.UserDTO;
+
 import com.example.app.repositories.EventRepository;
+import com.example.app.repositories.SeatRepository;
+import com.example.app.repositories.TicketListRepository;
+import com.example.app.repositories.TicketRepository;
 import com.example.app.repositories.RunRepository;
 
 import jakarta.validation.Valid;
@@ -37,9 +44,14 @@ public class EventController {
 
   @Autowired
   private RunRepository runRepository;
-
   @Autowired
   private ImageController imageController;
+  @Autowired
+  private TicketListRepository ticketListingRepo;
+  @Autowired
+  private TicketRepository ticketRepo;
+  @Autowired
+  private SeatRepository seatRepo;
 
   @GetMapping("/events")
   public ResponseEntity<List<EventDTO>> getAllEvents() {
@@ -63,6 +75,38 @@ public class EventController {
     }
 
     return ResponseEntity.ok(event.get());
+  }
+
+  @GetMapping(path = "events/{eventID}/categories")
+  public ResponseEntity<Object> getAllCATByEvent(@PathVariable("eventID") Long eventID){
+
+    try {
+      List<TicketListing> ticketLists = ticketListingRepo.findAllByEventEventID(eventID);
+
+      if (ticketLists.size() == 0) {
+        return ResponseEntity.notFound().build();
+      }
+
+      List<Ticket> listOfTickets = new ArrayList<>();
+      for (TicketListing eachTicketListing : ticketLists) {
+        listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
+      }
+
+      List<Seat> listOfSeats = new ArrayList<>();
+      for (Ticket eachTicket : listOfTickets) {
+        listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
+      }
+
+      listOfSeats = listOfSeats.stream()
+                               .distinct()
+                               .collect(Collectors.toList());
+                              
+      return ResponseEntity.ok(listOfSeats);
+
+    } catch (Exception e) {
+      System.out.println("Error getting categories: " + e.getMessage());
+      return ResponseEntity.internalServerError().body("An error occurred.");
+    }
   }
 
   @PostMapping(path = "/admin/events")
