@@ -20,21 +20,31 @@ public class TicketController {
 
     @Autowired
     private OrderRepository orderRepository; // Rename it to match the repository name
-    
+
     @Autowired
     private TicketRepository ticketRepository;
 
     @GetMapping("users/{userID}/tickets")
-    public List<Ticket> getTicketByUserID(@PathVariable long userID) {
+    public List<Ticket> getTicketsByUserID(@PathVariable long userID) {
         List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);
         List<Ticket> tickets = new ArrayList<>();
-        for (CustOrder o : orders){
+        for (CustOrder o : orders) {
             List<Ticket> tix = ticketRepository.findTicketByOrderOrderID(o.getOrderID());
-            for (Ticket t: tix){
+            for (Ticket t : tix) {
                 tickets.add(t);
             }
         }
         return tickets;
     }
-}
 
+    @GetMapping("users/{userID}/orders")
+    public List<CustOrder> getOrdersByUserID(@PathVariable long userID) {
+        List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);
+        return orders;
+    }
+
+    // @GetMapping("/users/{userID}/tickets/{orderID}")
+    // public List<Ticket> getTicketsByOrderID(@PathVariable long orderID) {
+    //     return ticketRepository.findTicketByOrderOrderID(orderID);
+    // }
+}

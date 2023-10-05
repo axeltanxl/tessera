@@ -8,13 +8,13 @@ import { select } from '@material-tailwind/react';
 import { Shower } from '@mui/icons-material';
 
 
-export const getEvents = async () => {
-    const res = await fetch("http://localhost:8080/api/v1/events");
-    console.log(res);
-    const events = await res.json()
+// export const getEvents = async () => {
+//     const res = await fetch("http://localhost:8080/api/v1/events");
+//     console.log(res);
+//     const events = await res.json()
 
-    return events
-}
+//     return events
+// }
 
 const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
