@@ -1,6 +1,7 @@
 package com.example.app.models;
 
 import java.util.*;
+import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -21,6 +22,7 @@ public class CustOrder {
 
     private String ticketCategory;
     private int ticketQuantity;
+    private Date date;
 
     @JsonBackReference(value="user-order")
     @ManyToOne
@@ -103,5 +105,12 @@ public class CustOrder {
     public void setUser(User user) {
         this.user = user;
     }
-    
+
+    public Date getDate() {
+      return date;
+    }
+
+    public void setDate(Date date) {
+      this.date = date;
+    }
 }
