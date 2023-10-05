@@ -1,7 +1,9 @@
 package com.example.app.controllers;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.app.models.Event;
+import com.example.app.models.EventDTO;
+import com.example.app.models.UserDTO;
 import com.example.app.repositories.EventRepository;
 
 import jakarta.validation.Valid;
@@ -36,15 +40,21 @@ public class EventController {
   private ImageController imageController;
 
   @GetMapping("/events")
-  public ResponseEntity<List<Event>> getAllEvents() {
-    List<Event> result = eventRepository.findAll();
+  public ResponseEntity<List<EventDTO>> getAllEvents() {
+    
+    final ModelMapper modelMapper = new ModelMapper();
 
-    return ResponseEntity.ok(result);
+    List<Event> listOfEvents = eventRepository.findAll();
+    List<EventDTO> listOfEventsDTO = listOfEvents.stream()
+      .map(eachEvent -> modelMapper.map(eachEvent, EventDTO.class))
+      .collect(Collectors.toList());
+    
+    return ResponseEntity.ok(listOfEventsDTO);
   }
 
   @PostMapping(path = "/admin/addEvent")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<Object> addEvent(@RequestPart(value="data") Event event, @RequestPart(value="file") MultipartFile displayImage) {
+  public ResponseEntity<Object> addEvent(@RequestPart Event event, @RequestPart(value="file") MultipartFile displayImage) {
     try {
       if (event == null || displayImage == null || displayImage.isEmpty()) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Event data or image is empty.");
