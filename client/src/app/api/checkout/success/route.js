@@ -44,7 +44,8 @@ export async function POST(request, response){
               data: {
                   isSuccessful : 1,
                   paymentMethod : paymentMethod,
-                  orderId : orderId,
+                  orderID : orderId,
+                  transactionID : null,
                 },
             })
       } catch (error) {

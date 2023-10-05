@@ -9,7 +9,7 @@ import {
   } from "@/components/ui/accordion"
 import usePaymentFormContext from "../hooks/usePaymentFormContext";
 import { useState } from "react";
-
+import Link from 'next/link'
 
 const TicketPurchase = ()  => {
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
