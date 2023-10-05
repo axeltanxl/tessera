@@ -115,9 +115,5 @@ public class UserController {
 
         userRepo.save(updateUser);
         return ResponseEntity.status(HttpStatus.OK).body("User password updated successfully");
-    }
-
-    // public ResponseEntity<String> sayHello() {
-    //     return ResponseEntity.ok("Unsecured");
-    // }
+      }
 }
