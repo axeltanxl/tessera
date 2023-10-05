@@ -54,7 +54,7 @@ public class EventController {
 
   @PostMapping(path = "/admin/addEvent")
   @PreAuthorize("hasAuthority('ADMIN')")
-  public ResponseEntity<Object> addEvent(@RequestPart(value="data") Event event, @RequestPart(value="file") MultipartFile displayImage) {
+  public ResponseEntity<Object> addEvent(@RequestPart Event event, @RequestPart(value="file") MultipartFile displayImage) {
     try {
       if (event == null || displayImage == null || displayImage.isEmpty()) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Event data or image is empty.");
