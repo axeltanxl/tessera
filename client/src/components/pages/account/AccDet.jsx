@@ -1,10 +1,9 @@
 'use client'
-import { useState, useEffect } from "react"
+import { useState} from "react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -12,39 +11,42 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { signUpSchema } from "./signUpschema"
 import { Icons } from "@/components/ui/icons/icons"
-import { useRouter } from "next/navigation"
-import { axiosSpring } from "@/lib/utils"
+import { updateDetails } from "@/app/account/profile/actions"
+import { accDetSchema } from "./accDetSchema"
 
-
-
-const SignUpForm = ({actionName, action}) => {
+const AccDet = ({details}) => {
+    const preFill = JSON.parse(details);
+    console.log(preFill)
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
     const form = useForm({
         defaultValues : {
-            name : "",
-            email : "",
-            contactNum : "",
-            address:  "",
-            password : "",
-            confirmPassword : "",
+            name : preFill.name,
+            email : preFill.email,
+            contactNum : preFill.contactNum,
+            address:  preFill.address,
         },
-        resolver : yupResolver(signUpSchema)
+        resolver : yupResolver(accDetSchema)
     })
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
     const onSubmit = async(data) => {
-        console.log(data)
+        console.log(errors)
+        const status = await updateDetails(preFill.userID, data);
         setIsLoading(true)
-        await action(data);
-        router.push('/');
         setTimeout(() => {
             setIsLoading(false)
         }, 5000)
+
+        if(status === 200){
+            setIsLoading(false)
+            toast({ 
+                variant: "success",
+                title: "Successfully updated details",
+            })
+        }
     }
     return (
             <Form {...form}>
@@ -101,39 +103,13 @@ const SignUpForm = ({actionName, action}) => {
                         </FormItem>
                     )}
                     />
-                    <FormField
-                    control={control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                            <Input placeholder="" type="password" {...field} className=""/>
-                        </FormControl>
-                        <FormMessage className="text-red-400"/>
-                        </FormItem>
-                    )}
-                    />
-                     <FormField
-                    control={control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                            <Input placeholder="" type="password" {...field} className=""/>
-                        </FormControl>
-                        <FormMessage className="text-red-400"/>
-                        </FormItem>
-                    )}
-                    />
                     <Button type="submit" className="w-full text-primary bg-secondary hover:bg-secondary" disabled={isLoading}>
                         {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> }
-                        {actionName}
-                    </Button>
+                        Update Details
+                        </Button>
                 </form>
             </Form>
     );
 }
 
-export default SignUpForm;
+export default AccDet;
