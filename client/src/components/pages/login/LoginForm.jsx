@@ -2,6 +2,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import {
   Form,
@@ -18,10 +19,43 @@ import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { loginSchema } from "./loginSchema"
 import { Icons } from "@/components/ui/icons/icons"
+import { signIn } from "next-auth/react"
+import axios from "axios"
+import { useSession } from "next-auth/react"
+import { axiosNext } from "@/lib/utils"
+
+const loginToNext = async (data) => {
+    await signIn("credentials",{
+        email : data.email,
+        password : data.password,
+        redirect : false,
+    });
+}
+
+const loginToSpring = async (data) => {
+    const res = await axios.post("http://localhost:8080/api/v1/auth/login", data)
+                localStorage.setItem("jwt", res.data.token);
+                console.log(res.data.message);
+
+    //here is to store spring jwt to into cookies
+    // await fetch("http://localhost:3000/api/auth/login", {
+    //         method: 'post',
+    //         headers: {'Content-Type':'application/json'},
+    //         body: JSON.stringify({
+    //             "jwt": res.data.token
+    //         })
+    //     })
+    await axiosNext.post('api/auth/login', {
+        "jwt": res.data.token
+    })
+}
 
 const LoginForm = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const { data :session} = useSession()
+    console.log("session:", session);
 
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
     const form = useForm({
         defaultValues : {
             email : "",
@@ -32,24 +66,37 @@ const LoginForm = () => {
 
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
-    const onSubmit = (data) => {
-        console.log(data)
-
+    const onSubmit = async (data) => {
         setIsLoading(true)
+        try {
+            await loginToSpring(data);
+            await loginToNext(data);
+            router.push('/');
+            // const res = await axios.post("http://localhost:8080/api/v1/auth/login", data)
+            // localStorage.setItem("jwt", res.data.token);
+            // console.log(res.data.message);
+            // const resB = await signIn("credentials",{
+            //     email : data.email,
+            //     password : data.password,
+            //     redirect : false,
+            // });
+            // console.log(resB)
+            toast({ 
+                title: "Welcome back!",
+            })
+        } catch (error) {
+            setIsLoading(false)
+            toast({ 
+                variant: "destructive",
+                title: "Failed to log in",
+            })
+            console.log(error);
+        }
 
+        // stops loading state if take too long
         setTimeout(() => {
             setIsLoading(false)
         }, 3000)
-
-        
-        toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-secondary bg-black">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
     }
     return (
     <div className="w-full drop-shadow-lg">
@@ -66,12 +113,13 @@ const LoginForm = () => {
                         <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} /> 
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
                     )}
                     />
+                    {/* className="shadow-inner shadow-gray-400" */}
                     <FormField
                     control={control}
                     name="password"
@@ -79,7 +127,7 @@ const LoginForm = () => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input type="password" placeholder="" {...field}/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>

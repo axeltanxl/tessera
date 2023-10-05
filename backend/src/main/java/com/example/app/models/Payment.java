@@ -1,5 +1,7 @@
 package com.example.app.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,12 +18,14 @@ public class Payment {
     private String paymentMethod;
     private int isSuccessful;
 
+    @JsonBackReference(value="order-payment")
     @ManyToOne
-    @JoinColumn(name = "orderId")
-    private Order order;
+    @JoinColumn(name = "orderID")
+    private CustOrder order;
 
+    @JsonBackReference(value="transaction-payment")
     @ManyToOne
-    @JoinColumn(name = "transactionId")
+    @JoinColumn(name = "transactionID")
     private Transaction transaction;
 
     public Payment() {
@@ -56,11 +60,19 @@ public class Payment {
         this.isSuccessful = isSuccessful;
     }
 
-    public Order getOrder() {
+    public CustOrder getOrder() {
       return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(CustOrder order) {
       this.order = order;
+    }
+
+    public Transaction getTransaction() {
+      return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+      this.transaction = transaction;
     }
 }

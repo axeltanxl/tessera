@@ -6,6 +6,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,26 +19,29 @@ import jakarta.persistence.GenerationType;
 public class Seat {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long seatId;
+  private long seatID;
 
   private String category;
   private String section;
+  @Column(name = "seatRow")
   private String row;
   private int seatNo;
   
+  @JsonBackReference(value="venue-seats")
   @ManyToOne
-  @JoinColumn(name="venueId")
+  @JoinColumn(name="venueID")
   private Venue venue;
 
+  @JsonManagedReference(value="ticket-seats")
   @OneToMany(mappedBy = "seat")
   private List<Ticket> tickets;
 
-  public long getSeatId() {
-    return seatId;
+  public long getSeatID() {
+    return seatID;
   }
 
-  public void setSeatId(long seatId) {
-    this.seatId = seatId;
+  public void setSeatID(long seatID) {
+    this.seatID = seatID;
   }
 
   public String getCategory() {

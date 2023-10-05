@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -16,12 +16,17 @@ import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { signUpSchema } from "./signUpschema"
 import { Icons } from "@/components/ui/icons/icons"
+import { useRouter } from "next/navigation"
+import { axiosSpring } from "@/lib/utils"
+
 
 
 const SignUpForm = ({actionName, action}) => {
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
     const form = useForm({
         defaultValues : {
+            name : "",
             email : "",
             contactNum : "",
             address:  "",
@@ -30,30 +35,33 @@ const SignUpForm = ({actionName, action}) => {
         },
         resolver : yupResolver(signUpSchema)
     })
-
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
-    const onSubmit = (data) => {
+    const onSubmit = async(data) => {
         console.log(data)
         setIsLoading(true)
-        action();
+        await action(data);
+        router.push('/');
         setTimeout(() => {
             setIsLoading(false)
-        }, 3000)
-
-
-        toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-secondary bg-black">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+        }, 5000)
     }
     return (
             <Form {...form}>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+                    <FormField
+                        control={control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage className="text-red-400"/>
+                            </FormItem>
+                        )}
+                        />
                     <FormField
                     control={control}
                     name="email"
@@ -61,7 +69,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -74,7 +82,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Contact Number</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -87,7 +95,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Address</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -100,7 +108,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400"/>
+                            <Input placeholder="" type="password" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -113,7 +121,7 @@ const SignUpForm = ({actionName, action}) => {
                         <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                            <Input placeholder="" {...field} className="shadow-inner shadow-gray-400 focus:shadow-inner focus:shadow-gray-400"/>
+                            <Input placeholder="" type="password" {...field} className=""/>
                         </FormControl>
                         <FormMessage className="text-red-400"/>
                         </FormItem>
@@ -125,7 +133,7 @@ const SignUpForm = ({actionName, action}) => {
                     </Button>
                 </form>
             </Form>
-            );
+    );
 }
 
 export default SignUpForm;

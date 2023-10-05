@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model event {
+  duration         Int
+  endDate          DateTime? @db.Date
+  maxSlots         Int
+  startDate        DateTime? @db.Date
+  eventID          BigInt    @id @default(autoincrement())
+  category         String?   @db.VarChar(255)
+  description      String?   @db.Text
+  pricePerCategory String?   @db.VarChar(255)
+  name             String    @db.VarChar(255)
+  venueID          BigInt?
+
+  @@index([venueID], map: "FKfkg0rjjt6ca7ck5mojidks7r7")
+}
+
+model payment {
+  isSuccessful  Int
+  paymentID     BigInt  @id @default(autoincrement())
+  paymentMethod String? @db.VarChar(255)
+  orderID       BigInt?
+  transactionID BigInt?
+
+  @@index([orderID], map: "FKb33lw05499g9grnvp6ufpjjwg")
+  @@index([transactionID], map: "FKmuaxt57agmtuiovehhauvchmq")
+}
+
+model ticket {
+  uniqueCode String? @db.VarChar(255)
+  orderID    BigInt?
+  seatID     BigInt?
+  ticketID   BigInt  @id @default(autoincrement())
+
+  @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
+  @@index([orderID], map: "FKks8gd5eaa20qau296r9fgcc9n")
+}
+
+model transaction {
+  date          DateTime? @db.DateTime(6)
+  buyerID       BigInt?
+  sellerID      BigInt?
+  ticketID      BigInt?
+  transactionID BigInt    @id @default(autoincrement())
+
+  @@index([sellerID], map: "FK2nlddhdsd1n20718nunwqyp69")
+  @@index([buyerID], map: "FK7j96qpqvnqa1wplxx8g64t1x4")
+  @@index([ticketID], map: "FKdcjhq8tyb6mwfawkmomggmlag")
+}
+
+model user {
+  contactNum Int
+  userID     BigInt     @id @default(autoincrement())
+  address    String?    @db.VarChar(255)
+  email      String     @db.VarChar(255)
+  name       String?    @db.VarChar(255)
+  password   String     @db.VarChar(255)
+  role       user_role?
+}
+
+model venue {
+  capacity Int
+  name     String? @db.VarChar(255)
+  venueID  BigInt  @id @default(autoincrement())
+}
+
+model custorder {
+  orderID        BigInt  @id @default(autoincrement())
+  ticketQuantity Int
+  eventID        BigInt?
+  userID         BigInt?
+  ticketCategory String? @db.VarChar(255)
+
+  @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
+  @@index([eventID], map: "FKr6tkc9du1r50obuqt1h761d2y")
+}
+
+model seat {
+  seatID   BigInt  @id @default(autoincrement())
+  category String? @db.VarChar(255)
+  seatRow  String? @db.VarChar(255)
+  seatNo   Int
+  section  String? @db.VarChar(255)
+  venueID  BigInt?
+
+  @@index([venueID], map: "FKfj8lt431up6yqyeakinimp591")
+}
+
+enum user_role {
+  ADMIN
+  USER
+}

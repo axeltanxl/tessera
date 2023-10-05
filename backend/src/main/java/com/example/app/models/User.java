@@ -14,6 +14,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.validation.constraints.NotNull;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,22 +36,31 @@ public class User implements UserDetails {
     private long userID;
 
     private String name;
+    @NotNull(message = "Email cannot be empty")
     private String email;
+    @NotNull(message = "Password cannot be empty")
     private String password;
-    private int contactNum;
+    private String contactNum;
     private String address;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @JsonManagedReference(value="user-order")
     @OneToMany(mappedBy = "user")
-    private List<Order> orders;
+    private List<CustOrder> orders;
 
+    @JsonManagedReference(value="user-buyer")
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
 
+    @JsonManagedReference(value="user-seller")
     @OneToMany(mappedBy = "seller")
     private List<Transaction> sellerTransactions;
+
+    @JsonManagedReference(value="ticketListing-user")
+    @OneToMany(mappedBy = "user")
+    private List<TicketListing> ticketListings;
 
     // ALL from UserDetails (Spring Boot default - Security)
     @Override
@@ -85,11 +98,11 @@ public class User implements UserDetails {
         return true;
     }
 
-    public List<Order> getOrders() {
+    public List<CustOrder> getOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 

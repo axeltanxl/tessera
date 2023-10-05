@@ -3,12 +3,18 @@ package com.example.app.models;
 import java.sql.Date;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -17,16 +23,44 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long eventID;
 
+    @NotNull(message = "Event name cannot be null")
+    private String name;
     private String category;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Date startDate;
     private Date endDate;
     private int duration;
     private String pricePerCategory;
     private int maxSlots;
+    private String displayImage;
+
+    @JsonManagedReference(value="order-event")
+    @OneToMany(mappedBy = "event")
+    private List<CustOrder> orders;
+
+    @JsonManagedReference(value="ticketListing-event")
+    @OneToMany(mappedBy = "event")
+    private List<TicketListing> ticketListings;
+
+    @JsonBackReference(value="venue-event")
+    @ManyToOne
+    @JoinColumn(name = "venueID")
+    private Venue venue;
+
+    @JsonManagedReference(value="event-run")
+    @OneToMany(mappedBy = "event")
+    private List<Run> runs;
 
     public long getEventID() {
       return eventID;
+    }
+
+    @Override
+    public String toString() {
+      return "Event [eventID=" + eventID + ", name=" + name + ", category=" + category + ", description=" + description
+          + ", startDate=" + startDate + ", endDate=" + endDate + ", duration=" + duration + ", pricePerCategory="
+          + pricePerCategory + ", maxSlots=" + maxSlots + ", orders=" + orders + ", venue=" + venue + "]";
     }
 
     public void setEventID(long eventID) {
@@ -77,6 +111,14 @@ public class Event {
       return pricePerCategory;
     }
 
+    public String getDisplayImage() {
+      return displayImage;
+    }
+
+    public void setDisplayImage(String displayImage) {
+      this.displayImage = displayImage;
+    }
+
     public void setPricePerCategory(String pricePerCategory) {
       this.pricePerCategory = pricePerCategory;
     }
@@ -89,11 +131,11 @@ public class Event {
       this.maxSlots = maxSlots;
     }
 
-    public List<Order> getOrders() {
+    public List<CustOrder> getCustOrders() {
       return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setCustOrders(List<CustOrder> orders) {
       this.orders = orders;
     }
 
@@ -105,12 +147,35 @@ public class Event {
       this.venue = venue;
     }
 
-    @OneToMany(mappedBy = "event")
-    private List<Order> orders;
+    public String getName() {
+      return name;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "venueId")
-    private Venue venue;
+    public void setName(String name) {
+      this.name = name;
+    }
 
-    
+    public List<CustOrder> getOrders() {
+      return orders;
+    }
+
+    public void setOrders(List<CustOrder> orders) {
+      this.orders = orders;
+    }
+
+    public List<TicketListing> getTicketListings() {
+      return ticketListings;
+    }
+
+    public void setTicketListings(List<TicketListing> ticketListings) {
+      this.ticketListings = ticketListings;
+    }
+
+    public List<Run> getRuns() {
+      return runs;
+    }
+
+    public void setRuns(List<Run> runs) {
+      this.runs = runs;
+    }
 }

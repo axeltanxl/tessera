@@ -6,6 +6,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,27 +18,34 @@ import jakarta.persistence.GenerationType;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ticketId;
+    private long ticketID;
 
     private String uniqueCode;
     
+    @JsonBackReference(value="order-ticket")
     @ManyToOne
-    @JoinColumn(name="orderId")
-    private Order order;
+    @JoinColumn(name="orderID")
+    private CustOrder order;
 
+    @JsonBackReference(value="ticket-seats")
     @ManyToOne
-    @JoinColumn(name="seatId")
+    @JoinColumn(name="seatID")
     private Seat seat;
 
+    @JsonManagedReference(value="transaction-ticket")
     @OneToMany(mappedBy = "ticket")
     private List<Transaction> transactions;
 
-    public long getTicketId() {
-      return ticketId;
+    @JsonManagedReference(value="ticketListing-ticket")
+    @OneToMany(mappedBy = "ticket")
+    private List<TicketListing> ticketListings;
+
+    public long getTicketID() {
+      return ticketID;
     }
 
-    public void setTicketId(long ticketId) {
-      this.ticketId = ticketId;
+    public void setTicketID(long ticketID) {
+      this.ticketID = ticketID;
     }
 
     public String getUniqueCode() {
@@ -45,11 +56,11 @@ public class Ticket {
       this.uniqueCode = uniqueCode;
     }
 
-    public Order getOrder() {
+    public CustOrder getOrder() {
       return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(CustOrder order) {
       this.order = order;
     }
 
