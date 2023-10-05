@@ -3,6 +3,8 @@ import { Poppins } from 'next/font/google'
 import Navbar from '@/components/ui/header/NavBar'
 import Provider from '@/components/context/Provider'
 import { getServerSession } from 'next-auth'
+import { Toaster } from "@/components/ui/toaster"
+
 const poppins = Poppins({
   subsets: ['latin'],
   weight: '400',
@@ -26,6 +28,7 @@ export default async function RootLayout({ children }) {
               {children}
             </main>
           </div>
+          <Toaster/>
         </body>
       </Provider>
     </html>
