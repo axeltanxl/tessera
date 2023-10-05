@@ -69,7 +69,7 @@ const TicketPurchase = ()  => {
                                 </div>
                                 </div>
                                 {
-                                    isNaN({total}) ?  (<div className="table-cell">Your total bill is:<br></br>$0</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
+                                    isNaN({total}) ?  (<div className="table-cell">Your total bill is:<br></br>${selectedQuant * selectedPrice}</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
                                 }
                             </div>
                         </div>
