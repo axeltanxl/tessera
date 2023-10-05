@@ -1,6 +1,7 @@
 package com.example.app.models;
 
 import java.sql.Date;
+import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,4 +19,6 @@ public class EventDTO {
     private String pricePerCategory;
     private int maxSlots;
     private String displayImage;
+
+    private List<Run> runs;
 }
