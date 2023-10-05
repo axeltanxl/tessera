@@ -1,16 +1,34 @@
 "use client"
 
-import QRCode from 'qrcode'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from "react"
+import { useRouter } from 'next/navigation'
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
-export const QRcode = ({qrString}) => {
-    const [src, setSrc] = useState();
+export const QRcode =  ({qrUrl}) => {
+    const TIMEOUT = 5000;
+    const [key, setKey] = useState(new Date().toISOString());
+    const router = useRouter()
     useEffect(() => {
-        QRCode.toDataURL(qrString).then(setSrc)
-        setTimeout(() => {window.location.reload()}, 5000)
-    }, [])
-
+        setTimeout(() => {
+            router.refresh();
+            setKey(new Date().toISOString())
+        }, TIMEOUT)
+    }, [qrUrl])
+    
     return (
-       <img src={src}/>
+        <>
+            <img src={qrUrl} alt='loading' className="w-[200px] h-[200px]"/>
+                <CountdownCircleTimer
+                key={key}
+                isPlaying
+                duration={TIMEOUT / 1000}
+                colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+                colorsTime={[7, 5, 2, 0]}
+                size={30}
+                strokeWidth={1}
+            >
+                {({ remainingTime }) => remainingTime}
+            </CountdownCircleTimer>
+        </>
     )
 }
