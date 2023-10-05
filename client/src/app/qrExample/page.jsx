@@ -20,7 +20,7 @@ const QRExample = () => {
     const decrypted1 = JSON.parse(CryptoJS.AES.decrypt(qrString, process.env.QR_SECRET_KEY2).toString(CryptoJS.enc.Utf8));
     // console.log("decrypted",decrypted1);
     const decrypted2 = JSON.parse(CryptoJS.AES.decrypt(decrypted1.ticketUniqueCode, process.env.QR_SECRET_KEY1).toString(CryptoJS.enc.Utf8));
-
+    
     return (<>
         <div>hello</div>
         <div>encrypted : {qrString}</div>
@@ -31,7 +31,7 @@ const QRExample = () => {
         </div>
 
         <div className='w-[500px] h-[500px]'>
-            <QRcode qrString={qrString}/>
+            <QRcode qrString={qrString} key={dtg}/>
         </div>
 
     </>);
