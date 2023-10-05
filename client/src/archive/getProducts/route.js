@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
-import { authenticated } from "../ProtectRoutes";
+import { authenticated } from "../../app/api/ProtectRoutes";
 
 
 export async function GET(request){
