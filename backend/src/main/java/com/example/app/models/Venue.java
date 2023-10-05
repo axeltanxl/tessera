@@ -20,11 +20,11 @@ public class Venue {
     private String name;
     private int capacity;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="venue-seats")
     @OneToMany(mappedBy = "venue")
     private List<Seat> seats;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="venue-event")
     @OneToMany(mappedBy = "venue")
     private List<Event> events;
 

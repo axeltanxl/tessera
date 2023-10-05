@@ -46,15 +46,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-order")
     @OneToMany(mappedBy = "user")
     private List<CustOrder> orders;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-buyer")
     @OneToMany(mappedBy = "buyer")
     private List<Transaction> buyerTransactions;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="user-seller")
     @OneToMany(mappedBy = "seller")
     private List<Transaction> sellerTransactions;
 
