@@ -69,6 +69,7 @@ const getTicketsWithSeat = [
 ]
 const MyTickets = () => {
   const [numTicketsSelected, setNumTicketsSelected] = useState(0);
+  
   const handleSelectTickets = (checked) => {
     checked ? setNumTicketsSelected(numTicketsSelected + 1) : setNumTicketsSelected(numTicketsSelected - 1);
     console.log("number of tickets selected:" + numTicketsSelected);
