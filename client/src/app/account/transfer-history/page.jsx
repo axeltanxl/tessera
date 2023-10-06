@@ -6,7 +6,7 @@ const TransferHistory = () => {
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
-                <SideNav activeTab={1} />
+                <SideNav activeTab={2} />
             </div>
 
             <div>Transfer History</div>

@@ -12,8 +12,12 @@ import {
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import TicketCard from '@/components/ui/cards/TicketCard';
-import { Checkbox } from "@/components/ui/checkbox";
 import Link from 'next/link';
+import Checkbox from '@/components/ui/Checkbox';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 
 const getOrders = [
   {
@@ -66,39 +70,65 @@ const getTicketsWithSeat = [
     seatNo: 25
   }
 ]
-function MyTickets () {
-  const [orders, setOrders] = useState([]);
-  const token = localStorage.getItem('jwt');
+function MyTickets() {
+  //fetching orders from backend
+  // const [orders, setOrders] = useState([]);
+  // const token = localStorage.getItem('jwt');
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+
+  //       const headers = {
+  //         Authorization: `Bearer ${token}`,
+  //       };
+  //       const res = await fetch(`http://localhost:8080/api/v1/users/1/orders`, {
+  //         method: 'GET',
+  //         headers,
+  //       });
+  //       if (res.ok) {
+  //         const ordersData = await res.json();
+  //         setOrders(ordersData);
+  //       } else {
+  //         console.error("API request failed.");
+  //       }
+  //     } catch (error) {
+  //       console.error("An error occurred:", error);
+  //     }
+  //   }
+
+  //   fetchData();
+  // }, []);
+  // console.log("orders:", orders);
+
+  //handle selection of tickets (multiselect checkbox)
+  const [numTicketsSelected, setNumTicketsSelected] = useState(1);
+
+  const [selectedTickets, setSelectedTickets] = useState([]);
   useEffect(() => {
-    async function fetchData() {
-        try {
-
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-            const res = await fetch(`http://localhost:8080/api/v1/users/1/orders`, {
-                method: 'GET',
-                headers,
-            });
-            if (res.ok) {
-                const ordersData = await res.json();
-                setOrders(ordersData);
-            } else {
-                console.error("API request failed.");
-            }
-        } catch (error) {
-            console.error("An error occurred:", error);
-        }
+    console.log("selectedtickets:", selectedTickets);
+  }, [selectedTickets]);
+  const handleSelectTickets = (ticket, isChecked) => {
+    if (isChecked) {
+      setSelectedTickets((prevSelectedTickets) => [
+        ...prevSelectedTickets,
+        ticket,
+      ]);
+      setNumTicketsSelected(numTicketsSelected + 1);
+    } else {
+      setSelectedTickets((prevSelectedTickets) =>
+        prevSelectedTickets.filter((item) => item.ticketID !== ticket.ticketID)
+      );
+      setNumTicketsSelected(numTicketsSelected - 1);
     }
+  };
 
-    fetchData();
-}, []);
-  console.log("orders:", orders);
-  const [numTicketsSelected, setNumTicketsSelected] = useState(0);
-  const handleSelectTickets = (checked) => {
-    checked ? setNumTicketsSelected(numTicketsSelected + 1) : setNumTicketsSelected(numTicketsSelected - 1);
-    console.log("number of tickets selected:" + numTicketsSelected);
-  }
+  //modal 
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+
   return (
     <section className='flex mt-10'>
       <div className='mr-20 ml-10'>
@@ -145,10 +175,14 @@ function MyTickets () {
                   <TableCell>
                     {getTicketsWithSeat.map((item, index) => (
                       <div className='flex items-center' key={index}>
+                        <Checkbox handleSelect={handleSelectTickets} ticket={item} />
+                        <div className="flex gap-2">
+
+                        </div>
                         <Link href={`/account/tickets/${item.ticketID}`}>
                           <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
                         </Link>
-                        <Checkbox handleSelect={handleSelectTickets} />
+
                       </div>
                     ))}
                   </TableCell>
@@ -161,12 +195,56 @@ function MyTickets () {
       </div>
       <div className='flex flex-1 justify-center'>
         <div className='mt-28 w-72 h-56 border border-[#B4C1DB] rounded p-6'>
-          <p>0 tickets selected</p>
+          <p>{numTicketsSelected} tickets selected</p>
           <p className='font text-sm text-[#1F6EB7] mt-4'>To make direct transfer of tickets</p>
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Transfer</button>
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
-          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Resell</button>
+          <button onClick={handleOpen} className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Resell</button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <div className='absolute overflow-y-scroll top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] w-[800px] h-[400px] bg-white rounded-sm'>
+              <div className="flex flex-1 justify-center p-10">
+                <div>
+                  <p>You have selected these ticket(s) to resell</p>
+                  <div className='grid grid-cols-2 w-[500px]'>
+                    <div className='flex justify-center flex-col w-3/4'>
+                      <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
+                      <p className=''>8 March 2024</p>
+                    </div>
+                    <div className='w-1/4'>
+                      <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
+                    </div>
+
+                    <div className='flex justify-center flex-col w-3/4'>
+                      <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
+                      <p className=''>8 March 2024</p>
+                    </div>
+                    <div className='w-1/4'>
+                      <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
+                    </div>
+                    <div className='flex justify-center flex-col w-3/4'>
+                      <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
+                      <p className=''>8 March 2024</p>
+                    </div>
+                    <div className='w-1/4'>
+                      <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
+                    </div>
+                  </div>
+                  <div className='flex justify-center mt-2'>
+                    <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm'>Cancel</button>
+                    <Link href="/account/resell-tickets">
+                      <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Confirm </button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Modal>
         </div>
       </div>
     </section>

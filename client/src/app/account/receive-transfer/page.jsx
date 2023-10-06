@@ -6,7 +6,7 @@ const ReceiveTransfer = () => {
   return (
     <section className='flex mt-10'>
       <div className='mr-20 ml-10'>
-        <SideNav activeTab={2} />
+        <SideNav activeTab={3} />
       </div>
 
       <div>Receive Transfer</div>

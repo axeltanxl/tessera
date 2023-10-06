@@ -1,32 +1,40 @@
-"use client"
+import React, { useState, useEffect } from 'react';
 
-import * as React from "react"
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
-import { Check } from "lucide-react"
+const Checkbox = ({handleSelect, ticket}) => {
+  const [isChecked, setIsChecked] = useState(false);
 
-import { cn } from "@/lib/utils"
-
-const Checkbox = React.forwardRef(({handleSelect, className, ...props }, ref) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-  const handleCheckboxChange = () => {
-    // toggle the state when the checkbox is clicked
+  useEffect(() => {
+    console.log(isChecked);
+    handleSelect(ticket, isChecked)
+  }, [isChecked])
+  const toggleCheckbox = () => {
     setIsChecked(!isChecked);
-    handleSelect(isChecked);
   };
-  return (
-  <CheckboxPrimitive.Root
-    onChange={handleCheckboxChange}
-    ref={ref}
-    className={cn(
-      "peer h-4 w-4 shrink-0 rounded ml-2 border border-[#B4C1DB] ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
-      className
-    )}
-    {...props}>
-    <CheckboxPrimitive.Indicator className={cn("flex items-center justify-center text-current")}>
-      <Check className="h-4 w-4" />
-    </CheckboxPrimitive.Indicator>
-  </CheckboxPrimitive.Root>
-)})
-Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
-export { Checkbox }
+  return (
+    <label>
+      <input
+        type="checkbox"
+        checked={isChecked}
+        onChange={toggleCheckbox}
+        className="relative peer shrink-0
+          appearance-none w-6 h-6 border border-[#B4C1DB] bg-white rounded-sm
+          mt-1 mr-1 hover:cursor-pointer"
+      />
+      <svg
+        className={`absolute w-4 h-4 mt-[-25px] ml-[3px] ${isChecked ? 'block' : 'hidden'}`}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="black"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </label>
+  );
+}
+
+export default Checkbox;
