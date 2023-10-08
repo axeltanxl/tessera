@@ -6,4 +6,5 @@ import java.util.*;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findTicketByOrderOrderID(long orderId);
+    List<Ticket> findAllByTicketID(long ticketID);
 }

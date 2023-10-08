@@ -19,10 +19,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
-import com.example.app.models.UserDTO;
+import com.example.app.models.Seat;
+import com.example.app.models.SeatDTO;
+import com.example.app.models.Ticket;
+import com.example.app.models.TicketListing;
+import com.example.app.models.Run;
+
 import com.example.app.repositories.EventRepository;
+import com.example.app.repositories.SeatRepository;
+import com.example.app.repositories.TicketListRepository;
+import com.example.app.repositories.TicketRepository;
+import com.example.app.repositories.RunRepository;
 
 import jakarta.validation.Valid;
 
@@ -34,7 +44,15 @@ public class EventController {
   private EventRepository eventRepository;
 
   @Autowired
+  private RunRepository runRepository;
+  @Autowired
   private ImageController imageController;
+  @Autowired
+  private TicketListRepository ticketListingRepo;
+  @Autowired
+  private TicketRepository ticketRepo;
+  @Autowired
+  private SeatRepository seatRepo;
 
   @GetMapping("/events")
   public ResponseEntity<List<EventDTO>> getAllEvents() {
@@ -49,7 +67,56 @@ public class EventController {
     return ResponseEntity.ok(listOfEventsDTO);
   }
 
-  @PostMapping(path = "/admin/addEvent")
+  @GetMapping(path = "/events/{eventID}")
+  public ResponseEntity<Event> getEvent(@PathVariable("eventID") Long id){
+    Optional<Event> event = eventRepository.findById(id);
+
+    if (!event.isPresent()){
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(event.get());
+  }
+
+  @GetMapping(path = "events/{eventID}/categories")
+  public ResponseEntity<Object> getAllCATByEvent(@PathVariable("eventID") Long eventID){
+
+    try {
+      List<TicketListing> ticketLists = ticketListingRepo.findAllByEventEventID(eventID);
+
+      if (ticketLists.size() == 0) {
+        return ResponseEntity.notFound().build();
+      }
+
+      List<Ticket> listOfTickets = new ArrayList<>();
+      for (TicketListing eachTicketListing : ticketLists) {
+        listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
+      }
+    
+      List<Seat> listOfSeats = new ArrayList<>();
+      for (Ticket eachTicket : listOfTickets) {
+        listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
+      }
+
+      final ModelMapper modelMapper = new ModelMapper();
+      List<SeatDTO> listOfSeatsDTO = listOfSeats.stream()
+      .map(eachSeat -> {
+        SeatDTO seatDTO = modelMapper.map(eachSeat, SeatDTO.class);
+        seatDTO.setEventID(eventID);
+        return seatDTO;
+      })
+      .distinct()
+      .collect(Collectors.toList());
+                              
+      return ResponseEntity.ok(listOfSeatsDTO);
+
+    } catch (Exception e) {
+      System.out.println("Error getting categories: " + e.getMessage());
+      return ResponseEntity.internalServerError().body("An error occurred.");
+    }
+  }
+
+  @PostMapping(path = "/admin/events")
   @PreAuthorize("hasAuthority('ADMIN')")
   public ResponseEntity<Object> addEvent(@RequestPart Event event, @RequestPart(value="file") MultipartFile displayImage) {
     try {
@@ -74,18 +141,7 @@ public class EventController {
     }
   }
 
-  @GetMapping(path = "/events/{eventID}")
-  public ResponseEntity<Event> getEvent(@PathVariable("eventID") Long id){
-    Optional<Event> event = eventRepository.findById(id);
-
-    if (!event.isPresent()){
-      return ResponseEntity.notFound().build();
-    }
-
-    return ResponseEntity.ok(event.get());
-  }
-
-  @PutMapping(path = "/admin/updateEvent/{eventID}")
+  @PutMapping(path = "/admin/events/{eventID}")
   public ResponseEntity<Object> updateEvent(@PathVariable("eventID") Long id, @RequestBody @Valid Event event) {
     try {
       Optional<Event> existingEvent = eventRepository.findById(id);
@@ -106,7 +162,7 @@ public class EventController {
     }
   }
 
-  @DeleteMapping(path = "/admin/deleteEvent/{eventID}")
+  @DeleteMapping(path = "/admin/events/{eventID}")
   public ResponseEntity<Object> deleteEvent(@PathVariable("eventID") Long id) {
     try {
       if (!eventRepository.existsById(id)) {
@@ -120,6 +176,31 @@ public class EventController {
       System.out.println("Error while deleting event: " + e.getMessage());
 
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the event");
+    }
+  }
+
+  @PostMapping(path = "/admin/events/{eventID}/runs")
+  @PreAuthorize("hasAuthority('ADMIN')")
+  public ResponseEntity<Object> addRun(@RequestBody Run run, @PathVariable("eventID") Long id) {
+    try {
+      if (run == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Run cannot be null.");
+      }
+      
+      Optional<Event> existingEvent = eventRepository.findById(id);
+
+      if (!existingEvent.isPresent()) {
+          return ResponseEntity.notFound().build();
+      }
+
+      run.setEvent(existingEvent.get());
+      runRepository.save(run);
+
+      return ResponseEntity.status(HttpStatus.CREATED).body("Run added successfully");
+    } catch (Exception e) {
+      System.out.println("Error while adding run for an event: " + e.getMessage());
+
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while adding run for an event");
     }
   }
 }
