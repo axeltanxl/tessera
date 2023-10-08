@@ -89,9 +89,8 @@ public class TicketListController {
             }
 
             // Fetch and associate the Run with the TicketListing
-            Long runID = ticketListing.getRun().getRunID(); // Assuming you have a getter for the Run in TicketListing
+            Long runID = ticketListing.getRun().getRunID();
             Optional<Run> optRunObj = runRepo.findById(runID);
-
             if (optRunObj.isPresent()) {
                 Run run = optRunObj.get();
                 ticketListingWithSeat.setRun(run);

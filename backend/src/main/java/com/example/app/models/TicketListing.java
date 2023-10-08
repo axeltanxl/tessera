@@ -3,7 +3,6 @@ package com.example.app.models;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,6 +49,5 @@ public class TicketListing {
     @JsonBackReference(value="run-ticketlisting")
     @ManyToOne
     @JoinColumn(name = "runID")
-    @JsonIgnoreProperties("ticketListing")
     private Run run;
 }

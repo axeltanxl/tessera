@@ -105,6 +105,7 @@ function MyTickets() {
   useEffect(() => {
     console.log("selectedtickets:", selectedTickets);
   }, [selectedTickets]);
+  
   const handleSelectTickets = (ticket, isChecked) => {
     if (isChecked) {
       setSelectedTickets((prevSelectedTickets) => [

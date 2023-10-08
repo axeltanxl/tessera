@@ -1,6 +1,8 @@
 package com.example.app.models;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -9,7 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +27,12 @@ public class Run {
     @ManyToOne
     @JoinColumn(name = "eventID")
     private Event event;
+
+    private String startTime;
+    private String endTime;
     private Date date;
 
     @JsonManagedReference(value="run-ticketlisting")
-    @OneToOne(mappedBy = "run")
-    private TicketListing ticketListing;
+    @OneToMany(mappedBy = "run")
+    private List<TicketListing> ticketListing;
 }
