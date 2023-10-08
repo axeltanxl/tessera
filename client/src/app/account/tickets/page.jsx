@@ -14,9 +14,6 @@ import { IoLocationOutline } from 'react-icons/io5';
 import TicketCard from '@/components/ui/cards/TicketCard';
 import Link from 'next/link';
 import Checkbox from '@/components/ui/Checkbox';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
 const getOrders = [
@@ -210,37 +207,34 @@ function MyTickets() {
             <div className='absolute overflow-y-scroll top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] w-[800px] h-[400px] bg-white rounded-sm'>
               <div className="flex flex-1 justify-center p-10">
                 <div>
-                  <p>You have selected these ticket(s) to resell</p>
-                  <div className='grid grid-cols-2 w-[500px]'>
-                    <div className='flex justify-center flex-col w-3/4'>
-                      <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
-                      <p className=''>8 March 2024</p>
-                    </div>
-                    <div className='w-1/4'>
-                      <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
-                    </div>
+                  {selectedTickets.length === 0 ? (<div>No tickets have been selected</div>) : (
+                    <div>
+                      <p>You have selected these ticket(s) to resell</p>
 
-                    <div className='flex justify-center flex-col w-3/4'>
-                      <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
-                      <p className=''>8 March 2024</p>
+                      {selectedTickets.map((item, index) => {
+                        return (
+                          <div className='grid grid-cols-2 w-[500px]' key={index}>
+                            <div className='flex justify-center flex-col w-3/4'>
+                              <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
+                              <p className='flex items-center'><CalendarIcon/>8 March 2024</p>
+                              <p className='flex items-center'><IoLocationOutline/>National Stadium</p>
+                            </div>
+                            <div className='w-1/4'>
+                              <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
+                            </div>
+                          </div>
+                          )
+                      })}
+
+                      <div className='flex justify-center mt-2'>
+                        <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm' onClick={handleClose}>Cancel</button>
+                        <Link href="/account/resell-tickets">
+                          <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Confirm </button>
+                        </Link>
+                      </div>
                     </div>
-                    <div className='w-1/4'>
-                      <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
-                    </div>
-                    <div className='flex justify-center flex-col w-3/4'>
-                      <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
-                      <p className=''>8 March 2024</p>
-                    </div>
-                    <div className='w-1/4'>
-                      <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
-                    </div>
-                  </div>
-                  <div className='flex justify-center mt-2'>
-                    <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm'>Cancel</button>
-                    <Link href="/account/resell-tickets">
-                      <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Confirm </button>
-                    </Link>
-                  </div>
+                  )}
+
                 </div>
               </div>
             </div>

@@ -28,6 +28,10 @@ const menuItems = [
         name: "My Tickets"
     },
     {
+        link: "/account/resell-tickets",
+        name: "Resell Tickets"
+    },
+    {
         link: "/account/transfer-history",
         name: "Transfer History"
     },

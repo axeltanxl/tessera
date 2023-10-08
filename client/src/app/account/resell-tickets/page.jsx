@@ -9,9 +9,17 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import TicketCard from '@/components/ui/cards/TicketCard'
+import TicketCard from '@/components/ui/cards/TicketCard';
+import Modal from '@mui/material/Modal';
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { IoLocationOutline } from 'react-icons/io5';
 
 const ResellTickets = () => {
+    //modal 
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -39,10 +47,40 @@ const ResellTickets = () => {
                                     Listed at $200
                                 </TableCell>
                                 <TableCell>
-                                    <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Set price</button>
+                                    <button onClick={handleOpen} className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Set price</button>
                                     <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Remove</button>
                                 </TableCell>
+                                <Modal
+                                    open={open}
+                                    onClose={handleClose}
+                                    aria-labelledby="modal-modal-title"
+                                    aria-describedby="modal-modal-description"
+                                >
+                                    <div className='absolute top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] w-[500px] h-[300px] bg-white rounded-sm'>
+                                        <div className="flex flex-col flex-1 p-10">
+                                            <div className='grid grid-cols-2 w-[500px]'>
+                                                <div className='flex justify-center flex-col w-3/4'>
+                                                    <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
+                                                    <p className='flex items-center'><CalendarIcon />8 March 2024</p>
+                                                    <p className='flex items-center'><IoLocationOutline />National Stadium</p>
+                                                </div>
+                                                <div className='w-1/4'>
+                                                    <TicketCard category={"A"} section={"PA"} row={"18"} seatNo={"22"} />
+                                                </div>
+                                            </div>
+                                            <div className='flex mt-4'>
+                                                Input resale price
+                                                <input type="price" placeholder='Resale Price in SGD' className='ml-6 border border-[#B4C1DB] rounded-sm px-2'>
+                                                </input>
+                                            </div>
 
+                                        </div>
+                                        <div className='flex justify-center mt-2'>
+                                            <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm' onClick={handleClose}>Cancel</button>
+                                            <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Resell </button>
+                                        </div>
+                                    </div>
+                                </Modal>
                             </TableRow>
                             <TableRow>
                                 <TableCell className='flex'>
