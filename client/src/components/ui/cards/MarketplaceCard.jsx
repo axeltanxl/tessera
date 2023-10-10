@@ -43,7 +43,7 @@ export function MarketplaceCard({ details }) {
         </p>
       </CardBody>
       <CardFooter className="pt-2 justify-center bg-[#F5F7FB] pb-4 rounded-lg">
-        <Link href={`/marketplace/${eventID}`}>
+        <Link href={`/marketplace/event/${eventID}`}>
           <Button
             ripple={false}
             fullWidth={false}

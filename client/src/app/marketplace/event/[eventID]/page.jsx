@@ -11,13 +11,15 @@ function MarketplaceListing() {
     const parts = url.split("/");
     const eventID = parseInt(parts[3]);
     const [allListings, setAllListings] = useState([]);
+    const [categories, setCategories] = useState([]);
+    
     useEffect(() => {
-        async function fetchData() {
+        async function fetchTicketListingsByEvent() {
             try {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/users/ticketListings/event/${eventID}`, {
+                const res = await fetch(`http://localhost:8080/api/v1/users/events/${eventID}/ticketListings`, {
                     method: 'GET',
                     headers
                 });
@@ -32,12 +34,31 @@ function MarketplaceListing() {
             }
         }
 
-        fetchData();
+        async function fetchCATByEvent(){
+            try{
+                console.log("test")
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/categories`, {
+                    method: 'GET',
+                    headers
+                });
+                if(res.ok){
+                    const categoriesByEvent = await res.json();
+                    setCategories(categoriesByEvent);
+                }
+            }catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+        fetchTicketListingsByEvent();
+        fetchCATByEvent();
+
     }, [])
     console.log("allListings:", allListings);
-
+    console.log("categories:", categories);
     const dates = ["8 Mar 2024", "9 Mar 2024", "10 Mar 2024"];
-    const cat = ["A", "B", "C", "D"];
     const priceOptions = ["Low to High", "High to Low"];
     const [sort, setSort] = useState('');
     const [filteredListings, setFilteredListings] = useState([]);
@@ -103,7 +124,7 @@ function MarketplaceListing() {
                         <RadioDropdown name={"Date"} dropdownItems={dates} defaultValue={"Date"} />
                     </div>
                     <div className='mx-2 xs:mr-4'>
-                        <RadioDropdown name={"CAT"} dropdownItems={cat} defaultValue={"CAT"} />
+                        <RadioDropdown name={"CAT"} dropdownItems={categories} defaultValue={"CAT"} />
                     </div>
                     <div className='mx-2 xs:mr-4'>
                         <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} handleChange={handlePriceFilterChange} />

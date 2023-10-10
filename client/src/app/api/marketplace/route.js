@@ -21,3 +21,22 @@ export async function GET(request, {params: {eventID}}){
         headers: { "Content-Type": "application/json" },
        });
 }
+
+export async function GET(request, {params: {eventID}}){
+    const prisma = new PrismaClient();
+    console.log("id:", eventID);
+    const categories = await prisma.ticket.findMany({
+        where : {
+            eventID: eventID
+        }
+    });
+    const json = JSON.stringify(categories, (key, value) => {
+        return typeof value === 'bigint' ? value.toString() : value;
+    })
+
+    return new NextResponse(json, { 
+        status: 201, 
+        headers: { "Content-Type": "application/json" },
+       });
+}
+
