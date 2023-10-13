@@ -26,7 +26,6 @@ import com.example.app.models.Seat;
 import com.example.app.models.SeatDTO;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
-import com.example.app.models.TicketListingWithSeat;
 import com.example.app.models.Run;
 
 import com.example.app.repositories.EventRepository;
@@ -80,56 +79,6 @@ public class EventController {
     }
 
     return ResponseEntity.ok(event.get());
-  }
-
-  //For the public who wants to see all the listings for 1 event
-  @GetMapping("events/{eventID}/ticketListings")
-  public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
-
-      List<TicketListing> ticketListsByEventID = ticketListingRepo.findAllByEventEventID(eventID);
-
-      if (ticketListsByEventID.isEmpty()) {
-          return ResponseEntity.notFound().build();
-      }
-
-      // Create a map to group TicketListings by listingID
-      Map<Long, TicketListingWithSeat> ticketListingsMap = new HashMap<>();
-
-      for (TicketListing ticketListing : ticketListsByEventID) {
-          TicketListingWithSeat ticketListingWithSeat = new TicketListingWithSeat();
-          ticketListingWithSeat.setTicketListing(ticketListing);
-
-          // Fetch and associate the Seat with the TicketListing
-          Long ticketID = ticketListing.getTicket().getTicketID();
-          Optional<Ticket> optTicketObj = ticketRepo.findById(ticketID);
-
-          if (optTicketObj.isPresent()) {
-              Ticket ticket = optTicketObj.get();
-              Long seatID = ticket.getSeat().getSeatID();
-              Optional<Seat> optSeatObj = seatRepo.findById(seatID);
-
-              if (optSeatObj.isPresent()) {
-                  Seat seat = optSeatObj.get();
-                  ticketListingWithSeat.setSeat(seat);
-              }
-          }
-
-          // Fetch and associate the Run with the TicketListing
-          Long runID = ticketListing.getRun().getRunID();
-          Optional<Run> optRunObj = runRepository.findById(runID);
-          if (optRunObj.isPresent()) {
-              Run run = optRunObj.get();
-              ticketListingWithSeat.setRun(run);
-          }
-
-          // Add the TicketListingWithSeat to the map
-          ticketListingsMap.put(ticketListing.getListingID(), ticketListingWithSeat);
-      }
-
-      // Convert values of the map (TicketListingWithSeat objects) into a list
-      List<TicketListingWithSeat> ticketListsWithSeats = new ArrayList<>(ticketListingsMap.values());
-
-      return ResponseEntity.ok(ticketListsWithSeats);
   }
 
   @GetMapping(path = "events/{eventID}/categories")
