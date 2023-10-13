@@ -27,6 +27,7 @@ public class Marketplace {
     private Date openingDate;
     private Date closingDate;
     
+    @JsonManagedReference
     @OneToOne(mappedBy = "marketplace")
     private Run run;
 }

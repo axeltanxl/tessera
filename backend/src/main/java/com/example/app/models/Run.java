@@ -36,6 +36,7 @@ public class Run {
     @OneToMany(mappedBy = "run")
     private List<TicketListing> ticketListing;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name="marketplace_id")
     private Marketplace marketplace;
