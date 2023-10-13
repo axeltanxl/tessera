@@ -111,75 +111,9 @@ public class EventController {
 
       return ResponseEntity.ok(catList);
 
-    // try {
-    //   List<TicketListing> ticketLists = ticketListingRepo.findAllByEventEventID(eventID);
-
-    //   if (ticketLists.size() == 0) {
-    //     return ResponseEntity.notFound().build();
-    //   }
-
-    //   List<Ticket> listOfTickets = new ArrayList<>();
-    //   for (TicketListing eachTicketListing : ticketLists) {
-    //     listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
-    //   }
-    
-    //   List<Seat> listOfSeats = new ArrayList<>();
-    //   for (Ticket eachTicket : listOfTickets) {
-    //     listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
-    //   }
-
-    //   final ModelMapper modelMapper = new ModelMapper();
-    //   List<SeatDTO> listOfSeatsDTO = listOfSeats.stream()
-    //   .map(eachSeat -> {
-    //     SeatDTO seatDTO = modelMapper.map(eachSeat, SeatDTO.class);
-    //     seatDTO.setEventID(eventID);
-    //     return seatDTO;
-    //   })
-    //   .distinct()
-    //   .collect(Collectors.toList());
-                              
-    //   return ResponseEntity.ok(listOfSeatsDTO);
-
     } catch (Exception e) {
       System.out.println("Error getting categories: " + e.getMessage());
       return ResponseEntity.internalServerError().build();
-    }
-  }
-
-  @GetMapping(path = "events/{eventID}/testMethod")
-  public ResponseEntity<Object> getAllCATByEventID(@PathVariable("eventID") Long eventID){
-    try {
-      List<TicketListing> ticketLists = ticketListingRepo.findAllByEventEventID(eventID);
-
-      if (ticketLists.size() == 0) {
-        return ResponseEntity.notFound().build();
-      }
-
-      List<Ticket> listOfTickets = new ArrayList<>();
-      for (TicketListing eachTicketListing : ticketLists) {
-        listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
-      }
-    
-      List<Seat> listOfSeats = new ArrayList<>();
-      for (Ticket eachTicket : listOfTickets) {
-        listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
-      }
-
-      final ModelMapper modelMapper = new ModelMapper();
-      List<SeatDTO> listOfSeatsDTO = listOfSeats.stream()
-      .map(eachSeat -> {
-        SeatDTO seatDTO = modelMapper.map(eachSeat, SeatDTO.class);
-        seatDTO.setEventID(eventID);
-        return seatDTO;
-      })
-      .distinct()
-      .collect(Collectors.toList());
-                              
-      return ResponseEntity.ok(listOfSeatsDTO);
-
-    } catch (Exception e) {
-      System.out.println("Error getting categories: " + e.getMessage());
-      return ResponseEntity.internalServerError().body("An error occured.");
     }
   }
 
