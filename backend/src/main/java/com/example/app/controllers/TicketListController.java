@@ -33,8 +33,6 @@ import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
 import com.example.app.repositories.TransactionRepository;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/api/v1/")
 public class TicketListController {
