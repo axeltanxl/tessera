@@ -200,4 +200,17 @@ public class EventController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while adding run for an event");
     }
   }
+
+  @GetMapping(path = "/events/{eventID}/runs")
+  public ResponseEntity<List<Run>> getRunsForEvent(@PathVariable("eventID") Long id){
+    Optional<Event> event = eventRepository.findById(id);
+
+    if (!event.isPresent()){
+      return ResponseEntity.notFound().build();
+    }
+
+    List<Run> runs = event.get().getRuns();
+
+    return ResponseEntity.ok(runs);
+  }
 }
