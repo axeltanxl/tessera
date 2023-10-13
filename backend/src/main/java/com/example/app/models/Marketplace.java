@@ -1,6 +1,7 @@
 package com.example.app.models;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -18,25 +19,15 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Run {
+public class Marketplace {
     //Primary Key
     @Id
-    private long runID;
-    private String startTime;
-    private String endTime;
-    private Date date;
-
-    @JsonBackReference(value="event-run")
-    @ManyToOne
-    @JoinColumn(name = "eventID")
-    private Event event;
-
-    @JsonManagedReference(value="run-ticketlisting")
-    @OneToMany(mappedBy = "run")
-    private List<TicketListing> ticketListing;
-
-    @JsonBackReference
-    @OneToOne
-    @JoinColumn(name="marketplace_id")
-    private Marketplace marketplace;
+    private long marketplaceID;
+    private String status;
+    private Date openingDate;
+    private Date closingDate;
+    
+    @JsonManagedReference
+    @OneToOne(mappedBy = "marketplace")
+    private Run run;
 }
