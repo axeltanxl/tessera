@@ -42,6 +42,7 @@ public class User implements UserDetails {
     private String password;
     private String contactNum;
     private String address;
+    private String stripeUserID;
 
     @Enumerated(EnumType.STRING)
     private Role role;
