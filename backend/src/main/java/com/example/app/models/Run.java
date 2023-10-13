@@ -1,7 +1,6 @@
 package com.example.app.models;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;

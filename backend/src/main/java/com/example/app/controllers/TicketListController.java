@@ -37,8 +37,8 @@ public class TicketListController {
     @Autowired
     private RunRepository runRepo;
 
-    //For general public who wants to see each listing.
-    @GetMapping("ticketListing/{listingID}")
+    // For general public who wants to see each listing.
+    @GetMapping("ticketListings/{listingID}")
     public ResponseEntity<Object> getListingByTicketListID(@PathVariable long listingID) {
 
         Optional<TicketListing> eachTicket = ticketListRepo.findById(listingID);
@@ -48,7 +48,7 @@ public class TicketListController {
         return ResponseEntity.ok(eachTicket);
     }
 
-    //For the public who wants to see all the listings
+    // For the public who wants to see all the listings
     @GetMapping("ticketListings")
     public ResponseEntity<List<TicketListing>> getAllListings() {
         List<TicketListing> ticketLists = ticketListRepo.findAll();
@@ -56,8 +56,41 @@ public class TicketListController {
         return ResponseEntity.ok(ticketLists);
     }
 
-    //For the public who wants to see all the listings for 1 event
-    @GetMapping("ticketListings/event/{eventID}")
+    /* UNUSED METHOD */
+    // @Autowired
+    // private Middleware midWare;
+    // @Autowired
+    // private UserRepository userRepo;
+
+    // @GetMapping("ticketListing/{listingID}")
+    // public ResponseEntity<Object>
+    // getListingByTicketListID(@RequestHeader("Authorization") String
+    // authorizationHeader,
+    // @PathVariable long listingID) {
+
+    // final String TOKEN = authorizationHeader.replace("Bearer ", ""); // Remove
+    // "Bearer " prefix
+
+    // final ModelMapper modelMapper = new ModelMapper();
+    // String getCurrEmail = midWare.extractUsername(TOKEN);
+
+    // User user = userRepo.findByEmail(getCurrEmail);
+
+    // // Convert User entity to UserDTO, excluding the password
+    // UserDTO userObj = modelMapper.map(user, UserDTO.class);
+
+    // Optional<TicketListing> ticketList = ticketListRepo.findById(listingID);
+    // if (!ticketList.isPresent() || ticketList.get().getUser().getUserID() !=
+    // userObj.getUserID()) {
+    // return ResponseEntity.notFound().build();
+    // }
+
+    // // String getCurrListing =
+    // return ResponseEntity.ok(ticketList);
+    // }
+
+    // For the public who wants to see all the listings for 1 event
+    @GetMapping("events/{eventID}/ticketListings")
     public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
 
         List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventID(eventID);
@@ -105,33 +138,4 @@ public class TicketListController {
 
         return ResponseEntity.ok(ticketListsWithSeats);
     }
-
-    /* UNUSED METHOD */
-    // @Autowired
-    // private Middleware midWare;
-    // @Autowired
-    // private UserRepository userRepo;
-
-    // @GetMapping("ticketListing/{listingID}")
-    // public ResponseEntity<Object> getListingByTicketListID(@RequestHeader("Authorization") String authorizationHeader, 
-    // @PathVariable long listingID) {
-        
-    //     final String TOKEN = authorizationHeader.replace("Bearer ", ""); // Remove "Bearer " prefix
-        
-    //     final ModelMapper modelMapper = new ModelMapper();
-    //     String getCurrEmail = midWare.extractUsername(TOKEN);
-
-    //     User user = userRepo.findByEmail(getCurrEmail);
-
-    //     // Convert User entity to UserDTO, excluding the password
-    //     UserDTO userObj = modelMapper.map(user, UserDTO.class);
-
-    //     Optional<TicketListing> ticketList = ticketListRepo.findById(listingID);
-    //     if (!ticketList.isPresent() || ticketList.get().getUser().getUserID() != userObj.getUserID()) {
-    //         return ResponseEntity.notFound().build();
-    //     }
-
-    //     // String getCurrListing = 
-    //     return ResponseEntity.ok(ticketList);
-    // }
 }
