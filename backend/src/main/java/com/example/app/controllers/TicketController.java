@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.models.CustOrder;
-import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketDTO;
 import com.example.app.models.TicketListing;

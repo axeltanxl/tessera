@@ -22,10 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
-import com.example.app.models.Seat;
-import com.example.app.models.SeatDTO;
-import com.example.app.models.Ticket;
-import com.example.app.models.TicketListing;
 import com.example.app.models.Run;
 
 import com.example.app.repositories.EventRepository;
