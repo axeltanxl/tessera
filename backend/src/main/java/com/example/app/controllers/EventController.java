@@ -19,14 +19,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
+import com.example.app.models.Seat;
+import com.example.app.models.SeatDTO;
+import com.example.app.models.Ticket;
+import com.example.app.models.TicketListing;
 import com.example.app.models.Run;
-import com.example.app.models.UserDTO;
+
 import com.example.app.repositories.EventRepository;
+import com.example.app.repositories.SeatRepository;
+import com.example.app.repositories.TicketListRepository;
+import com.example.app.repositories.TicketRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.app.repositories.RunRepository;
 
 import jakarta.validation.Valid;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -37,9 +48,14 @@ public class EventController {
 
   @Autowired
   private RunRepository runRepository;
-
   @Autowired
   private ImageController imageController;
+  @Autowired
+  private TicketListRepository ticketListingRepo;
+  @Autowired
+  private TicketRepository ticketRepo;
+  @Autowired
+  private SeatRepository seatRepo;
 
   @GetMapping("/events")
   public ResponseEntity<List<EventDTO>> getAllEvents() {
@@ -63,6 +79,108 @@ public class EventController {
     }
 
     return ResponseEntity.ok(event.get());
+  }
+
+  @GetMapping(path = "events/{eventID}/categories")
+  // public ResponseEntity<Object> getAllCATByEvent(@PathVariable("eventID") Long eventID){
+  public ResponseEntity<List<String>> getAllCATByEvent(@PathVariable("eventID") Long eventID){
+
+    try {
+      Optional<Event> getEventObj = eventRepository.findById(eventID);
+
+      if (!getEventObj.isPresent()) {
+        return ResponseEntity.notFound().build();
+      }
+
+      String getPricePerCat = getEventObj.get().getPricePerCategory();
+      String getPricePerCatJSON = getPricePerCat.replace("'", "\"");
+
+      //Convert into Map
+      // Initialize the Jackson ObjectMapper
+      ObjectMapper objectMapper = new ObjectMapper();
+      
+      JsonNode jsonNode = objectMapper.readTree(getPricePerCatJSON);
+
+      // Extract the values associated with keys 'A', 'B', and 'C'
+      List<String> catList = new ArrayList<>();
+      Iterator<Map.Entry<String, JsonNode>> iteratorFields = jsonNode.fields();
+      while (iteratorFields.hasNext()) {
+          Map.Entry<String, JsonNode> entry = iteratorFields.next();
+          catList.add(entry.getKey());
+     }
+
+      return ResponseEntity.ok(catList);
+
+    // try {
+    //   List<TicketListing> ticketLists = ticketListingRepo.findAllByEventEventID(eventID);
+
+    //   if (ticketLists.size() == 0) {
+    //     return ResponseEntity.notFound().build();
+    //   }
+
+    //   List<Ticket> listOfTickets = new ArrayList<>();
+    //   for (TicketListing eachTicketListing : ticketLists) {
+    //     listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
+    //   }
+    
+    //   List<Seat> listOfSeats = new ArrayList<>();
+    //   for (Ticket eachTicket : listOfTickets) {
+    //     listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
+    //   }
+
+    //   final ModelMapper modelMapper = new ModelMapper();
+    //   List<SeatDTO> listOfSeatsDTO = listOfSeats.stream()
+    //   .map(eachSeat -> {
+    //     SeatDTO seatDTO = modelMapper.map(eachSeat, SeatDTO.class);
+    //     seatDTO.setEventID(eventID);
+    //     return seatDTO;
+    //   })
+    //   .distinct()
+    //   .collect(Collectors.toList());
+                              
+    //   return ResponseEntity.ok(listOfSeatsDTO);
+
+    } catch (Exception e) {
+      System.out.println("Error getting categories: " + e.getMessage());
+      return ResponseEntity.internalServerError().build();
+    }
+  }
+
+  @GetMapping(path = "events/{eventID}/testMethod")
+  public ResponseEntity<Object> getAllCATByEventID(@PathVariable("eventID") Long eventID){
+    try {
+      List<TicketListing> ticketLists = ticketListingRepo.findAllByEventEventID(eventID);
+
+      if (ticketLists.size() == 0) {
+        return ResponseEntity.notFound().build();
+      }
+
+      List<Ticket> listOfTickets = new ArrayList<>();
+      for (TicketListing eachTicketListing : ticketLists) {
+        listOfTickets = ticketRepo.findAllByTicketID(eachTicketListing.getTicket().getTicketID());
+      }
+    
+      List<Seat> listOfSeats = new ArrayList<>();
+      for (Ticket eachTicket : listOfTickets) {
+        listOfSeats = seatRepo.findAllBySeatID(eachTicket.getSeat().getSeatID());
+      }
+
+      final ModelMapper modelMapper = new ModelMapper();
+      List<SeatDTO> listOfSeatsDTO = listOfSeats.stream()
+      .map(eachSeat -> {
+        SeatDTO seatDTO = modelMapper.map(eachSeat, SeatDTO.class);
+        seatDTO.setEventID(eventID);
+        return seatDTO;
+      })
+      .distinct()
+      .collect(Collectors.toList());
+                              
+      return ResponseEntity.ok(listOfSeatsDTO);
+
+    } catch (Exception e) {
+      System.out.println("Error getting categories: " + e.getMessage());
+      return ResponseEntity.internalServerError().body("An error occured.");
+    }
   }
 
   @PostMapping(path = "/admin/events")
