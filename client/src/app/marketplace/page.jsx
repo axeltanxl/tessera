@@ -133,7 +133,7 @@ const Marketplace = () => {
     useEffect(() => {
         let showMarketplace = allListings;
         if (category !== "All events") {
-            showMarketplace = allListings.filter((item) => item.category === category);
+            showMarketplace = showMarketplace.filter((item) => item.category === category);
         }
 
         if (startDateSelected || endDateSelected) {

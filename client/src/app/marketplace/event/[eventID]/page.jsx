@@ -4,7 +4,15 @@ import { RadioDropdown } from '@/components/ui/RadioDropdown';
 import { DateRangePicker } from '@/components/ui/DateRangePicker';
 import ListingCard from '@/components/ui/cards/ListingCard';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
+import { format } from 'date-fns';
+
+function formatDate(inputDate) {
+    if (inputDate !== undefined && inputDate !== null) {
+      const formattedDate = format(new Date(inputDate), 'dd MMM yyyy');
+      return formattedDate;
+    }
+  }
 
 function MarketplaceListing() {
     const url = usePathname();
@@ -12,7 +20,11 @@ function MarketplaceListing() {
     const eventID = parseInt(parts[3]);
     const [allListings, setAllListings] = useState([]);
     const [categories, setCategories] = useState([]);
-    
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [runs, setRuns] = useState([]);
+    const [selectedRun, setSelectedRun] = useState(null);
+    const token = localStorage.getItem('jwt');
+
     useEffect(() => {
         async function fetchTicketListingsByEvent() {
             try {
@@ -36,7 +48,6 @@ function MarketplaceListing() {
 
         async function fetchCATByEvent(){
             try{
-                console.log("test")
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
@@ -52,41 +63,73 @@ function MarketplaceListing() {
                 console.error("An error occurred:", error);
             }
         }
+
+        async function fetchRunsByEvent(){
+            try{
+                console.log("test")
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
+                    method: 'GET',
+                    headers
+                });
+                if(res.ok){
+                    const runsByEvent = await res.json();
+                    const runDates = runsByEvent.runs.map((item) => formatDate(item.date));
+                    setRuns(runDates);
+                }
+            }catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
         fetchTicketListingsByEvent();
         fetchCATByEvent();
-
+        fetchRunsByEvent();
     }, [])
-    console.log("allListings:", allListings);
-    console.log("categories:", categories);
-    const dates = ["8 Mar 2024", "9 Mar 2024", "10 Mar 2024"];
+
     const priceOptions = ["Low to High", "High to Low"];
     const [sort, setSort] = useState('');
     const [filteredListings, setFilteredListings] = useState([]);
 
-    const handleDateChange = (selectedDate) => {
+    const handleDateChange = (selectedRun) => {
+        setSelectedRun(selectedRun);
     }
+
+    const handleCategoryChange = (selectedCat) => {
+        setSelectedCategory(selectedCat);
+    }
+
     const handlePriceFilterChange = (sortOption) => {
         setSort(sortOption);
     };
+
+    const handleReset = () => {
+        setSort('');   
+        setSelectedRun(null);
+        setSelectedCategory(null);
+    }
+
+    console.log("sll:", allListings);
+
     useEffect(() => {
-        const sortedArray = [...allListings];
+        let sortedArray = [...allListings];
       
         if (sort === 'Low to High') {
           sortedArray.sort((a, b) => a.ticketListing.price - b.ticketListing.price);
         } else if (sort === 'High to Low') {
           sortedArray.sort((a, b) => b.ticketListing.price - a.ticketListing.price);
         }
-      
+        if(selectedCategory !== null){
+            sortedArray = sortedArray.filter((item) => item.seat.category === selectedCategory);
+        }
+        if(selectedRun != null){
+            sortedArray = sortedArray.filter((item) => formatDate(item.run.date) === selectedRun);
+        }
         // Update the filteredListings state with the sorted array
         setFilteredListings(sortedArray);
-      }, [sort, allListings]);
-    const handleReset = () => {
-        setSort('');   
-    }
-    const token = localStorage.getItem('jwt');
-
-   
-
+      }, [sort, allListings, selectedCategory, selectedRun]);
+    
     return (
         <section className="bg-primary h-full">
             <Head>
@@ -121,10 +164,10 @@ function MarketplaceListing() {
             <div className='px-20 py-8 flex justify-between'>
                 <div className='flex'>
                     <div className='mr-2 xs:mr-4'>
-                        <RadioDropdown name={"Date"} dropdownItems={dates} defaultValue={"Date"} />
+                        <RadioDropdown name={"Date"} dropdownItems={runs} defaultValue={"Date"} handleChange={handleDateChange}/>
                     </div>
                     <div className='mx-2 xs:mr-4'>
-                        <RadioDropdown name={"CAT"} dropdownItems={categories} defaultValue={"CAT"} />
+                        <RadioDropdown name={"CAT"} dropdownItems={categories} defaultValue={"CAT"} handleChange={handleCategoryChange}/>
                     </div>
                     <div className='mx-2 xs:mr-4'>
                         <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} handleChange={handlePriceFilterChange} />
@@ -138,9 +181,10 @@ function MarketplaceListing() {
                 <button className="bg-black text-white text-sm px-2 rounded-lg">View seat map</button>
             </div>
             <div className='px-20'>
-                <div className='grid grid-cols-4 gap-4'>
+                {filteredListings.length > 0 ? (<div className='grid grid-cols-4 gap-4'>
                     {filteredListings.map((item, index) => <ListingCard item={item} key={index} />)}
-                </div>
+                </div>) : ("No tickets listed on Marketplace under your selected filters yet. Stay tuned!") }
+                
             </div>
         </section>)
 }
