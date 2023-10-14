@@ -1,7 +1,7 @@
-// import { NextResponse } from "next/server";
-// import { PrismaClient } from "@prisma/client";
-// import { authenticated } from "../../ProtectRoutes";
-// import Stripe from "stripe";
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { authenticated } from "../../ProtectRoutes";
+import Stripe from "stripe";
 
 // export async function GET(request, response){
 //     return NextResponse.json({message : "CORRECT LINK"}, {status : 200});

@@ -15,4 +15,5 @@ https://stripe.com/docs/testing
 stripe cli
 https://stripe.com/docs/stripe-cli
 stripe listen --forward-to localhost:3000/api/checkout/success
+stripe listen --forward-to localhost:3000/api/connectWebhook/transactionCompleted
 stripe trigger payment_intent.succeeded

@@ -7,16 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model event {
+model  duration         Int
+  endDate          DateTime? @db.Date
+  maxSlots         Int
+  startDate        DateTime? @db.Date
   eventID          BigInt    @id @default(autoincrement())
   category         String?   @db.VarChar(255)
   description      String?   @db.Text
-  duration         Int
-  endDate          DateTime? @db.Date
-  maxSlots         Int
-  name             String    @db.VarChar(255)
   pricePerCategory String?   @db.VarChar(255)
-  startDate        DateTime? @db.Date
+  name             String    @db.VarChar(255)
   venueID          BigInt?
   displayImage     String?   @db.VarChar(255)
 
@@ -24,8 +23,8 @@ model event {
 }
 
 model payment {
-  paymentID     BigInt  @id @default(autoincrement())
   isSuccessful  Int
+  paymentID     BigInt  @id @default(autoincrement())
   paymentMethod String? @db.VarChar(255)
   orderID       BigInt?
   transactionID BigInt?
@@ -35,21 +34,21 @@ model payment {
 }
 
 model ticket {
-  ticketID   BigInt  @id @default(autoincrement())
   uniqueCode String? @db.VarChar(255)
   orderID    BigInt?
   seatID     BigInt?
+  ticketID   BigInt  @id @default(autoincrement())
 
   @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
   @@index([orderID], map: "FKks8gd5eaa20qau296r9fgcc9n")
 }
 
 model transaction {
-  transactionID BigInt    @id @default(autoincrement())
   date          DateTime? @db.DateTime(6)
   buyerID       BigInt?
   sellerID      BigInt?
   ticketID      BigInt?
+  transactionID BigInt    @id @default(autoincrement())
 
   @@index([sellerID], map: "FK2nlddhdsd1n20718nunwqyp69")
   @@index([buyerID], map: "FK7j96qpqvnqa1wplxx8g64t1x4")
@@ -57,29 +56,30 @@ model transaction {
 }
 
 model user {
-  userID     BigInt     @id @default(autoincrement())
-  address    String?    @db.VarChar(255)
-  contactNum String?    @db.VarChar(255)
-  email      String     @db.VarChar(255)
-  name       String?    @db.VarChar(255)
-  password   String     @db.VarChar(255)
-  role       user_role?
+  contactNum   String?    @db.VarChar(255)
+  userID       BigInt     @id @default(autoincrement())
+  address      String?    @db.VarChar(255)
+  email        String     @db.VarChar(255)
+  name         String?    @db.VarChar(255)
+  password     String     @db.VarChar(255)
+  role         user_role?
+  stripeUserID String?    @db.VarChar(255)
 }
 
 model venue {
-  venueID  BigInt  @id @default(autoincrement())
   capacity Int
   name     String? @db.VarChar(255)
+  venueID  BigInt  @id @default(autoincrement())
 }
 
 model custorder {
   orderID        BigInt    @id @default(autoincrement())
-  ticketCategory String?   @db.VarChar(255)
   ticketQuantity Int
   eventID        BigInt?
   userID         BigInt?
-  price          Int
+  ticketCategory String?   @db.VarChar(255)
   date           DateTime? @db.Date
+  price          Int
 
   @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
   @@index([eventID], map: "FKr6tkc9du1r50obuqt1h761d2y")
@@ -97,11 +97,12 @@ model seat {
 }
 
 model run {
-  runID     BigInt    @id
-  date      DateTime? @db.Date
-  endTime   String?   @db.VarChar(255)
-  startTime String?   @db.VarChar(255)
-  eventID   BigInt?
+  runID          BigInt    @id
+  date           DateTime? @db.Date
+  endTime        String?   @db.VarChar(255)
+  startTime      String?   @db.VarChar(255)
+  eventID        BigInt?
+  marketplace_id BigInt?   @unique(map: "UK_bmke6kuuntpjbd88yu4cju2ie")
 
   @@index([eventID], map: "FKni6xubxc2bq4lmaxubip68iy4")
 }
@@ -121,6 +122,18 @@ model ticketlisting {
   @@index([runID], map: "FK19h0ku2x5pr7s75w0s7sbon6g")
   @@index([userID], map: "FKnflg4egmodkj1gmynr3s0fpkh")
   @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
+  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
+}
+
+model marketplace {
+  marketplaceID BigInt    @id
+  closingDate   DateTime? @db.Date
+  openingDate   DateTime? @db.Date
+  status        String?   @db.VarChar(255)
+
+  @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
+  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
+@@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
   @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
 }
 

@@ -45,6 +45,7 @@
     "date-fns": "^2.30.0",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.19",
+    "js-cookie": "^3.0.5",
     "json-server": "^0.17.3",
     "jwt-decode": "^3.1.2",
     "lucide-react": "^0.270.0",

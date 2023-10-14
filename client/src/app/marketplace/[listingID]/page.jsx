@@ -19,6 +19,25 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import axios from "axios"
+
+const hardCodedValues = {
+    "jwt" : localStorage.getItem("jwt"),
+    "listingID" : 1,
+    "paymentMethod" : "card",
+};
+
+
+const handlePurchase = async (data) => {
+    const res = await axios.post('/api/stripeTransaction/payment', data, 
+    {
+        headers : {
+            "Content-Type" : "application/json",
+        },
+    });
+    const {webUrl} = res.data
+    window.location.assign(webUrl);
+}
 
 const MarketplaceListingDetails = () => {
     const maxTixQty = 4;
@@ -116,6 +135,7 @@ const MarketplaceListingDetails = () => {
                                         ripple={false}
                                         fullWidth={false}
                                         className="bg-[#FAD749] px-8 py-2 text-sm rounded shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+                                        onClick={() => handlePurchase(hardCodedValues)}
                                     >Best Available
                                     </button>
                                 </div>
