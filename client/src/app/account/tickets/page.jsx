@@ -15,6 +15,8 @@ import { IoLocationOutline } from 'react-icons/io5';
 import TicketCard from '@/components/ui/TicketCard';
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from 'next/link';
+import { axiosNext } from '@/lib/utils';
+import axios from 'axios';
 
 const getOrders = [
   {
@@ -67,6 +69,24 @@ const getTicketsWithSeat = [
     seatNo: 25
   }
 ]
+
+const createAccount = async () => {
+    // const res = await axios.get("/api/stripeTransaction",{
+    //     headers : {
+    //         "Content-Type" : "application/json",
+    //     },
+    // });
+    // const {message} = res.data
+    // console.log(message);
+
+    const res = await axios.post("/api/stripeTransaction",{
+        headers : {
+            "Content-Type" : "application/json",
+        },
+    });
+
+}
+
 const MyTickets = () => {
   const [numTicketsSelected, setNumTicketsSelected] = useState(0);
   
@@ -141,7 +161,9 @@ const MyTickets = () => {
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Transfer</button>
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
-          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Resell</button>
+          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
+          onClick={createAccount}
+          >Resell</button>
         </div>
       </div>
     </section>

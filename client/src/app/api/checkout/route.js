@@ -73,6 +73,7 @@ export async function POST(request){
             ticketQuantity: quantity,
             eventID : eventID,
             userID : userID,
+            price : (unitPrice * quantity),
         },
       })
     // orderID

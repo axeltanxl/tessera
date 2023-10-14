@@ -29,7 +29,7 @@ const Confirmation = () => {
         "jwt" : localStorage.getItem("jwt"),
         "eventID" : 1,
         "quantity" : parseInt(selectedQuant, 10), 
-        "category" : {selectedCat}, 
+        "category" : selectedCat, 
         "images" : "https://static.ticketmaster.sg/images/activity/24_taylorswift_092ae54e8468e29b5300f692d2391d03.jpg",
         "paymentMethod" : "card",
     };
