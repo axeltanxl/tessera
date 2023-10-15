@@ -275,9 +275,6 @@ const Confirmation = () => {
             </div>
 
             <div onClick={console.log(parseInt(selectedQuant, 10), selectedCat)}>
-                <button>
-                    hello
-                </button>
             </div>
 
 

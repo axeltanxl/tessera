@@ -17,12 +17,13 @@ function formatDate(inputDate) {
   }
 
 export function MarketplaceCard({ details }) {
-    const { eventID, name, description, category, startDate,endDate, src, price } = details;
+    const { eventDTO, name,  src, openingDate, closingDate, run } = details;
+    const {eventID, startDate, endDate, category,} = eventDTO;
     return (
         <Card className="w-full z-0 bg-[#F5F7FB] hover:cursor-pointer shadow-md">
       <div className='relative bg-clip-border rounded-xl overflow-hidden text-gray-700 h-52 bg-[#F5F7FB] p-2'>
         <img
-          src={src}
+          src={"./image-9.jpg"}
           alt="card-image"
           className="h-full w-full object-cover rounded"
         />
@@ -49,7 +50,7 @@ export function MarketplaceCard({ details }) {
             fullWidth={false}
             className="bg-black font-thin text-white px-4 py-2 rounded-md w-full shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
           ><p>Marketplace</p>
-            23 Feb 2024 to 7 March 2024
+            {formatDate(openingDate)} to {formatDate(closingDate)}
           </Button>
         </Link>
       </CardFooter>

@@ -32,12 +32,16 @@ const menuItems = [
         name: "Resell Tickets"
     },
     {
-        link: "/account/transfer-history",
-        name: "Transfer History"
+        link: "/account/transaction-history",
+        name: "Transaction History"
     },
     {
         link: "/account/receive-transfer",
         name: "Receive Transfer"
+    },
+    {
+        link: "/account/transfer-history",
+        name: "Transfer History"
     },
     {
         link: "/account/profile",

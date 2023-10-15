@@ -57,3 +57,16 @@ export async function GET(request, {params: {eventID}}){
         headers: { "Content-Type": "application/json" },
        });
 }
+
+export async function GET(request){
+    const prisma = new PrismaClient();
+    const openMarketplaces = await prisma.marketplace.findMany();
+    const json = JSON.stringify(openMarketplaces, (key, value) => {
+        return typeof value === 'bigint' ? value.toString() : value;
+    })
+
+    return new NextResponse(json, { 
+        status: 201, 
+        headers: { "Content-Type": "application/json" },
+       });
+}

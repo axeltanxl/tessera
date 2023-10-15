@@ -2,17 +2,17 @@
 import React from 'react'
 import SideNav from '@/components/ui/accountNav/SideNav'
 
-const TransferHistory = () => {
+const TransactionHistory = () => {
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
-                <SideNav activeTab={4} />
+                <SideNav activeTab={2} />
             </div>
 
-            <div>Transfer History</div>
+            <div>Transaction History</div>
 
         </section>
     )
 }
 
-export default TransferHistory;
+export default TransactionHistory;
