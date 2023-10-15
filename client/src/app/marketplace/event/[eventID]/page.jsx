@@ -6,13 +6,14 @@ import ListingCard from '@/components/ui/cards/ListingCard';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { format } from 'date-fns';
+import Modal from '@mui/material/Modal';
 
 function formatDate(inputDate) {
     if (inputDate !== undefined && inputDate !== null) {
-      const formattedDate = format(new Date(inputDate), 'dd MMM yyyy');
-      return formattedDate;
+        const formattedDate = format(new Date(inputDate), 'dd MMM yyyy');
+        return formattedDate;
     }
-  }
+}
 
 function MarketplaceListing() {
     const url = usePathname();
@@ -46,8 +47,8 @@ function MarketplaceListing() {
             }
         }
 
-        async function fetchCATByEvent(){
-            try{
+        async function fetchCATByEvent() {
+            try {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
@@ -55,17 +56,17 @@ function MarketplaceListing() {
                     method: 'GET',
                     headers
                 });
-                if(res.ok){
+                if (res.ok) {
                     const categoriesByEvent = await res.json();
                     setCategories(categoriesByEvent);
                 }
-            }catch (error) {
+            } catch (error) {
                 console.error("An error occurred:", error);
             }
         }
 
-        async function fetchRunsByEvent(){
-            try{
+        async function fetchRunsByEvent() {
+            try {
                 console.log("test")
                 const headers = {
                     Authorization: `Bearer ${token}`,
@@ -74,14 +75,14 @@ function MarketplaceListing() {
                     method: 'GET',
                     headers
                 });
-                if(res.ok){
+                if (res.ok) {
                     const runsByEvent = await res.json();
                     console.log("runs:", runsByEvent);
                     const runDates = runsByEvent.runs.map((item) => formatDate(item.date));
                     setRuns(runDates);
                     setEventName(runsByEvent.name);
                 }
-            }catch (error) {
+            } catch (error) {
                 console.error("An error occurred:", error);
             }
         }
@@ -107,67 +108,72 @@ function MarketplaceListing() {
     };
 
     const handleReset = () => {
-        setSort('');   
+        setSort('');
         setSelectedRun(null);
         setSelectedCategory(null);
     }
 
     useEffect(() => {
         let sortedArray = [...allListings];
-      
+
         if (sort === 'Low to High') {
-          sortedArray.sort((a, b) => a.ticketListing.price - b.ticketListing.price);
+            sortedArray.sort((a, b) => a.ticketListing.price - b.ticketListing.price);
         } else if (sort === 'High to Low') {
-          sortedArray.sort((a, b) => b.ticketListing.price - a.ticketListing.price);
+            sortedArray.sort((a, b) => b.ticketListing.price - a.ticketListing.price);
         }
-        if(selectedCategory !== null){
+        if (selectedCategory !== null) {
             sortedArray = sortedArray.filter((item) => item.seat.category === selectedCategory);
         }
-        if(selectedRun != null){
+        if (selectedRun != null) {
             sortedArray = sortedArray.filter((item) => formatDate(item.run.date) === selectedRun);
         }
         // Update the filteredListings state with the sorted array
         setFilteredListings(sortedArray);
-      }, [sort, allListings, selectedCategory, selectedRun]);
-    
-      //countdown timer
-      const [timerDays, setTimerDays] = useState('00');
-      const [timerHours, setTimerHours] = useState('00');
-      const [timerMinutes, setTimerMinutes] = useState('00');
-      const [timerSeconds, setTimerSeconds] = useState('00');
+    }, [sort, allListings, selectedCategory, selectedRun]);
 
-      let interval = useRef();
-      const startTimer = () => {
-            const  countdownDate = new Date('16 October 2023 00:00:00').getTime();
-            interval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
+    //countdown timer
+    const [timerDays, setTimerDays] = useState('00');
+    const [timerHours, setTimerHours] = useState('00');
+    const [timerMinutes, setTimerMinutes] = useState('00');
+    const [timerSeconds, setTimerSeconds] = useState('00');
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24)); // 1000 miliseconds * 60 seconds * 60 minutes * 24 hours
-                const hours = Math.floor(distance % (1000 * 60 * 60 * 24) / (1000 * 60 * 60)); 
-                const minutes = Math.floor(distance % (1000 * 60 * 60) / (1000 * 60)); 
-                const seconds = Math.floor(distance % (1000 * 60) / 1000); 
+    let interval = useRef();
+    const startTimer = () => {
+        const countdownDate = new Date('17 October 2023 00:00:00').getTime();
+        interval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
 
-                if(distance < 0){
-                    //stop timer
-                    clearInterval(interval.current);
-                }else{
-                    //update timer
-                    setTimerDays(days);
-                    setTimerHours(hours);
-                    setTimerMinutes(minutes);
-                    setTimerSeconds(seconds);
-                }
-            }, 1000);
-      };
-      //componentDidMount
-      useEffect(() => {
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24)); // 1000 miliseconds * 60 seconds * 60 minutes * 24 hours
+            const hours = Math.floor(distance % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+            const minutes = Math.floor(distance % (1000 * 60 * 60) / (1000 * 60));
+            const seconds = Math.floor(distance % (1000 * 60) / 1000);
+
+            if (distance < 0) {
+                //stop timer
+                clearInterval(interval.current);
+            } else {
+                //update timer
+                setTimerDays(days);
+                setTimerHours(hours);
+                setTimerMinutes(minutes);
+                setTimerSeconds(seconds);
+            }
+        }, 1000);
+    };
+    //componentDidMount
+    useEffect(() => {
         startTimer();
         return () => {
             clearInterval(interval.current);
         };
-      });
-      
+    });
+
+    //modal 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
         <section className="bg-primary h-full">
             <Head>
@@ -202,10 +208,10 @@ function MarketplaceListing() {
             <div className='px-20 py-8 flex justify-between'>
                 <div className='flex'>
                     <div className='mr-2 xs:mr-4'>
-                        <RadioDropdown name={"Date"} dropdownItems={runs} defaultValue={"Date"} handleChange={handleDateChange}/>
+                        <RadioDropdown name={"Date"} dropdownItems={runs} defaultValue={"Date"} handleChange={handleDateChange} />
                     </div>
                     <div className='mx-2 xs:mr-4'>
-                        <RadioDropdown name={"CAT"} dropdownItems={categories} defaultValue={"CAT"} handleChange={handleCategoryChange}/>
+                        <RadioDropdown name={"CAT"} dropdownItems={categories} defaultValue={"CAT"} handleChange={handleCategoryChange} />
                     </div>
                     <div className='mx-2 xs:mr-4'>
                         <RadioDropdown name={"Price"} dropdownItems={priceOptions} defaultValue={"Price"} handleChange={handlePriceFilterChange} />
@@ -216,13 +222,25 @@ function MarketplaceListing() {
                         Reset
                     </button>
                 </div>
-                <button className="bg-black text-white text-sm px-2 rounded-lg">View seat map</button>
+                <button onClick={handleOpen} className="bg-black text-white text-sm px-2 rounded-lg">View seat map</button>
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <div className='absolute top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] w-[80%] h-[80%] bg-white rounded-sm'>
+                        <div className='flex justify-center items-center h-full'>
+                            <img src="/images/stadiumSeating.webp"/>
+                        </div>
+                    </div>
+                </Modal>
             </div>
             <div className='px-20'>
                 {filteredListings.length > 0 ? (<div className='grid grid-cols-4 gap-4'>
                     {filteredListings.map((item, index) => <ListingCard item={item} key={index} />)}
-                </div>) : ("No tickets listed on Marketplace under your selected filters yet. Stay tuned!") }
-                
+                </div>) : ("No tickets listed on Marketplace under your selected filters yet. Stay tuned!")}
+
             </div>
         </section>)
 }
