@@ -73,7 +73,7 @@ const getTicketsWithSeat = [
 
 const MyTickets = () => {
 
-  const [numTicketsSelected, setNumTicketsSelected] = useState(0);
+
   const [details, setDetails] = useState(null);
   const [tickets, setTickets] = useState([]);
 
@@ -171,41 +171,6 @@ const MyTickets = () => {
   // }, []);
 
   console.log(tickets);
-
-  const handleSelectTickets = (checked) => {
-    checked ? setNumTicketsSelected(numTicketsSelected + 1) : setNumTicketsSelected(numTicketsSelected - 1);
-    console.log("number of tickets selected:" + numTicketsSelected);
-  }
-function MyTickets() {
-  //fetching orders from backend
-  // const [orders, setOrders] = useState([]);
-  // const token = localStorage.getItem('jwt');
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-
-  //       const headers = {
-  //         Authorization: `Bearer ${token}`,
-  //       };
-  //       const res = await fetch(`http://localhost:8080/api/v1/users/1/orders`, {
-  //         method: 'GET',
-  //         headers,
-  //       });
-  //       if (res.ok) {
-  //         const ordersData = await res.json();
-  //         setOrders(ordersData);
-  //       } else {
-  //         console.error("API request failed.");
-  //       }
-  //     } catch (error) {
-  //       console.error("An error occurred:", error);
-  //     }
-  //   }
-
-  //   fetchData();
-  // }, []);
-  // console.log("orders:", orders);
 
   //handle selection of tickets (multiselect checkbox)
   const [numTicketsSelected, setNumTicketsSelected] = useState(1);
