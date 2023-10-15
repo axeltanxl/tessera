@@ -10,6 +10,9 @@ import {
 import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+
 console.log("hello")
 // export const getEvent = async () =>{
 //     const res = await fetch("http://localhost:8080/api/v1/events/1");
@@ -19,10 +22,11 @@ console.log("hello")
 //   return event
 // }
 console.log("hello2")
+
+
 function EventDetails() {
     const [event, setEvent] = useState([]);
-    const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
-    console.log("eventID:", eventID);
+    const {eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
     console.log("token:", token);
@@ -32,10 +36,17 @@ function EventDetails() {
         async function fetchData() {
             try {
 
+                const search = window.location.href;
+                const split = search.split("/");
+                const eid = parseInt(split[split.length - 1])
+
+                console.log(search);
+                console.log("eid: ", eid);
+
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/1`, {
+                const res = await fetch(`http://localhost:8080/api/v1/events/${eid}`, {
                     method: 'GET',
                     headers,
                 });
@@ -52,6 +63,8 @@ function EventDetails() {
 
         fetchData();
     }, [])
+
+    console.log("eventID: ", eventID);
 
     return (
         <div className="w-full min-h-screen">
@@ -74,10 +87,11 @@ function EventDetails() {
                     <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
                         <div className=' w-full flex justify-between'>
                             <div className="mb-4 font-semibold inline">{name}</div>
-                            <Link href="/payment/seat-selection">
+                            <Link href={`/payment/paymentForm/${eventID}`}>
                                 <Button variant="outlined" className="text-primary bg-secondary hover:bg-secondary inline" disabled={soldOut}>
                                     {soldOut ? "Sold out" : "Buy tickets"}
-                                </Button></Link>
+                                </Button>
+                            </Link>
                         </div>
 
                         <p className='text-md font-semibold'>Event from {startDate} to {endDate} </p>
