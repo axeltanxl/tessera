@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,4 +31,7 @@ public class Marketplace {
     @JsonManagedReference
     @OneToOne(mappedBy = "marketplace")
     private Run run;
+
+    @Transient
+    private EventDTO eventDTO;
 }
