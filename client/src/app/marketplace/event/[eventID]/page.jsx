@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { RadioDropdown } from '@/components/ui/RadioDropdown';
 import { DateRangePicker } from '@/components/ui/DateRangePicker';
 import ListingCard from '@/components/ui/cards/ListingCard';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { format } from 'date-fns';
 
@@ -24,7 +24,7 @@ function MarketplaceListing() {
     const [runs, setRuns] = useState([]);
     const [selectedRun, setSelectedRun] = useState(null);
     const token = localStorage.getItem('jwt');
-
+    const [eventName, setEventName] = useState('');
     useEffect(() => {
         async function fetchTicketListingsByEvent() {
             try {
@@ -76,8 +76,10 @@ function MarketplaceListing() {
                 });
                 if(res.ok){
                     const runsByEvent = await res.json();
+                    console.log("runs:", runsByEvent);
                     const runDates = runsByEvent.runs.map((item) => formatDate(item.date));
                     setRuns(runDates);
+                    setEventName(runsByEvent.name);
                 }
             }catch (error) {
                 console.error("An error occurred:", error);
@@ -110,8 +112,6 @@ function MarketplaceListing() {
         setSelectedCategory(null);
     }
 
-    console.log("sll:", allListings);
-
     useEffect(() => {
         let sortedArray = [...allListings];
       
@@ -130,6 +130,44 @@ function MarketplaceListing() {
         setFilteredListings(sortedArray);
       }, [sort, allListings, selectedCategory, selectedRun]);
     
+      //countdown timer
+      const [timerDays, setTimerDays] = useState('00');
+      const [timerHours, setTimerHours] = useState('00');
+      const [timerMinutes, setTimerMinutes] = useState('00');
+      const [timerSeconds, setTimerSeconds] = useState('00');
+
+      let interval = useRef();
+      const startTimer = () => {
+            const  countdownDate = new Date('16 October 2023 00:00:00').getTime();
+            interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24)); // 1000 miliseconds * 60 seconds * 60 minutes * 24 hours
+                const hours = Math.floor(distance % (1000 * 60 * 60 * 24) / (1000 * 60 * 60)); 
+                const minutes = Math.floor(distance % (1000 * 60 * 60) / (1000 * 60)); 
+                const seconds = Math.floor(distance % (1000 * 60) / 1000); 
+
+                if(distance < 0){
+                    //stop timer
+                    clearInterval(interval.current);
+                }else{
+                    //update timer
+                    setTimerDays(days);
+                    setTimerHours(hours);
+                    setTimerMinutes(minutes);
+                    setTimerSeconds(seconds);
+                }
+            }, 1000);
+      };
+      //componentDidMount
+      useEffect(() => {
+        startTimer();
+        return () => {
+            clearInterval(interval.current);
+        };
+      });
+      
     return (
         <section className="bg-primary h-full">
             <Head>
@@ -141,7 +179,7 @@ function MarketplaceListing() {
             <div className="bg-cover bg-center bg-[url('/gradient.png')]  h-[284px] flex items-center p-10">
                 <img src={"/image-9.jpg"} className='h-[230px]' />
                 <div className="items-start flex flex-col flex-1 p-20">
-                    <p className='text-2xl'>Taylor Swift The Eras Tour</p>
+                    <p className='text-2xl'>{eventName}</p>
                     <p className='mb-2'>Ticket marketplace closing in</p>
                     <div className='grid grid-cols-7 grid-rows-1 gap-x-1 gap-y-1'>
                         <p className='text-center'>Days</p>
@@ -151,13 +189,13 @@ function MarketplaceListing() {
                         <p className='text-center'>Minutes</p>
                         <p></p>
                         <p className='text-center'>Seconds</p>
-                        <p className='text-5xl text-center'>13</p>
+                        <p className='text-5xl text-center'>{timerDays}</p>
                         <p></p>
-                        <p className='text-5xl text-center'>10</p>
+                        <p className='text-5xl text-center'>{timerHours}</p>
                         <p className='text-center'>:</p>
-                        <p className='text-5xl text-center'>20</p>
+                        <p className='text-5xl text-center'>{timerMinutes}</p>
                         <p className='text-center'>:</p>
-                        <p className='text-5xl text-center'>45</p>
+                        <p className='text-5xl text-center'>{timerSeconds}</p>
                     </div>
                 </div>
             </div>
