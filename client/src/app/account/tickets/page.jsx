@@ -1,5 +1,6 @@
-'use client'
-import React, { useEffect, useState } from 'react'
+"use client"
+import React from 'react'
+import { useState, useEffect } from 'react';
 import SideNav from '@/components/ui/accountNav/SideNav';
 import {
   Table,
@@ -15,6 +16,8 @@ import TicketCard from '@/components/ui/cards/TicketCard';
 import Link from 'next/link';
 import Checkbox from '@/components/ui/Checkbox';
 import Modal from '@mui/material/Modal';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const getOrders = [
   {
@@ -67,6 +70,112 @@ const getTicketsWithSeat = [
     seatNo: 25
   }
 ]
+
+const MyTickets = () => {
+
+  const [numTicketsSelected, setNumTicketsSelected] = useState(0);
+  const [details, setDetails] = useState(null);
+  const [tickets, setTickets] = useState([]);
+
+  
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
+
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setDetails(response.data);
+
+          const userid = response.data.userID;
+          fetchTix(userid);
+          
+        } else {
+          throw new Error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchTix = async (userid) => {
+      const token = Cookies.get("jwt_spring");
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userid}/tickets`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          setTickets(response.data);
+          console.log(response.data);
+          
+        } else {
+          throw new Error('Failed to fetch data');
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
+      
+    }
+
+    fetchDetails();
+  }, []);
+
+  console.log(details?.userID);
+
+  // if (userid){
+  //   useEffect(() => {
+  //     const fetchDetails = async () => {
+  //     const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
+
+  //     try {
+  //       const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+
+  //       if (response.status === 200) {
+  //         setDetails(response.data);
+  //       } else {
+  //         throw new Error('Failed to fetch data');
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //     }
+  //   },[]);
+  // }
+
+  // useEffect(() => {
+  //   // Define the backend API URL
+  //   const apiUrl = `${process.env.NEXT_PUBLIC_SPRING_BACKEND}/api/users/${userid}/tickets`;
+
+  //   // Make an HTTP GET request to the backend
+  //   axios.get(apiUrl)
+  //     .then((response) => {
+  //       // Set the tickets in the state with the data received from the backend
+  //       setTickets(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, []);
+
+  console.log(tickets);
+
+  const handleSelectTickets = (checked) => {
+    checked ? setNumTicketsSelected(numTicketsSelected + 1) : setNumTicketsSelected(numTicketsSelected - 1);
+    console.log("number of tickets selected:" + numTicketsSelected);
+  }
 function MyTickets() {
   //fetching orders from backend
   // const [orders, setOrders] = useState([]);

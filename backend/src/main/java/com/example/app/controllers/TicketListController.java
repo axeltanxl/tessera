@@ -7,24 +7,36 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.app.models.CustOrder;
 import com.example.app.models.Run;
 import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
 import com.example.app.models.TicketListingWithSeat;
+import com.example.app.models.Transaction;
+import com.example.app.models.User;
+import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
+import com.example.app.repositories.TransactionRepository;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/")
 public class TicketListController {
 
     @Autowired
@@ -36,9 +48,13 @@ public class TicketListController {
     private SeatRepository seatRepo;
     @Autowired
     private RunRepository runRepo;
+    @Autowired
+    private OrderRepository orderRepo;
+    @Autowired
+    private TransactionRepository transactionRepo;
 
-    //For general public who wants to see each listing.
-    @GetMapping("ticketListing/{listingID}")
+    // For general public who wants to see each listing.
+    @GetMapping("ticketListings/{listingID}")
     public ResponseEntity<Object> getListingByTicketListID(@PathVariable long listingID) {
 
         Optional<TicketListing> eachTicket = ticketListRepo.findById(listingID);
@@ -48,7 +64,7 @@ public class TicketListController {
         return ResponseEntity.ok(eachTicket);
     }
 
-    //For the public who wants to see all the listings
+    // For the public who wants to see all the listings
     @GetMapping("ticketListings")
     public ResponseEntity<List<TicketListing>> getAllListings() {
         List<TicketListing> ticketLists = ticketListRepo.findAll();
@@ -56,7 +72,7 @@ public class TicketListController {
         return ResponseEntity.ok(ticketLists);
     }
 
-    //For the public who wants to see all the listings for 1 event
+    // For the public who wants to see all the listings for 1 event
     @GetMapping("events/{eventID}/ticketListings")
     public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
 
@@ -106,32 +122,155 @@ public class TicketListController {
         return ResponseEntity.ok(ticketListsWithSeats);
     }
 
-    /* UNUSED METHOD */
-    // @Autowired
-    // private Middleware midWare;
-    // @Autowired
-    // private UserRepository userRepo;
+    // to add ticketListings
+    @PostMapping("orders/{orderID}/runs/{runID}/ticketListings")
+    public ResponseEntity<String> addTicketListings(@PathVariable("orderID") Long orderID,
+            @PathVariable("runID") Long runID, @RequestBody TicketListing reqTicketListing) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User authenticatedUser = (User) authentication.getPrincipal();
 
-    // @GetMapping("ticketListing/{listingID}")
-    // public ResponseEntity<Object> getListingByTicketListID(@RequestHeader("Authorization") String authorizationHeader, 
-    // @PathVariable long listingID) {
-        
-    //     final String TOKEN = authorizationHeader.replace("Bearer ", ""); // Remove "Bearer " prefix
-        
-    //     final ModelMapper modelMapper = new ModelMapper();
-    //     String getCurrEmail = midWare.extractUsername(TOKEN);
+            // go order repo
+            CustOrder currOrder = orderRepo.getReferenceById(orderID);
 
-    //     User user = userRepo.findByEmail(getCurrEmail);
+            // Check if the currently authenticated user matches the user being updated
+            if (!(authenticatedUser.getUserID() == currOrder.getUser().getUserID())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
+            }
 
-    //     // Convert User entity to UserDTO, excluding the password
-    //     UserDTO userObj = modelMapper.map(user, UserDTO.class);
+            if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
+            }
 
-    //     Optional<TicketListing> ticketList = ticketListRepo.findById(listingID);
-    //     if (!ticketList.isPresent() || ticketList.get().getUser().getUserID() != userObj.getUserID()) {
-    //         return ResponseEntity.notFound().build();
+            Optional<Ticket> ticketObj = ticketRepo.findOneTicketByOrderOrderID(orderID);
+            if (!ticketObj.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");
+            }
+
+            // default pricing/event/status/userID.Price will be NULL
+            // reqTicketListing.setPrice(currOrder.getPrice());
+            reqTicketListing.setEvent(currOrder.getEvent());
+
+            reqTicketListing.setStatus("Not Listed");
+            reqTicketListing.setUser(authenticatedUser);
+
+            Ticket currTicket = ticketObj.get();
+            // For ticketID in TicketListing
+            reqTicketListing.setTicket(currTicket);
+
+            Optional<Run> optRun = runRepo.findById(runID);
+            if (!optRun.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Run not found");
+            }
+            Run currRun = optRun.get();
+            reqTicketListing.setRun(currRun);
+
+            // create new transaction assign to ticketListing
+            Transaction newTrans = new Transaction();
+            newTrans.setSeller(authenticatedUser);
+            newTrans.setTicket(currTicket);
+            newTrans.setDate(reqTicketListing.getListingDate());
+
+            // for transactionID in ticketListing
+            reqTicketListing.setTransaction(newTrans);
+
+            transactionRepo.save(newTrans);
+            ticketListRepo.save(reqTicketListing);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Successfully created ticketListing and transaction.");
+
+        } catch (Exception ex) {
+            System.out.println("Error while adding ticketListing: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while adding ticketListing");
+        }
+    }
+
+    // private boolean isAuthorized(Long listingID) {
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     User authenticatedUser = (User) authentication.getPrincipal();
+
+    //     // retrieve obj. Ensure that listing is associated to the correct user.
+    //     Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
+    //     TicketListing oneTicketListing = optTicketListing.get();
+
+    //     // Check if the currently authenticated user matches the user being updated
+    //     if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
+    //         return false;
     //     }
-
-    //     // String getCurrListing = 
-    //     return ResponseEntity.ok(ticketList);
+    //     return true;
     // }
+
+    //Update listing with price.
+    @PutMapping("ticketListings/{listingID}")
+    public ResponseEntity<String> updateTicketListing(@PathVariable("listingID") Long listingID, 
+    @RequestBody TicketListing requestedTicketListing) {
+        try {
+            if (!ticketListRepo.existsById(listingID)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User authenticatedUser = (User) authentication.getPrincipal();
+
+            // retrieve obj. Ensure that listing is associated to the correct user.
+            Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
+            TicketListing oneTicketListing = optTicketListing.get();
+
+            // Check if the currently authenticated user matches the user being updated
+            if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
+            }
+            
+            oneTicketListing.setPrice(requestedTicketListing.getPrice());
+            oneTicketListing.setStatus("Listed");
+
+            ticketListRepo.save(oneTicketListing);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Successfully updated ticketListing.");
+
+        } catch (Exception ex) {
+            System.out.println("Error while updating ticketListing: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while updating ticketListing");
+        }
+    }
+
+    @DeleteMapping(path = "ticketListings/{listingID}")
+    public ResponseEntity<Object> deleteListing(@PathVariable("listingID") Long listingID) {
+        try {
+            if (!ticketListRepo.existsById(listingID)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User authenticatedUser = (User) authentication.getPrincipal();
+
+            // retrieve obj. Ensure that listing is associated to the correct user.
+            Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
+            TicketListing oneTicketListing = optTicketListing.get();
+
+            // Check if the currently authenticated user matches the user being updated
+            if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
+            }
+
+            //get transactionID.
+            long getTransactionID = oneTicketListing.getTransaction().getTransactionID();
+
+            //find and delete from both table.
+            ticketListRepo.deleteById(listingID);
+            transactionRepo.deleteById(getTransactionID);
+            
+
+            return ResponseEntity.status(HttpStatus.OK).body("TicketListing deleted successfully.");
+        } catch (Exception e) {
+            System.out.println("Error while deleting ticket listing: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while deleting the ticketlisting.");
+        }
+    }
 }
