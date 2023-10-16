@@ -26,14 +26,18 @@ public class Run {
     private String endTime;
     private Date date;
 
+    @JsonManagedReference(value="run-order")
+    @OneToMany(mappedBy = "run")
+    private List<CustOrder> orders;
+
     @JsonBackReference(value="event-run")
     @ManyToOne
     @JoinColumn(name = "eventID")
     private Event event;
 
-    @JsonManagedReference(value="run-ticketlisting")
-    @OneToMany(mappedBy = "run")
-    private List<TicketListing> ticketListing;
+    // @JsonManagedReference(value="run-ticketlisting")
+    // @OneToMany(mappedBy = "run")
+    // private List<TicketListing> ticketListing;
 
     @JsonBackReference
     @OneToOne

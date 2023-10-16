@@ -35,13 +35,9 @@ public class Event {
     private int maxSlots;
     private String displayImage;
 
-    @JsonManagedReference(value="order-event")
-    @OneToMany(mappedBy = "event")
-    private List<CustOrder> orders;
-
-    @JsonManagedReference(value="ticketListing-event")
-    @OneToMany(mappedBy = "event")
-    private List<TicketListing> ticketListings;
+    // @JsonManagedReference(value="ticketListing-event")
+    // @OneToMany(mappedBy = "event")
+    // private List<TicketListing> ticketListings;
 
     @JsonBackReference(value="venue-event")
     @ManyToOne
@@ -60,7 +56,8 @@ public class Event {
     public String toString() {
       return "Event [eventID=" + eventID + ", name=" + name + ", category=" + category + ", description=" + description
           + ", startDate=" + startDate + ", endDate=" + endDate + ", duration=" + duration + ", pricePerCategory="
-          + pricePerCategory + ", maxSlots=" + maxSlots + ", orders=" + orders + ", venue=" + venue + "]";
+          + pricePerCategory + ", maxSlots=" + maxSlots + ", displayImage=" + displayImage + ", venue=" + venue
+          + ", runs=" + runs + "]";
     }
 
     public void setEventID(long eventID) {
@@ -131,14 +128,6 @@ public class Event {
       this.maxSlots = maxSlots;
     }
 
-    public List<CustOrder> getCustOrders() {
-      return orders;
-    }
-
-    public void setCustOrders(List<CustOrder> orders) {
-      this.orders = orders;
-    }
-
     public Venue getVenue() {
       return venue;
     }
@@ -155,21 +144,13 @@ public class Event {
       this.name = name;
     }
 
-    public List<CustOrder> getOrders() {
-      return orders;
-    }
+    // public List<TicketListing> getTicketListings() {
+    //   return ticketListings;
+    // }
 
-    public void setOrders(List<CustOrder> orders) {
-      this.orders = orders;
-    }
-
-    public List<TicketListing> getTicketListings() {
-      return ticketListings;
-    }
-
-    public void setTicketListings(List<TicketListing> ticketListings) {
-      this.ticketListings = ticketListings;
-    }
+    // public void setTicketListings(List<TicketListing> ticketListings) {
+    //   this.ticketListings = ticketListings;
+    // }
 
     public List<Run> getRuns() {
       return runs;

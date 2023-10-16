@@ -32,6 +32,10 @@ public class Marketplace {
     @OneToOne(mappedBy = "marketplace")
     private Run run;
 
+    @JsonManagedReference(value="ticketListing-marketplace")
+    @OneToMany(mappedBy = "marketplace")
+    private List<TicketListing> ticketListings;
+
     @Transient
     private EventDTO eventDTO;
 }
