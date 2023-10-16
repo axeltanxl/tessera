@@ -1,5 +1,6 @@
 package com.example.app.controllers;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -260,7 +261,21 @@ public class EventController {
           return ResponseEntity.notFound().build();
       }
 
+      LocalDate openingDate = run.getDate().minusWeeks(2);
+
+        // Calculate closingDate (1 day before Run date)
+      LocalDate closingDate = run.getDate().minusDays(1);
+
+      // Create a marketplace with default values
+      Marketplace marketplace = new Marketplace();
+      marketplace.setStatus("not open");
+      marketplace.setOpeningDate(openingDate);
+      marketplace.setClosingDate(closingDate);
+
+      Marketplace savedMarketplace = eventRepository.save(marketplace);
+
       run.setEvent(existingEvent.get());
+      run.setMarketplace(savedMarketplace);
       runRepository.save(run);
 
       return ResponseEntity.status(HttpStatus.CREATED).body("Run added successfully");
