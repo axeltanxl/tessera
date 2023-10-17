@@ -16,67 +16,87 @@ import jakarta.persistence.GenerationType;
 
 @Entity
 public class Ticket {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ticketID;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long ticketID;
+  private String uniqueCode;
 
-    private String uniqueCode;
-    
-    @JsonBackReference(value="order-ticket")
-    @ManyToOne
-    @JoinColumn(name="orderID")
-    private CustOrder order;
+  @JsonBackReference(value = "order-ticket")
+  @ManyToOne
+  @JoinColumn(name = "orderID")
+  private CustOrder order;
 
-    @JsonBackReference(value="ticket-seats")
-    @ManyToOne
-    @JoinColumn(name="seatID")
-    private Seat seat;
+  @JsonBackReference(value = "ticket-seats")
+  @ManyToOne
+  @JoinColumn(name = "seatID")
+  private Seat seat;
 
-    @JsonManagedReference(value="transaction-ticket")
-    @OneToMany(mappedBy = "ticket")
-    private List<Transaction> transactions;
+  @JsonManagedReference(value = "transaction-ticket")
+  @OneToMany(mappedBy = "ticket")
+  private List<Transaction> transactions;
 
-    @JsonManagedReference(value="ticketListing-ticket")
-    @OneToMany(mappedBy = "ticket")
-    private List<TicketListing> ticketListings;
+  @JsonManagedReference(value = "ticketListing-ticket")
+  @OneToMany(mappedBy = "ticket")
+  private List<TicketListing> ticketListings;
 
-    public long getTicketID() {
-      return ticketID;
-    }
+  @JsonBackReference(value = "user-ticket")
+  @ManyToOne
+  @JoinColumn(name = "user")
+  private User user;
 
-    public void setTicketID(long ticketID) {
-      this.ticketID = ticketID;
-    }
+  public long getTicketID() {
+    return ticketID;
+  }
 
-    public String getUniqueCode() {
-      return uniqueCode;
-    }
+  public void setTicketID(long ticketID) {
+    this.ticketID = ticketID;
+  }
 
-    public void setUniqueCode(String uniqueCode) {
-      this.uniqueCode = uniqueCode;
-    }
+  public List<TicketListing> getTicketListings() {
+    return ticketListings;
+  }
 
-    public CustOrder getOrder() {
-      return order;
-    }
+  public void setTicketListings(List<TicketListing> ticketListings) {
+    this.ticketListings = ticketListings;
+  }
 
-    public void setOrder(CustOrder order) {
-      this.order = order;
-    }
+  public String getUniqueCode() {
+    return uniqueCode;
+  }
 
-    public Seat getSeat() {
-      return seat;
-    }
+  public void setUniqueCode(String uniqueCode) {
+    this.uniqueCode = uniqueCode;
+  }
 
-    public void setSeat(Seat seat) {
-      this.seat = seat;
-    }
+  public CustOrder getOrder() {
+    return order;
+  }
 
-    public List<Transaction> getTransactions() {
-      return transactions;
-    }
+  public void setOrder(CustOrder order) {
+    this.order = order;
+  }
 
-    public void setTransactions(List<Transaction> transactions) {
-      this.transactions = transactions;
-    }
+  public Seat getSeat() {
+    return seat;
+  }
+
+  public void setSeat(Seat seat) {
+    this.seat = seat;
+  }
+
+  public List<Transaction> getTransactions() {
+    return transactions;
+  }
+
+  public void setTransactions(List<Transaction> transactions) {
+    this.transactions = transactions;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
 }
