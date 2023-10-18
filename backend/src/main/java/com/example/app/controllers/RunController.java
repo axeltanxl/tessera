@@ -7,20 +7,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.models.CustOrder;
-import com.example.app.repositories.OrderRepository;
+import com.example.app.models.Run;
+import com.example.app.repositories.RunRepository;
 import java.util.*;
 
-
 @RestController
-@RequestMapping("/api/v1")
-public class OrderController {
+@RequestMapping("api/v1")
+public class RunController {
 
     @Autowired
-    private OrderRepository orderRepository;
+    private RunRepository runRepo;
 
-    @GetMapping("users/{userID}/orders")
-    public List<CustOrder> getOrderByUserID(@PathVariable long userID) {
-        List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);
-        return orders;
+    @GetMapping("run/{eventID}/runs")
+    public List<Run> getRunsByEventID(@PathVariable long eventID) {
+        List<Run> runs = runRepo.findRunByOrderOrderID(eventID);
+        return runs;
     }
+    
 }

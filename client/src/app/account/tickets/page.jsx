@@ -75,6 +75,9 @@ const MyTickets = () => {
   const [numTicketsSelected, setNumTicketsSelected] = useState(0);
   const [details, setDetails] = useState(null);
   const [tickets, setTickets] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [seats, setSeats] = useState([]);
 
   
   useEffect(() => {
@@ -92,6 +95,7 @@ const MyTickets = () => {
           setDetails(response.data);
 
           const userid = response.data.userID;
+          fetchOrders(userid);
           fetchTix(userid);
           
         } else {
@@ -113,7 +117,7 @@ const MyTickets = () => {
 
         if (response.status === 200) {
           setTickets(response.data);
-          console.log(response.data);
+          console.log("tickets: ", response.data);
           
         } else {
           throw new Error('Failed to fetch data');
@@ -122,7 +126,26 @@ const MyTickets = () => {
       } catch (err) {
         console.error(err);
       }
-      
+    }
+
+    const fetchOrders = async (userid) => {
+      const token = Cookies.get("jwt_spring");
+      try{
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userid}/orders`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.status === 200) {
+          setOrders(response.data);
+          console.log("orders: ", response.data);
+
+        } else {
+          throw new Error('Failed to fetch data');
+        }
+      }catch(e){
+        console.error(e);
+      }
     }
 
     fetchDetails();
@@ -130,51 +153,18 @@ const MyTickets = () => {
 
   console.log(details?.userID);
 
-  // if (userid){
-  //   useEffect(() => {
-  //     const fetchDetails = async () => {
-  //     const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
-
-  //     try {
-  //       const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       if (response.status === 200) {
-  //         setDetails(response.data);
-  //       } else {
-  //         throw new Error('Failed to fetch data');
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //     }
-  //   },[]);
-  // }
-
-  // useEffect(() => {
-  //   // Define the backend API URL
-  //   const apiUrl = `${process.env.NEXT_PUBLIC_SPRING_BACKEND}/api/users/${userid}/tickets`;
-
-  //   // Make an HTTP GET request to the backend
-  //   axios.get(apiUrl)
-  //     .then((response) => {
-  //       // Set the tickets in the state with the data received from the backend
-  //       setTickets(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, []);
-
   console.log(tickets);
+  console.log(orders);
 
   const handleSelectTickets = (checked) => {
     checked ? setNumTicketsSelected(numTicketsSelected + 1) : setNumTicketsSelected(numTicketsSelected - 1);
     console.log("number of tickets selected:" + numTicketsSelected);
   }
+
+  const fetchRunDetails = async () => {
+    
+  }
+
   return (
     <section className='flex mt-10'>
       <div className='mr-20 ml-10'>
@@ -192,7 +182,7 @@ const MyTickets = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {getOrders.map((item, index) => (
+              {orders.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell className="font-medium">
                     <p><span className='font-semibold'>Order No: </span>{item.orderID}</p>

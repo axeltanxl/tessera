@@ -7,4 +7,5 @@ import com.example.app.models.Run;
 
 public interface RunRepository extends JpaRepository<Run, Long>{
     List<Run> findAllByEventEventID(Long eventID);
+    List<Run> findRunByOrderOrderID(long orderID);
 }

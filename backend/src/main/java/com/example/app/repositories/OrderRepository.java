@@ -7,5 +7,5 @@ import com.example.app.models.CustOrder;
 
 
 public interface OrderRepository extends JpaRepository<CustOrder, Long>{
-    public List<CustOrder> findOrderByUserUserID(long userId);
+    List<CustOrder> findOrderByUserUserID(long userId);
 }
