@@ -35,9 +35,9 @@ public class Run {
     @JoinColumn(name = "eventID")
     private Event event;
 
-    // @JsonManagedReference(value="run-ticketlisting")
-    // @OneToMany(mappedBy = "run")
-    // private List<TicketListing> ticketListing;
+    @JsonManagedReference(value="run-ticketlisting")
+    @OneToMany(mappedBy = "run")
+    private List<TicketListing> ticketListing;
 
     @JsonBackReference
     @OneToOne

@@ -35,9 +35,9 @@ public class Event {
     private int maxSlots;
     private String displayImage;
 
-    // @JsonManagedReference(value="ticketListing-event")
-    // @OneToMany(mappedBy = "event")
-    // private List<TicketListing> ticketListings;
+    @JsonManagedReference(value="ticketListing-event")
+    @OneToMany(mappedBy = "event")
+    private List<TicketListing> ticketListings;
 
     @JsonBackReference(value="venue-event")
     @ManyToOne
@@ -144,13 +144,13 @@ public class Event {
       this.name = name;
     }
 
-    // public List<TicketListing> getTicketListings() {
-    //   return ticketListings;
-    // }
+    public List<TicketListing> getTicketListings() {
+      return ticketListings;
+    }
 
-    // public void setTicketListings(List<TicketListing> ticketListings) {
-    //   this.ticketListings = ticketListings;
-    // }
+    public void setTicketListings(List<TicketListing> ticketListings) {
+      this.ticketListings = ticketListings;
+    }
 
     public List<Run> getRuns() {
       return runs;
