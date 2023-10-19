@@ -11,8 +11,6 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import TicketCard from '@/components/ui/TicketCard';
-import { Checkbox } from "@/components/ui/checkbox";
 
 
 console.log("hello")
