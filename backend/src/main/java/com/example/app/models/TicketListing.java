@@ -50,4 +50,9 @@ public class TicketListing {
     @ManyToOne
     @JoinColumn(name = "runID")
     private Run run;
+
+    @JsonBackReference(value="ticketListing-marketplace")
+    @ManyToOne
+    @JoinColumn(name = "marketplaceID")
+    private Marketplace marketplace;
 }
