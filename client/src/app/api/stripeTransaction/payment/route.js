@@ -28,17 +28,48 @@ export async function POST(request){
     })
 
     // find listing
-    const { price, quantity, eventID, runID } = await prisma.ticketlisting.findUnique({
+    const { ticketID, price, quantity, marketplaceID } = await prisma.ticketlisting.findUnique({
         where : {
             listingID : listingID,
         },
         select : {
+            ticketID : true,
             price : true, 
             quantity : true,
-            eventID : true,
-            runID : true,
+            marketplaceID : true,
         }
     })
+
+    await prisma.marketplace.findUnique({
+        where : {
+            marketplaceID : marketplaceID,
+        },
+        select : {
+            run
+        }
+    })
+
+    // find seat
+    const { seatID } = await prisma.ticket.findUnique({
+        where : {
+            ticketID : ticketID,
+        },
+        select : {
+            seatID : true,
+        }
+    })
+
+    // get seat details
+    const {seatRow, seatNo} = await prisma.seat.findUnique({
+        where : {
+            seatID : seatID,
+        },
+        select : {
+            seatRow : true,
+            seatNo : true,
+        }
+    })
+
 
     // find eventDetails
     const { name, displayImage } = await prisma.event.findUnique({
@@ -47,6 +78,7 @@ export async function POST(request){
         },
         select : {
             name : true,
+            displayImage : true, 
         }
     })
 
@@ -67,10 +99,12 @@ export async function POST(request){
                     unit_amount : price,
                     product_data :{
                         name : name,
-                        images : [displayImage]
+                        images : [displayImage],
+                        description : `Date: ${date.toLocaleDateString()} Time: ${startTime} Venue: ${venue} 
+                         Category: ${category}\n${seatDesc}`,
                     },
                 },
-                quantity : quantity
+                quantity : 1,
             }
         ],
         mode : 'payment', // one time payment

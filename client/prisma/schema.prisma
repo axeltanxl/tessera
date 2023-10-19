@@ -7,7 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model  duration         Int
+model custorder {
+  orderID        BigInt    @id @default(autoincrement())
+  ticketQuantity Int
+  eventID        BigInt?
+  userID         BigInt?
+  ticketCategory String?   @db.VarChar(255)
+  date           DateTime? @db.Date
+  price          Int
+  stripeOrderID  String?   @db.VarChar(255)
+  runID          BigInt?
+
+  @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
+  @@index([runID], map: "FKif7961o0kcvcdtu367120seoi")
+  @@index([eventID], map: "FKr6tkc9du1r50obuqt1h761d2y")
+}
+
+model event {
+  duration         Int
   endDate          DateTime? @db.Date
   maxSlots         Int
   startDate        DateTime? @db.Date
@@ -22,15 +39,45 @@ model  duration         Int
   @@index([venueID], map: "FKfkg0rjjt6ca7ck5mojidks7r7")
 }
 
+model marketplace {
+  marketplaceID BigInt    @id
+  closingDate   DateTime? @db.Date
+  openingDate   DateTime? @db.Date
+  status        String?   @db.VarChar(255)
+}
+
 model payment {
-  isSuccessful  Int
-  paymentID     BigInt  @id @default(autoincrement())
-  paymentMethod String? @db.VarChar(255)
-  orderID       BigInt?
-  transactionID BigInt?
+  isSuccessful    Int
+  paymentID       BigInt  @id @default(autoincrement())
+  paymentMethod   String? @db.VarChar(255)
+  orderID         BigInt?
+  transactionID   BigInt?
+  stripePaymentID String? @db.VarChar(255)
 
   @@index([orderID], map: "FKb33lw05499g9grnvp6ufpjjwg")
   @@index([transactionID], map: "FKmuaxt57agmtuiovehhauvchmq")
+}
+
+model run {
+  runID          BigInt    @id
+  date           DateTime? @db.Date
+  endTime        String?   @db.VarChar(255)
+  startTime      String?   @db.VarChar(255)
+  eventID        BigInt?
+  marketplace_id BigInt?   @unique(map: "UK_bmke6kuuntpjbd88yu4cju2ie")
+
+  @@index([eventID], map: "FKni6xubxc2bq4lmaxubip68iy4")
+}
+
+model seat {
+  seatID   BigInt  @id @default(autoincrement())
+  category String? @db.VarChar(255)
+  seatRow  String? @db.VarChar(255)
+  seatNo   Int
+  section  String? @db.VarChar(255)
+  venueID  BigInt?
+
+  @@index([venueID], map: "FKfj8lt431up6yqyeakinimp591")
 }
 
 model ticket {
@@ -38,9 +85,31 @@ model ticket {
   orderID    BigInt?
   seatID     BigInt?
   ticketID   BigInt  @id @default(autoincrement())
+  user       BigInt?
 
+  @@index([user], map: "FK31v9d9hvriiws3dhl0cw28x5f")
   @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
   @@index([orderID], map: "FKks8gd5eaa20qau296r9fgcc9n")
+}
+
+model ticketlisting {
+  listingID     BigInt    @id @default(autoincrement())
+  listingDate   DateTime? @db.DateTime(6)
+  price         Float
+  quantity      Int
+  status        String?   @db.VarChar(255)
+  ticketID      BigInt?
+  transactionID BigInt?   @unique(map: "UK_4vy5x6o4q6m3y4rppqavccbn2")
+  userID        BigInt?
+  eventID       BigInt?
+  runID         BigInt?
+  marketplaceID BigInt?
+
+  @@index([runID], map: "FK19h0ku2x5pr7s75w0s7sbon6g")
+  @@index([marketplaceID], map: "FK91beud6r09v7ry2gbxpw94jo6")
+  @@index([userID], map: "FKnflg4egmodkj1gmynr3s0fpkh")
+  @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
+  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
 }
 
 model transaction {
@@ -70,71 +139,6 @@ model venue {
   capacity Int
   name     String? @db.VarChar(255)
   venueID  BigInt  @id @default(autoincrement())
-}
-
-model custorder {
-  orderID        BigInt    @id @default(autoincrement())
-  ticketQuantity Int
-  eventID        BigInt?
-  userID         BigInt?
-  ticketCategory String?   @db.VarChar(255)
-  date           DateTime? @db.Date
-  price          Int
-
-  @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
-  @@index([eventID], map: "FKr6tkc9du1r50obuqt1h761d2y")
-}
-
-model seat {
-  seatID   BigInt  @id @default(autoincrement())
-  category String? @db.VarChar(255)
-  seatRow  String? @db.VarChar(255)
-  seatNo   Int
-  section  String? @db.VarChar(255)
-  venueID  BigInt?
-
-  @@index([venueID], map: "FKfj8lt431up6yqyeakinimp591")
-}
-
-model run {
-  runID          BigInt    @id
-  date           DateTime? @db.Date
-  endTime        String?   @db.VarChar(255)
-  startTime      String?   @db.VarChar(255)
-  eventID        BigInt?
-  marketplace_id BigInt?   @unique(map: "UK_bmke6kuuntpjbd88yu4cju2ie")
-
-  @@index([eventID], map: "FKni6xubxc2bq4lmaxubip68iy4")
-}
-
-model ticketlisting {
-  listingID     BigInt    @id @default(autoincrement())
-  listingDate   DateTime? @db.DateTime(6)
-  price         Float
-  quantity      Int
-  status        String?   @db.VarChar(255)
-  ticketID      BigInt?
-  transactionID BigInt?   @unique(map: "UK_4vy5x6o4q6m3y4rppqavccbn2")
-  userID        BigInt?
-  eventID       BigInt?
-  runID         BigInt?
-
-  @@index([runID], map: "FK19h0ku2x5pr7s75w0s7sbon6g")
-  @@index([userID], map: "FKnflg4egmodkj1gmynr3s0fpkh")
-  @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
-  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
-}
-
-model marketplace {
-  marketplaceID BigInt    @id
-  closingDate   DateTime? @db.Date
-  openingDate   DateTime? @db.Date
-  status        String?   @db.VarChar(255)
-
-  @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
-  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
-@@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
-  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
 }
 
 enum user_role {
