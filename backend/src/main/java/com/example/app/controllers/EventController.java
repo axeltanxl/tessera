@@ -26,7 +26,8 @@ import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
 import com.example.app.models.Marketplace;
 import com.example.app.models.Run;
-
+import com.example.app.models.Venue;
+import com.example.app.models.VenueDTO;
 import com.example.app.repositories.EventRepository;
 import com.example.app.repositories.MarketplaceRepository;
 import com.example.app.repositories.SeatRepository;
@@ -246,5 +247,21 @@ public class EventController {
     List<Run> runs = event.get().getRuns();
 
     return ResponseEntity.ok(runs);
+  }
+
+  @GetMapping(path = "events/{eventID}/venue") 
+  public ResponseEntity<VenueDTO> getVenueByEvent(@PathVariable("eventID") Long id){ 
+    Optional<Event> event = eventRepository.findById(id); 
+    if (!event.isPresent()){ 
+      return ResponseEntity.notFound().build(); 
+    }
+ 
+    Venue venue = event.get().getVenue();
+
+    final ModelMapper modelMapper = new ModelMapper();
+
+    VenueDTO venueDTO = modelMapper.map(venue, VenueDTO.class);
+ 
+    return ResponseEntity.ok(venueDTO); 
   }
 }
