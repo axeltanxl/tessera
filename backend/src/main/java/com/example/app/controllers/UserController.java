@@ -40,7 +40,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@RequestHeader("Authorization") String authorizationHeader) {
 
         final String TOKEN = authorizationHeader.replace("Bearer ", ""); // Remove "Bearer " prefix
-        
+
         final ModelMapper modelMapper = new ModelMapper();
         String getCurrEmail = midWare.extractUsername(TOKEN);
 
@@ -53,7 +53,7 @@ public class UserController {
 
     @PutMapping("/{userID}/update")
     public ResponseEntity<Object> updateUser(@PathVariable("userID") Long userID, @RequestBody User reqUser) {
-        
+
         // Get the currently authenticated user from the security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User authenticatedUser = (User) authentication.getPrincipal();
@@ -70,27 +70,28 @@ public class UserController {
         }
 
         // Update the entity with new values
-        updateUser.setContactNum(reqUser.getContactNum() != null ? reqUser.getContactNum() : updateUser.getContactNum());
+        updateUser
+                .setContactNum(reqUser.getContactNum() != null ? reqUser.getContactNum() : updateUser.getContactNum());
 
         // Ternary operator to set value if not null
         updateUser.setAddress(reqUser.getAddress() != null ? reqUser.getAddress() : updateUser.getAddress());
         updateUser.setEmail(reqUser.getEmail() != null ? reqUser.getEmail() : updateUser.getEmail());
 
-        //Don't let them change Name. Why must change?
+        // Don't let them change Name. Why must change?
         // updateUser.setName(reqUser.);
 
         userRepo.save(updateUser);
         return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
     }
-    
+
     @PutMapping("/{userID}/updatePwd")
-    public ResponseEntity<Object> updateUserPassword(@PathVariable("userID") Long userID, 
-    @RequestBody PwUpdateDTO reqPw) {
+    public ResponseEntity<Object> updateUserPassword(@PathVariable("userID") Long userID,
+            @RequestBody PwUpdateDTO reqPw) {
 
         // Get the currently authenticated user from the security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User authenticatedUser = (User) authentication.getPrincipal();
-        
+
         Optional<User> getUser = userRepo.findById(userID);
 
         if (!getUser.isPresent()) {
@@ -104,16 +105,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid resource access.");
         }
 
-        //does not match password
+        // does not match password
         if (!passwordEncoder.matches(reqPw.getCurrPassword(), updateUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user password.");
         }
-        
+
         // Update the entity with new values
-        updateUser.setPassword(reqPw.getNewPassword() != null ? passwordEncoder.encode(reqPw.getNewPassword()) 
-        : updateUser.getPassword());
+        updateUser.setPassword(reqPw.getNewPassword() != null ? passwordEncoder.encode(reqPw.getNewPassword())
+                : updateUser.getPassword());
 
         userRepo.save(updateUser);
         return ResponseEntity.status(HttpStatus.OK).body("User password updated successfully");
-      }
+    }
 }
