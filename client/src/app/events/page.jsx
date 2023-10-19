@@ -22,7 +22,6 @@ function Events() {
     const [events, setEvents] = useState([]);
 console.log("get events:", events);
 const token = localStorage.getItem('jwt');
-// console.log("token:", token);
 useEffect(() => {
     async function fetchData() {
         try {
