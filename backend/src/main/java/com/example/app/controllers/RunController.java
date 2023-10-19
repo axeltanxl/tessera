@@ -14,14 +14,5 @@ import java.util.*;
 @RestController
 @RequestMapping("api/v1")
 public class RunController {
-
-    @Autowired
-    private RunRepository runRepo;
-
-    @GetMapping("run/{eventID}/runs")
-    public List<Run> getRunsByEventID(@PathVariable long eventID) {
-        List<Run> runs = runRepo.findRunByOrderOrderID(eventID);
-        return runs;
-    }
     
 }
