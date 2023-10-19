@@ -11,6 +11,8 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import TicketCard from '@/components/ui/TicketCard';
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 console.log("hello")
@@ -30,8 +32,42 @@ function EventDetails() {
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
     console.log("token:", token);
+    const [runTime, setRunTime] = useState(false);
 
+    const [selectedRun, setSelectedRun] = useState([]);
+    const [runMap, setRunMap] = useState([]);
     const soldOut = false;
+
+    function buttonAvailability(){
+        if (!soldOut && !runTime){
+            return "Choose Slot";
+        }else if (soldOut){
+            return "Sold Out";
+        }
+        return "Buy Tickets"
+    }
+
+    async function fetchRuns(eventID) {
+        try{
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/runs`, {
+                method: 'GET',
+                headers,
+            });
+            if (res.ok) {
+                const result = await res.json();
+                setRunMap(result);
+                console.log("runs: ", result);
+            } else {
+                console.error("API request failed.");
+            }
+        }catch(e){
+            console.error(e);
+        }
+    };
+
     useEffect(() => {
         async function fetchData() {
             try {
@@ -53,6 +89,7 @@ function EventDetails() {
                 if (res.ok) {
                     const eventData = await res.json();
                     setEvent(eventData);
+                    fetchRuns(eid);
                 } else {
                     console.error("API request failed.");
                 }
@@ -65,6 +102,10 @@ function EventDetails() {
     }, [])
 
     console.log("eventID: ", eventID);
+    console.log(runTime);
+    console.log(runMap)
+
+    
 
     return (
         <div className="w-full min-h-screen">
@@ -87,14 +128,31 @@ function EventDetails() {
                     <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
                         <div className=' w-full flex justify-between'>
                             <div className="mb-4 font-semibold inline">{name}</div>
-                            <Link href={`/payment/paymentForm/${eventID}`}>
+                            <Link href={`/payment/paymentForm/${eventID}/${selectedRun}`}>
                                 <Button variant="outlined" className="text-primary bg-secondary hover:bg-secondary inline" disabled={soldOut}>
-                                    {soldOut ? "Sold out" : "Buy tickets"}
+                                    {buttonAvailability()}
                                 </Button>
                             </Link>
                         </div>
 
                         <p className='text-md font-semibold'>Event from {startDate} to {endDate} </p>
+                        <div>
+                            <select id="dropdown" value={selectedRun} onChange={(e) => {setSelectedRun(e.target.value); setRunTime(true);}} >
+                                <option value="" style={{fontSize:"10px"}}>Select</option>
+                                {runMap.map((item, index) => (
+                                    <option value={item.runID} key={item.runID} style={{fontSize:"10px"}}>
+                                        {item.date}, {item.startTime} - {item.endTime}
+                                    </option>
+                                // <div className='flex items-center' key={index}>
+                                //     {/* <Link href={`/account/tickets/${item.ticketID}`}>
+                                //     <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
+                                //     </Link>
+                                //     <Checkbox handleSelect={handleSelectTickets} /> */}
+                                //     {item.runID};
+                                // </div>
+                                ))}
+                            </select>
+                        </div>
                         <p className='text-md font-semibold'>Venue {venueID} </p>
                         {/* <p className='text-md'>Ticket sale start: {ticketSaleDate} </p> */}
                         <div className='flex items-center gap-2'>
