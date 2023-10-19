@@ -67,10 +67,8 @@ public class TicketController {
 
             //find all associated ticketListings with logged in user.   
             List<TicketListing> listOfTicketListings = ticketListRepository.findAllByUserUserID(userID);
-            System.out.println(listOfTicketListings);
 
             List<TicketDTO> listOfTickets = new ArrayList<>();
-
             for (TicketListing eachTicketListing : listOfTicketListings) {
                 Ticket eachTicket = eachTicketListing.getTicket();
                 TicketDTO ticketDTO = new TicketDTO();
@@ -86,7 +84,7 @@ public class TicketController {
             return ResponseEntity.ok(listOfTickets);
 
         } catch (Exception ex) {
-            System.out.println("Error getting tickets: " + ex.getMessage());
+            System.out.println("Error getting listed tickets: " + ex.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }

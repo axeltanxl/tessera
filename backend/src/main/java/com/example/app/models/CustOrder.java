@@ -23,6 +23,7 @@ public class CustOrder {
     private String ticketCategory;
     private int ticketQuantity;
     private Date date;
+    private int price;
     private String stripeOrderID;
 
     @JsonBackReference(value="user-order")
@@ -93,6 +94,14 @@ public class CustOrder {
     //Users r/s
     public User getUser() {
         return user;
+    }
+
+    public int getPrice() {
+      return price;
+    }
+
+    public void setPrice(int price) {
+      this.price = price;
     }
 
     public void setUser(User user) {
