@@ -13,17 +13,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 
-console.log("hello")
-// export const getEvent = async () =>{
-//     const res = await fetch("http://localhost:8080/api/v1/events/1");
-//     console.log(res);
-//     const event = await res.json()
-
-//   return event
-// }
-console.log("hello2")
-
-
 function EventDetails() {
     const [event, setEvent] = useState([]);
     const {eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
@@ -136,9 +125,9 @@ function EventDetails() {
                         <p className='text-md font-semibold'>Event from {startDate} to {endDate} </p>
                         <div>
                             <select id="dropdown" value={selectedRun} onChange={(e) => {setSelectedRun(e.target.value); setRunTime(true);}} >
-                                <option value="" style={{fontSize:"10px"}}>Select</option>
+                                <option value="" >Select</option>
                                 {runMap.map((item, index) => (
-                                    <option value={item.runID} key={item.runID} style={{fontSize:"10px"}}>
+                                    <option value={item.runID} key={item.runID}>
                                         {item.date}, {item.startTime} - {item.endTime}
                                     </option>
                                 // <div className='flex items-center' key={index}>
