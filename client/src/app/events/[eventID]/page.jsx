@@ -29,8 +29,7 @@ function EventDetails() {
     console.log("eventID:", eventID);
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
-    // console.log("token:", token);
-
+    
     const soldOut = false;
     useEffect(() => {
         async function fetchData() {
@@ -99,32 +98,6 @@ function EventDetails() {
                 <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
                     <p className="text-xl mt-2 font-semibold">Pricing</p>
                     <Separator />
-                    {/* <div className='w-full flex gap-4'>
-                        {
-                            pricePerCategory ? (Object.entries(JSON.parse(pricePerCategory)).map(([cat, price], index) => {
-                                console.log("cat:", cat);
-                                return (
-                                    <HoverCard key={index}>
-                                        <HoverCardTrigger asChild>
-                                            <Button variant="link" className="text-primary bg-secondary hover:bg-secondary">Cat {cat}</Button>
-                                        </HoverCardTrigger>
-                                        <HoverCardContent className="w-80 bg-primary" align="start" sideOffset={-20}>
-                                            <div className="flex justify-between space-x-4">
-                                                <div className='flex flex-col justify-center items-center'>
-                                                    <p>CAT</p>
-                                                    <p className='text-4xl'>{cat}</p>
-                                                </div>
-                                                <div className="w-2/3 ">
-                                                    <h4 className="text-sm font-semibold">Price: ${price}</h4>
-                                                </div>
-                                            </div>
-                                        </HoverCardContent>
-                                    </HoverCard>
-                                )
-                            })
-                            ) : (<div>loading...</div>)
-                        }
-                    </div> */}
                 </div>
 
                 <div aria-label='event map' className='w-full flex justify-center items-center'>
