@@ -9,7 +9,8 @@ import {
 import usePaymentFormContext from "../hooks/usePaymentFormContext";
 import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import Link from 'next/link';
+import { formatDate, formatTime } from "@/lib/formatUtil";
 
 const TicketPurchase = () => {
     const url = usePathname();
@@ -80,7 +81,7 @@ const TicketPurchase = () => {
     return (
         <div>
             <div style={{ fontWeight: "bold", textAlign: "center" }}>{event?.name ?? null}</div>
-            <div style={{ textAlign: "center", border: "1px solid grey", borderRadius: "10px", padding: "1%", marginTop: "2rem", marginBottom: "2rem", width: "80%", marginLeft: "10%" }}>{date} {startTime}-{endTime}pm, National Stadium Singapore</div>
+            <div style={{ textAlign: "center", border: "1px solid grey", borderRadius: "10px", padding: "1%", marginTop: "2rem", marginBottom: "2rem", width: "80%", marginLeft: "10%" }}>{formatDate(date)} {formatTime(startTime)}-{formatTime(endTime)}, venue</div>
             <Accordion type="multiple" style={{ width: "80%", marginLeft: "10%", marginRight: "10%" }}>
                 <AccordionItem value="select-zone">
                     <AccordionTrigger

@@ -11,31 +11,31 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
+import { formatDate, formatTime } from '@/lib/formatUtil';
 
 function EventDetails() {
     const [event, setEvent] = useState([]);
-    const {eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
+    const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
     console.log("token:", token);
     const [runTime, setRunTime] = useState(false);
 
-    const [selectedRun, setSelectedRun] = useState([]);
+    const [selectedRun, setSelectedRun] = useState('');
     const [runMap, setRunMap] = useState([]);
     const soldOut = false;
 
-    function buttonAvailability(){
-        if (!soldOut && !runTime){
-            return "Choose Slot";
-        }else if (soldOut){
+    function buttonAvailability() {
+        if (!soldOut && !runTime) {
+            return "Choose date";
+        } else if (soldOut) {
             return "Sold Out";
         }
         return "Buy Tickets"
     }
 
     async function fetchRuns(eventID) {
-        try{
+        try {
             const headers = {
                 Authorization: `Bearer ${token}`,
             };
@@ -50,7 +50,7 @@ function EventDetails() {
             } else {
                 console.error("API request failed.");
             }
-        }catch(e){
+        } catch (e) {
             console.error(e);
         }
     };
@@ -88,11 +88,15 @@ function EventDetails() {
         fetchData();
     }, [])
 
-    console.log("eventID: ", eventID);
-    console.log(runTime);
-    console.log(runMap)
+    useEffect(() => {
+        // use the selectedRun state to determine if runTime should be true or false
+        if (selectedRun !== '') {
+          setRunTime(true);
+        } else {
+          setRunTime(false);
+        }
+      }, [selectedRun]); 
 
-    
 
     return (
         <div className="w-full min-h-screen">
@@ -113,32 +117,27 @@ function EventDetails() {
                 <Separator />
                 <div className='flex justify-between'>
                     <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
-                        <div className=' w-full flex justify-between'>
-                            <div className="mb-4 font-semibold inline">{name}</div>
-                            <Link href={`/payment/paymentForm/${eventID}/${selectedRun}`}>
-                                <Button variant="outlined" className="text-primary bg-secondary hover:bg-secondary inline" disabled={soldOut}>
-                                    {buttonAvailability()}
-                                </Button>
-                            </Link>
-                        </div>
+                        <div className="mb-4 font-semibold inline">{name}</div>
 
-                        <p className='text-md font-semibold'>Event from {startDate} to {endDate} </p>
+
+                        <p className='text-md font-semibold'>Event from {formatDate(startDate)} to {formatDate(endDate)} </p>
                         <div>
-                            <select id="dropdown" value={selectedRun} onChange={(e) => {setSelectedRun(e.target.value); setRunTime(true);}} >
+                            <select id="dropdown" value={selectedRun} onChange={(e) => { setSelectedRun(e.target.value);}} className="border border-[#B4C1DB] rounded outline-none">
                                 <option value="" >Select</option>
                                 {runMap.map((item, index) => (
                                     <option value={item.runID} key={item.runID}>
-                                        {item.date}, {item.startTime} - {item.endTime}
+                                        {formatDate(item.date)}, {formatTime(item.startTime)} - {formatTime(item.endTime)}
                                     </option>
-                                // <div className='flex items-center' key={index}>
-                                //     {/* <Link href={`/account/tickets/${item.ticketID}`}>
-                                //     <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
-                                //     </Link>
-                                //     <Checkbox handleSelect={handleSelectTickets} /> */}
-                                //     {item.runID};
-                                // </div>
                                 ))}
                             </select>
+                            {buttonAvailability() === "Choose date" ? (<Button className="text-primary bg-secondary hover:bg-secondary inline ml-2" disabled={true}>
+                                Buy Tickets
+                            </Button>) : (<Link href={`/payment/paymentForm/${eventID}/${selectedRun}`}>
+                                <Button className="text-primary bg-secondary hover:bg-secondary inline ml-2" disabled={soldOut}>
+                                    {buttonAvailability()}
+                                </Button>
+                            </Link>)}
+
                         </div>
                         <p className='text-md font-semibold'>Venue {venueID} </p>
                         {/* <p className='text-md'>Ticket sale start: {ticketSaleDate} </p> */}
@@ -154,32 +153,6 @@ function EventDetails() {
                 <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
                     <p className="text-xl mt-2 font-semibold">Pricing</p>
                     <Separator />
-                    {/* <div className='w-full flex gap-4'>
-                        {
-                            pricePerCategory ? (Object.entries(JSON.parse(pricePerCategory)).map(([cat, price], index) => {
-                                console.log("cat:", cat);
-                                return (
-                                    <HoverCard key={index}>
-                                        <HoverCardTrigger asChild>
-                                            <Button variant="link" className="text-primary bg-secondary hover:bg-secondary">Cat {cat}</Button>
-                                        </HoverCardTrigger>
-                                        <HoverCardContent className="w-80 bg-primary" align="start" sideOffset={-20}>
-                                            <div className="flex justify-between space-x-4">
-                                                <div className='flex flex-col justify-center items-center'>
-                                                    <p>CAT</p>
-                                                    <p className='text-4xl'>{cat}</p>
-                                                </div>
-                                                <div className="w-2/3 ">
-                                                    <h4 className="text-sm font-semibold">Price: ${price}</h4>
-                                                </div>
-                                            </div>
-                                        </HoverCardContent>
-                                    </HoverCard>
-                                )
-                            })
-                            ) : (<div>loading...</div>)
-                        }
-                    </div> */}
                 </div>
 
                 <div aria-label='event map' className='w-full flex justify-center items-center'>
