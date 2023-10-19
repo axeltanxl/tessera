@@ -3,7 +3,6 @@ package com.example.app.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.app.models.Transaction;
 import com.example.app.models.User;
 import com.example.app.repositories.TransactionRepository;
-import com.example.app.repositories.UserRepository;
 
 @RestController
 @RequestMapping("/api/v1/")
