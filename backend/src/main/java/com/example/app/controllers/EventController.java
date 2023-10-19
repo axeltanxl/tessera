@@ -1,5 +1,7 @@
 package com.example.app.controllers;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,9 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
+import com.example.app.models.Marketplace;
 import com.example.app.models.Run;
 
 import com.example.app.repositories.EventRepository;
+import com.example.app.repositories.MarketplaceRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
@@ -33,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.app.repositories.RunRepository;
 
 import jakarta.validation.Valid;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -44,14 +47,21 @@ public class EventController {
 
   @Autowired
   private RunRepository runRepository;
+  
   @Autowired
   private ImageController imageController;
+  
   @Autowired
   private TicketListRepository ticketListingRepo;
+  
   @Autowired
   private TicketRepository ticketRepo;
+  
   @Autowired
   private SeatRepository seatRepo;
+
+  @Autowired
+  private MarketplaceRepository marketplaceRepo;
 
   @GetMapping("/events")
   public ResponseEntity<List<EventDTO>> getAllEvents() {
@@ -190,7 +200,31 @@ public class EventController {
           return ResponseEntity.notFound().build();
       }
 
+      Date runDate = run.getDate();
+
+      LocalDate runLocalDate = runDate.toLocalDate();
+
+      LocalDate opening = runLocalDate.minusWeeks(2);
+
+      // Calculate closingDate (1 day before Run date)
+      LocalDate closing = runLocalDate.minusDays(1);
+
+      java.sql.Date openingDate = Date.valueOf(opening);
+
+      Date closingDate = Date.valueOf(closing);
+
+      // Create a marketplace with default values
+      Marketplace marketplace = new Marketplace();
+
+      System.out.println(marketplace);
+      marketplace.setStatus("not open");
+      marketplace.setOpeningDate(openingDate);
+      marketplace.setClosingDate(closingDate);
+
+      Marketplace savedMarketplace = marketplaceRepo.save(marketplace);
+
       run.setEvent(existingEvent.get());
+      run.setMarketplace(savedMarketplace);
       runRepository.save(run);
 
       return ResponseEntity.status(HttpStatus.CREATED).body("Run added successfully");
