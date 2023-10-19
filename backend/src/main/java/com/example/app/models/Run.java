@@ -26,7 +26,7 @@ public class Run {
     private String endTime;
     private Date date;
 
-    @JsonManagedReference(value="run-order")
+    @JsonManagedReference(value="order-run")
     @OneToMany(mappedBy = "run")
     private List<CustOrder> orders;
 
@@ -39,8 +39,8 @@ public class Run {
     @OneToMany(mappedBy = "run")
     private List<TicketListing> ticketListing;
 
-    @JsonBackReference
+    @JsonBackReference(value="marketplace-run")
     @OneToOne
-    @JoinColumn(name="marketplace_id")
+    @JoinColumn(name="marketplaceID")
     private Marketplace marketplace;
 }
