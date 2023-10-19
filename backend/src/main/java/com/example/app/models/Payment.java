@@ -16,7 +16,7 @@ public class Payment {
     private long paymentID;
 
     private String paymentMethod;
-    private int isSuccessful;
+    private String stripePaymentID;
 
     @JsonBackReference(value="order-payment")
     @ManyToOne
@@ -31,9 +31,9 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(String paymentMethod, int isSuccessful) {
+    public Payment(String paymentMethod, String stripePaymentID) {
         this.paymentMethod = paymentMethod;
-        this.isSuccessful = isSuccessful;
+        this.stripePaymentID = stripePaymentID;
     }
 
     public long getPaymentID() {
@@ -52,14 +52,6 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public int getIsSuccessful() {
-        return isSuccessful;
-    }
-
-    public void setIsSuccessful(int isSuccessful) {
-        this.isSuccessful = isSuccessful;
-    }
-
     public CustOrder getOrder() {
       return order;
     }
@@ -74,5 +66,13 @@ public class Payment {
 
     public void setTransaction(Transaction transaction) {
       this.transaction = transaction;
+    }
+
+    public String getStripePaymentID() {
+      return stripePaymentID;
+    }
+
+    public void setStripePaymentID(String stripePaymentID) {
+      this.stripePaymentID = stripePaymentID;
     }
 }
