@@ -26,14 +26,12 @@ import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
 import com.example.app.models.TicketListingWithSeat;
-import com.example.app.models.Transaction;
 import com.example.app.models.User;
 import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
-import com.example.app.repositories.TransactionRepository;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -50,8 +48,6 @@ public class TicketListController {
     private RunRepository runRepo;
     @Autowired
     private OrderRepository orderRepo;
-    @Autowired
-    private TransactionRepository transactionRepo;
 
     // For general public who wants to see each listing.
     @GetMapping("ticketListings/{listingID}")
@@ -71,6 +67,39 @@ public class TicketListController {
 
         return ResponseEntity.ok(ticketLists);
     }
+
+    /* UNUSED METHOD */
+    // @Autowired
+    // private Middleware midWare;
+    // @Autowired
+    // private UserRepository userRepo;
+
+    // @GetMapping("ticketListing/{listingID}")
+    // public ResponseEntity<Object>
+    // getListingByTicketListID(@RequestHeader("Authorization") String
+    // authorizationHeader,
+    // @PathVariable long listingID) {
+
+    // final String TOKEN = authorizationHeader.replace("Bearer ", ""); // Remove
+    // "Bearer " prefix
+
+    // final ModelMapper modelMapper = new ModelMapper();
+    // String getCurrEmail = midWare.extractUsername(TOKEN);
+
+    // User user = userRepo.findByEmail(getCurrEmail);
+
+    // // Convert User entity to UserDTO, excluding the password
+    // UserDTO userObj = modelMapper.map(user, UserDTO.class);
+
+    // Optional<TicketListing> ticketList = ticketListRepo.findById(listingID);
+    // if (!ticketList.isPresent() || ticketList.get().getUser().getUserID() !=
+    // userObj.getUserID()) {
+    // return ResponseEntity.notFound().build();
+    // }
+
+    // // String getCurrListing =
+    // return ResponseEntity.ok(ticketList);
+    // }
 
     // For the public who wants to see all the listings for 1 event
     @GetMapping("events/{eventID}/ticketListings")
@@ -123,38 +152,37 @@ public class TicketListController {
     }
 
     // to add ticketListings
-    @PostMapping("orders/{orderID}/runs/{runID}/ticketListings")
-    public ResponseEntity<String> addTicketListings(@PathVariable("orderID") Long orderID,
-            @PathVariable("runID") Long runID, @RequestBody TicketListing reqTicketListing) {
+    @PostMapping("runs/{runID}/tickets/{ticketID}/ticketListings")
+    public ResponseEntity<String> addTicketListings(@PathVariable("runID") Long runID,
+            @PathVariable("ticketID") Long ticketID, @RequestBody TicketListing reqTicketListing) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User authenticatedUser = (User) authentication.getPrincipal();
 
-            // go order repo
-            CustOrder currOrder = orderRepo.getReferenceById(orderID);
-
-            // Check if the currently authenticated user matches the user being updated
-            if (!(authenticatedUser.getUserID() == currOrder.getUser().getUserID())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
-            }
-
-            if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
-            }
-
-            Optional<Ticket> ticketObj = ticketRepo.findOneTicketByOrderOrderID(orderID);
+            Optional<Ticket> ticketObj = ticketRepo.findById(ticketID);
             if (!ticketObj.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");
             }
 
+            Ticket currTicket = ticketObj.get();
+            // Check if the currently authenticated user matches the user being updated
+            if (!(authenticatedUser.getUserID() == currTicket.getUser().getUserID())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
+            }
+
+            // go order repo
+            CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
+            if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
+            }
+ 
             // default pricing/event/status/userID.Price will be NULL
             // reqTicketListing.setPrice(currOrder.getPrice());
-            reqTicketListing.setEvent(currOrder.getEvent());
-
+            // reqTicketListing.setEvent(currOrder.getEvent());
+  
             reqTicketListing.setStatus("Not Listed");
             reqTicketListing.setUser(authenticatedUser);
-
-            Ticket currTicket = ticketObj.get();
+            
             // For ticketID in TicketListing
             reqTicketListing.setTicket(currTicket);
 
@@ -164,26 +192,27 @@ public class TicketListController {
             }
             Run currRun = optRun.get();
             reqTicketListing.setRun(currRun);
+            reqTicketListing.setEvent(currRun.getEvent());
+            reqTicketListing.setMarketplace(currRun.getMarketplace());
+            // for transactionID in ticketListing
+            // reqTicketListing.setTransaction(newTrans);
 
             // create new transaction assign to ticketListing
-            Transaction newTrans = new Transaction();
-            newTrans.setSeller(authenticatedUser);
-            newTrans.setTicket(currTicket);
-            newTrans.setDate(reqTicketListing.getListingDate());
+            // Transaction newTrans = new Transaction();
+            // newTrans.setSeller(authenticatedUser);
+            // newTrans.setTicket(currTicket);
+            // newTrans.setDate(reqTicketListing.getListingDate());
+            // transactionRepo.save(newTrans);
 
-            // for transactionID in ticketListing
-            reqTicketListing.setTransaction(newTrans);
-
-            transactionRepo.save(newTrans);
             ticketListRepo.save(reqTicketListing);
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Successfully created ticketListing and transaction.");
+                    .body("Successfully created ticketlisting.");
 
         } catch (Exception ex) {
             System.out.println("Error while adding ticketListing: " + ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while adding ticketListing");
+                    .body("An error occurred while adding ticketlisting");
         }
     }
 
@@ -258,12 +287,10 @@ public class TicketListController {
             }
 
             //get transactionID.
-            long getTransactionID = oneTicketListing.getTransaction().getTransactionID();
+            // long getTransactionID = oneTicketListing.getTransaction().getTransactionID();
 
-            //find and delete from both table.
+            //find and delete from table.
             ticketListRepo.deleteById(listingID);
-            transactionRepo.deleteById(getTransactionID);
-            
 
             return ResponseEntity.status(HttpStatus.OK).body("TicketListing deleted successfully.");
         } catch (Exception e) {

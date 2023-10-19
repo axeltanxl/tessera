@@ -1,6 +1,6 @@
-import PaymentFormInputs from "../component/PaymentFormInput";
-import usePaymentFormContext from "../hooks/usePaymentFormContext";
-import { FormProvider } from "../context/context";
+import PaymentFormInputs from "../../../component/PaymentFormInput";
+import usePaymentFormContext from "../../../hooks/usePaymentFormContext";
+import { FormProvider } from "../../../context/context";
 
 const PaymentForm = () => {
 

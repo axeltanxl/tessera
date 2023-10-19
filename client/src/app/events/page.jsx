@@ -7,25 +7,15 @@ import { useEffect, useState } from 'react';
 import { select } from '@material-tailwind/react';
 import { Shower } from '@mui/icons-material';
 
-
-// export const getEvents = async () => {
-//     const res = await fetch("http://localhost:8080/api/v1/events");
-//     console.log(res);
-//     const events = await res.json()
-
-//     return events
-// }
-
 const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
 function Events() {
     const [events, setEvents] = useState([]);
-    console.log("get events:", events);
-    const token = localStorage.getItem('jwt');
-    // console.log("token:", token);
-    useEffect(() => {
-        async function fetchData() {
-            try {
+console.log("get events:", events);
+const token = localStorage.getItem('jwt');
+useEffect(() => {
+    async function fetchData() {
+        try {
 
                 const headers = {
                     Authorization: `Bearer ${token}`,
