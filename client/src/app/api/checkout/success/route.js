@@ -55,7 +55,6 @@ const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, pay
         // create payment success
         await prisma.payment.create({
             data: {
-                isSuccessful : 1,
                 paymentMethod : paymentMethod,
                 orderID : orderId,
                 transactionID : null,
@@ -63,12 +62,11 @@ const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, pay
               },
           })
 
-        const {eventID, runID} =  await prisma.custorder.findUnique({
+        const {runID} =  await prisma.custorder.findUnique({
             where : {
                 orderID : orderId,
             },
             select : {
-                eventID : true,
                 runID : true,
             }
         })
@@ -76,8 +74,6 @@ const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, pay
         // create ticket for each seat
         for (let seat in seatIDs){
             const uniqueJson = {
-                orderId : orderId,
-                eventID : eventID,
                 userID : userID,
                 runID : runID,
                 seatID : seat,
@@ -91,7 +87,7 @@ const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, pay
                 data : {
                     orderID : orderId,
                     seatID : seat,
-                    user : userID,
+                    userID : userID,
                     uniqueCode : ticketUniqueCode,
                 },
             })

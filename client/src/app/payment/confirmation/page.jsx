@@ -273,13 +273,6 @@ const Confirmation = () => {
                 </div>
             </div>
 
-            <div onClick={console.log(parseInt(selectedQuant, 10), selectedCat)}>
-                <button>
-                    hello
-                </button>
-            </div>
-
-
             <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order

@@ -33,7 +33,7 @@ export async function POST (request){
     // if account already exist no need to create
     try{
         const account = await stripe.accounts.retrieve(stripeUserID);
-        if(account.details_submitted){
+        if(account.details_submitted && account.payouts_enabled){
             return new NextResponse({message : "account already exist"},{ 
                 status: 200, 
                 headers: { "Content-Type": "application/json" },

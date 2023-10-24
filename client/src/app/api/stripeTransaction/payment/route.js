@@ -28,7 +28,7 @@ export async function POST(request){
     })
 
     // find listing
-    const { ticketID, price, quantity, marketplaceID } = await prisma.ticketlisting.findUnique({
+    const { ticketID, price, runID, userID : sellerID } = await prisma.ticketlisting.findUnique({
         where : {
             listingID : listingID,
         },
@@ -37,17 +37,11 @@ export async function POST(request){
             price : true, 
             quantity : true,
             marketplaceID : true,
+            runID : true, 
+            userID : true,
         }
     })
 
-    await prisma.marketplace.findUnique({
-        where : {
-            marketplaceID : marketplaceID,
-        },
-        select : {
-            run
-        }
-    })
 
     // find seat
     const { seatID } = await prisma.ticket.findUnique({
@@ -58,18 +52,41 @@ export async function POST(request){
             seatID : true,
         }
     })
-
+    
     // get seat details
-    const {seatRow, seatNo} = await prisma.seat.findUnique({
+    const {seatRow, seatNo, category, venueID} = await prisma.seat.findUnique({
         where : {
             seatID : seatID,
         },
         select : {
             seatRow : true,
             seatNo : true,
+            category : true,
+            venueID : true,
         }
     })
 
+    // get venue name
+    const {name : venue} = await prisma.venue.findUnique({
+        where : {
+            venueID : venueID,
+        },
+        select : {
+            name : true,
+        }
+    })
+
+    // find run
+    const {eventID, date, startTime} = await prisma.run.findUnique({
+        where : {
+            runID : runID,
+        },
+        select : {
+            eventID : true,
+            date : true,
+            startTime : true,
+        }
+    })
 
     // find eventDetails
     const { name, displayImage } = await prisma.event.findUnique({
@@ -81,8 +98,6 @@ export async function POST(request){
             displayImage : true, 
         }
     })
-
-
 
 
     // console.log("decoded userid:" , userID);
@@ -99,9 +114,9 @@ export async function POST(request){
                     unit_amount : price,
                     product_data :{
                         name : name,
-                        images : [displayImage],
+                        images : [displayImage ?? "https://crawfordroofing.com.au/wp-content/uploads/2018/04/No-image-available-2.jpg"],
                         description : `Date: ${date.toLocaleDateString()} Time: ${startTime} Venue: ${venue} 
-                         Category: ${category}\n${seatDesc}`,
+                         Category: ${category}\n${`Row: ${seatRow}, Seat: ${seatNo} `}`,
                     },
                 },
                 quantity : 1,
@@ -112,8 +127,10 @@ export async function POST(request){
         cancel_url : "http://localhost:3000/paymentFeedback/cancel",
         payment_intent_data : {
             metadata : {
+                paymentReason : "transaction",
                 listingID: listingID,
                 buyerID : userID,
+                seatID : seatID,
                 paymentMethod : paymentMethod,
             },
         }

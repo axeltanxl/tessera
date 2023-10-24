@@ -81,7 +81,8 @@ export async function POST(request){
         data: {
             ticketCategory: category,
             ticketQuantity: quantity,
-            eventID : eventID,
+            date : new Date().toISOString(),
+            runID : runID,
             userID : userID,
             price : (unitPrice * quantity),
         },
