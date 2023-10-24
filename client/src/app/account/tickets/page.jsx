@@ -154,23 +154,6 @@ const MyTickets = () => {
       console.error(err);
     }
   }
-  const printTickets = async (arr) => {
-    if (arr == undefined){
-      return null;
-    }
-    {arr.map ((item, index) => {
-      console.log("printing! :", arr);
-      return (
-        <div className='flex items-center' key={index}>
-          <Link href={`/account/tickets/${item.ticketID}`}>
-            <TicketCard category="A" section="201" row="8" seatNo="9"/>
-          </Link>
-          <Checkbox handleSelect={handleSelectTickets} />
-        </div>
-      )
-    })}
-  }
-
   
   useEffect(() => {
     const fetchDetails = async () => {
@@ -275,9 +258,9 @@ const MyTickets = () => {
                 return(
                 <TableRow key={index} >
                   <TableCell className="font-medium">
-                    <p className='mt-6 font-semibold'>{events[index] == undefined ? "" : events[index].name}</p>
+                    <p className='mt-6 font-semibold'>{ events[index] == undefined ? "" : events[index].name }</p>
                     <br />
-                    <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{item.date}</span></p>
+                    <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : runs[index].date + " " + runs[index].startTime + " - " + runs[index].endTime }</span></p>
                     <p><IoLocationOutline size={20} className='inline-block' /><span>{ venues[index] == undefined ? "" : venues[index].name }</span></p>
 
 
