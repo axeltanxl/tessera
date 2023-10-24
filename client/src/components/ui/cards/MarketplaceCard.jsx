@@ -17,8 +17,8 @@ function formatDate(inputDate) {
   }
 
 export function MarketplaceCard({ details }) {
-    const { eventDTO, name,  src, openingDate, closingDate, run } = details;
-    const {eventID, startDate, endDate, category,} = eventDTO;
+    const { eventDTO, openingDate, closingDate, run } = details;
+    const {eventID, name,startDate, endDate, category,} = eventDTO;
     return (
         <Card className="w-full z-0 bg-[#F5F7FB] hover:cursor-pointer shadow-md">
       <div className='relative bg-clip-border rounded-xl overflow-hidden text-gray-700 h-52 bg-[#F5F7FB] p-2'>
@@ -35,7 +35,7 @@ export function MarketplaceCard({ details }) {
           </p>
           <p
             className="font-normal opacity-75 text-sm"
-          >{formatDate(startDate)} to {formatDate(endDate)}
+          >{formatDate(run.date)}
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export function MarketplaceCard({ details }) {
         </p>
       </CardBody>
       <CardFooter className="pt-2 justify-center bg-[#F5F7FB] pb-4 rounded-lg">
-        <Link href={`/marketplace/event/${eventID}`}>
+        <Link href={`/marketplace/event/${eventID}/run/${run.runID}`}>
           <Button
             ripple={false}
             fullWidth={false}

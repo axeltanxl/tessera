@@ -7,18 +7,13 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { format } from 'date-fns';
 import Modal from '@mui/material/Modal';
-
-function formatDate(inputDate) {
-    if (inputDate !== undefined && inputDate !== null) {
-        const formattedDate = format(new Date(inputDate), 'dd MMM yyyy');
-        return formattedDate;
-    }
-}
+import { formatDate, formatTime } from '@/lib/formatUtil';
 
 function MarketplaceListing() {
     const url = usePathname();
     const parts = url.split("/");
     const eventID = parseInt(parts[3]);
+    const runID = parseInt(parts[5]);
     const [allListings, setAllListings] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -26,19 +21,22 @@ function MarketplaceListing() {
     const [selectedRun, setSelectedRun] = useState(null);
     const token = localStorage.getItem('jwt');
     const [eventName, setEventName] = useState('');
+    const [marketplace, setMarketplace] = useState('');
     useEffect(() => {
         async function fetchTicketListingsByEvent() {
             try {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/users/events/${eventID}/ticketListings`, {
+                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/ticketListings`, {
                     method: 'GET',
                     headers
                 });
                 if (res.ok) {
                     const ticketListingData = await res.json();
-                    setAllListings(ticketListingData);
+                    console.log("ticketlistingdata:", ticketListingData);
+                    console.log(ticketListingData.filter((item) => item.run.runID === runID));
+                    setAllListings(ticketListingData.filter((item) => item.run.runID === runID));
                 } else {
                     console.error("API request failed");
                 }
@@ -81,23 +79,49 @@ function MarketplaceListing() {
                     const runDates = runsByEvent.runs.map((item) => formatDate(item.date));
                     setRuns(runDates);
                     setEventName(runsByEvent.name);
+                    // setRun(runsByEvent.runs.find((item) => item.runID === runID));
+                    // console.log("run info:", runsByEvent.runs.find((item) => item.runID === runID));
                 }
             } catch (error) {
                 console.error("An error occurred:", error);
             }
         }
+
+        async function fetchOpenMarketplaces(){
+            try{
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/openMarketplaces`, {
+                    method: 'GET',
+                    headers
+                });
+                if (res.ok) {
+                    const openMarketplaces = await res.json();
+                    console.log("filter:", openMarketplaces.find((item) => item.run.runID === runID));
+                    setMarketplace(openMarketplaces.find((item) => item.run.runID === runID));
+                } else {
+                    console.error("API request failed");
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+        fetchOpenMarketplaces();
         fetchTicketListingsByEvent();
         fetchCATByEvent();
         fetchRunsByEvent();
     }, [])
 
+    // console.log("all listings:", allListings);
+
     const priceOptions = ["Low to High", "High to Low"];
     const [sort, setSort] = useState('');
     const [filteredListings, setFilteredListings] = useState([]);
 
-    const handleDateChange = (selectedRun) => {
-        setSelectedRun(selectedRun);
-    }
+    // const handleDateChange = (selectedRun) => {
+    //     setSelectedRun(selectedRun);
+    // }
 
     const handleCategoryChange = (selectedCat) => {
         setSelectedCategory(selectedCat);
@@ -124,22 +148,23 @@ function MarketplaceListing() {
         if (selectedCategory !== null) {
             sortedArray = sortedArray.filter((item) => item.seat.category === selectedCategory);
         }
-        if (selectedRun != null) {
-            sortedArray = sortedArray.filter((item) => formatDate(item.run.date) === selectedRun);
-        }
+        // if (selectedRun != null) {
+        //     sortedArray = sortedArray.filter((item) => formatDate(item.run.date) === selectedRun);
+        // }
         // Update the filteredListings state with the sorted array
         setFilteredListings(sortedArray);
-    }, [sort, allListings, selectedCategory, selectedRun]);
+    }, [sort, allListings, selectedCategory]);
 
     //countdown timer
     const [timerDays, setTimerDays] = useState('00');
     const [timerHours, setTimerHours] = useState('00');
     const [timerMinutes, setTimerMinutes] = useState('00');
     const [timerSeconds, setTimerSeconds] = useState('00');
-
+    console.log("marketplace closing date:", marketplace.closingDate);
+    const closingDate = marketplace.closingDate !== undefined ? marketplace.closingDate : '1 January 2023';
     let interval = useRef();
     const startTimer = () => {
-        const countdownDate = new Date('17 October 2023 00:00:00').getTime();
+        const countdownDate = new Date(`${closingDate} 00:00:00`).getTime();
         interval = setInterval(() => {
             const now = new Date().getTime();
             const distance = countdownDate - now;
@@ -184,8 +209,8 @@ function MarketplaceListing() {
             </div>
             <div className="bg-cover bg-center bg-[url('/gradient.png')]  h-[284px] flex items-center p-10">
                 <img src={"/image-9.jpg"} className='h-[230px]' />
-                <div className="items-start flex flex-col flex-1 p-20">
-                    <p className='text-2xl'>{eventName}</p>
+                <div className="items-start flex flex-col flex-1 p-16">
+                    <p className='text-2xl'>{eventName} on {formatDate(marketplace.run?.date)}, {formatTime(marketplace.run?.startTime)} to {formatTime(marketplace.run?.endTime)}</p>
                     <p className='mb-2'>Ticket marketplace closing in</p>
                     <div className='grid grid-cols-7 grid-rows-1 gap-x-1 gap-y-1'>
                         <p className='text-center'>Days</p>
@@ -207,9 +232,9 @@ function MarketplaceListing() {
             </div>
             <div className='px-20 py-8 flex justify-between'>
                 <div className='flex'>
-                    <div className='mr-2 xs:mr-4'>
+                    {/* <div className='mr-2 xs:mr-4'>
                         <RadioDropdown name={"Date"} dropdownItems={runs} defaultValue={"Date"} handleChange={handleDateChange} />
-                    </div>
+                    </div> */}
                     <div className='mx-2 xs:mr-4'>
                         <RadioDropdown name={"CAT"} dropdownItems={categories} defaultValue={"CAT"} handleChange={handleCategoryChange} />
                     </div>

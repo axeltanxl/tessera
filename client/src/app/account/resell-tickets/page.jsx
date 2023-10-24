@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SideNav from '@/components/ui/accountNav/SideNav'
 import {
     Table,
@@ -13,6 +13,7 @@ import TicketCard from '@/components/ui/cards/TicketCard';
 import Modal from '@mui/material/Modal';
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
+import axios from "axios";
 
 const ResellTickets = () => {
     //modal 
@@ -20,6 +21,53 @@ const ResellTickets = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    //ticketlistings
+    const [ticketListings, setTicketListings] = useState([]);
+    const token = localStorage.getItem('jwt');
+    useEffect(() => {
+        async function fetchDetails() {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    const userid = response.data.userID;
+                    fetchTicketListingsByUserID(userid);
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function fetchTicketListingsByUserID(userID) {
+
+            try {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/users/${userID}/listedTickets`, {
+                    method: 'GET',
+                    headers,
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    setTicketListings(result);
+                } else {
+                    console.error("API request failed.");
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        };
+        fetchDetails();
+    }, [])
+
+    console.log("ticketlistings:", ticketListings);
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -37,8 +85,8 @@ const ResellTickets = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-
-                            <TableRow>
+                            {ticketListings.length > 0 ? (ticketListings.map((item, index) => (
+                            <TableRow key={index}>
                                 <TableCell className='flex'>
                                     <p>Taylor Swift The Eras Tour in Singapore</p>
                                     <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
@@ -83,21 +131,8 @@ const ResellTickets = () => {
                                         </div>
                                     </div>
                                 </Modal>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell className='flex'>
-                                    <p>Taylor Swift The Eras Tour in Singapore</p>
-                                    <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"23"} />
-                                </TableCell>
-                                <TableCell>
-                                    Not listed
-                                </TableCell>
-                                <TableCell>
-                                    <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Set price</button>
-                                    <button className='bg-black text-white rounded-sm px-4 py-1 ml-4 text-sm'>Remove</button>
-                                </TableCell>
-
-                            </TableRow>
+                            </TableRow>))
+                            ) : (<></>)}
                         </TableBody>
                     </Table>
                 </div>

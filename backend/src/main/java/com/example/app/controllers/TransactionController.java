@@ -35,7 +35,6 @@ public class TransactionController {
         // List<Transaction> transactionList = transacRepo.findAllTransactionsByBuyer(authenticatedUser);
 
         transactionList.addAll(transacRepo.findAllTransactionsByBuyer(authenticatedUser));
-// System.out.println("asdjkadajdsdlas");
 // System.out.println(transactionList);
 //         for (Transaction transactionObj : transactionList) {
 //             System.out.println(transactionObj);
