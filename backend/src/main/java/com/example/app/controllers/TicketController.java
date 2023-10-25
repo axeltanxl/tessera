@@ -97,15 +97,4 @@ public class TicketController {
         return seats;
     }
 
-
-    @GetMapping("users/{userID}/orders")
-    public List<CustOrder> getOrdersByUserID(@PathVariable long userID) {
-        List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);
-        return orders;
-    }
-
-    // @GetMapping("/users/{userID}/tickets/{orderID}")
-    // public List<Ticket> getTicketsByOrderID(@PathVariable long orderID) {
-    // return ticketRepository.findTicketByOrderOrderID(orderID);
-    // }
 }
