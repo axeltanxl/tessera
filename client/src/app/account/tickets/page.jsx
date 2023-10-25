@@ -18,58 +18,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { TbCircleLetterJ } from 'react-icons/tb';
-
-const getOrders = [
-  {
-    orderID: 1,
-    orderDate: "2023/09/20 17:35:40",
-    eventTitle: "Taylor Swift The Eras Tour",
-    eventDate: "2024/03/08 18:00:00",
-    eventVenue: "National Stadium",
-    ticketCat: 'CAT 1',
-    price: 300.00,
-    ticketQuantity: 4
-  }
-]
-
-const getTicketsWithSeat = [
-  {
-    ticketID: 1,
-    uniqueCode: 123,
-    seatID: 1,
-    category: 'CAT A',
-    section: 'PA',
-    row: 18,
-    seatNo: 22
-  },
-  {
-    ticketID: 2,
-    uniqueCode: 123,
-    seatID: 2,
-    category: 'CAT A',
-    section: 'PA',
-    row: 18,
-    seatNo: 23
-  },
-  {
-    ticketID: 3,
-    uniqueCode: 123,
-    seatID: 3,
-    category: 'CAT A',
-    section: 'PA',
-    row: 18,
-    seatNo: 24
-  },
-  {
-    ticketID: 4,
-    uniqueCode: 123,
-    seatID: 4,
-    category: 'CAT A',
-    section: 'PA',
-    row: 18,
-    seatNo: 25
-  }
-]
+import { formatDate, formatTime } from '@/lib/formatUtil';
 
 const MyTickets = () => {
 
@@ -260,29 +209,15 @@ const MyTickets = () => {
                   <TableCell className="font-medium">
                     <p className='mt-6 font-semibold'>{ events[index] == undefined ? "" : events[index].name }</p>
                     <br />
-                    <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : runs[index].date + " " + runs[index].startTime + " - " + runs[index].endTime }</span></p>
+                    <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : formatDate(runs[index].date) + " " + formatTime(runs[index].startTime) + " - " + formatTime(runs[index].endTime) }</span></p>
                     <p><IoLocationOutline size={20} className='inline-block' /><span>{ venues[index] == undefined ? "" : venues[index].name }</span></p>
 
-
-                    {/* <div className='grid grid-cols-2 mt-6'>
-                      <p className='font-semibold'>Tickets Category:</p>
-                      <p>{item.ticketCategory}</p>
-                      <span className='font-semibold'>Standard:</span>
-                      <span>${item.price}</span>
-                    </div>
-
-                    <div className='grid grid-cols-2 mt-6'>
-                      <p className='font-semibold'>Tickets Quantity:</p>
-                      <p>{item.ticketQuantity} ticket(s)gin</p>
-                      <p className='font-semibold'>Total:</p>
-                      <p>${item.ticketQuantity * item.price}</p>
-                    </div> */}
                   </TableCell>
                   <TableCell>
                     {seats[index]==undefined? "": seats[index].map ((item, index) => {
                       return (
                         <div className='flex items-center' key={index}>
-                          <Link href={`/account/tickets/${item.ticketID}`}>
+                          <Link href={`/account/tickets/${item.seatID}`}>
                             <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo}/>
                           </Link>
                           <Checkbox handleSelect={handleSelectTickets} />
