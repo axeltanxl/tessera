@@ -96,11 +96,11 @@ public class Seat {
     this.tickets = tickets;
   }
 
-  public List<Run> getRuns() {
+  public List<RunSeat> getRuns() {
     return runs;
   }
 
-  public void setRuns(List<Run> runs) {
+  public void setRuns(List<RunSeat> runs) {
     this.runs = runs;
   }
 }
