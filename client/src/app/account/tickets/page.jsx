@@ -21,14 +21,6 @@ import { TbCircleLetterJ } from 'react-icons/tb';
 import { formatDate, formatTime } from '@/lib/formatUtil';
 
 const createAccount = async () => {
-    // const res = await axios.get("/api/stripeTransaction",{
-    //     headers : {
-    //         "Content-Type" : "application/json",
-    //     },
-    // });
-    // const {message} = res.data
-    // console.log(message);
-
     const res = await axios.post("/api/stripeTransaction",{"jwt" : localStorage.getItem("jwt")},{
         headers : {
             "Content-Type" : "application/json",

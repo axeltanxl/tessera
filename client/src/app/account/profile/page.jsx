@@ -6,12 +6,23 @@ import { fetchDetails, updateDetails } from "./actions"
 import AccPw from "@/components/pages/account/AccPw"
 import { updatePw } from "@/app/account/profile/actions"
 
-// import { axiosSpring } from "@/lib/utils"
 
-// const action = async (data, userId) => {
-//     const res = axiosSpring.put(`users/update/${userId}`,data)
-//     console.log(res)
-// }   
+//onclick button go to stripe account if avail, if dont have will be 400,
+// you can 1st check whether there is a link present in returned user object 
+// to hide the button if the account does not exist 
+const visitStripeAccount = async () => {
+    const res2 = await axios.get("/api/stripeTransaction",{
+        headers : {
+            "Content-Type" : "application/json",
+        },
+    });
+    
+    if(res2.status === 200){
+        const {stripeAccLoginUrl} = res2.data
+        console.log(stripeAccLoginUrl)
+        window.location.assign(stripeAccLoginUrl);
+    }
+}
 
 const Profile = async () => {
     const jsonDetails = await fetchDetails()

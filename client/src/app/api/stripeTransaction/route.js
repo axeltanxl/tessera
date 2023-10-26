@@ -3,11 +3,36 @@ import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
 import { authenticated } from "../ProtectRoutes";
 import jwt_decode from "jwt-decode";
+import { cookies } from 'next/headers'
+import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 export async function GET (request){
-    return NextResponse.json({message : "this route is stripeTransaction"},{ 
-        status: 200,
-    })
+    const prisma = new PrismaClient();
+    try{
+        const session = await getServerSession(authOptions);
+        // console.log(session?.user?.email);
+        const email = session?.user?.email;
+        const { userID, stripeUserID } = await prisma.user.findFirst({
+            where : {
+                email : email 
+            },
+            select : {
+                userID : true,
+                stripeUserID : true,
+            }
+        })
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        const { url } = await stripe.accounts.createLoginLink(stripeUserID);
+        return NextResponse.json({message : "this route is stripeTransaction", stripeAccLoginUrl : url},{ 
+            status: 200,
+        })
+
+    }catch{
+        return NextResponse.json({message : "No existing stripe account"},{ 
+            status: 400,
+        })
+    }
 }
 
 export async function POST (request){
