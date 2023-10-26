@@ -124,13 +124,19 @@ const MyTickets = () => {
       if (response.status === 201) {
         return response.data;
 
-      } else {
+      } else if(response.status === 400){
+          alert("You have already listed this ticket on marketplace")
+      }else {
         throw new Error('Failed to create ticket listing');
       }
 
     } catch (err) {
-      console.error(err);
-    }
+      if (err.response && err.response.status === 400) {
+        alert("You have already listed this ticket on the marketplace.");
+      } else {
+        console.error(err);
+      }
+    } 
   }
 
   useEffect(() => {
