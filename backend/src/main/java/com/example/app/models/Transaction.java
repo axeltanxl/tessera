@@ -28,15 +28,15 @@ public class Transaction {
     @JoinColumn(name="ticketID")
     private Ticket ticket;
 
-    @JsonBackReference(value="user-buyer")
-    @ManyToOne
-    @JoinColumn(name = "buyerID")
-    private User buyer;
+      @JsonBackReference(value="user-buyer")
+      @ManyToOne
+      @JoinColumn(name = "buyerID")
+      private User buyer;
 
-    @JsonBackReference(value="user-seller")
-    @ManyToOne
-    @JoinColumn(name = "sellerID")
-    private User seller;
+      @JsonBackReference(value="user-seller")
+      @ManyToOne
+      @JoinColumn(name = "sellerID")
+      private User seller;
 
     @JsonManagedReference(value="transaction-payment")
     @OneToMany(mappedBy = "transaction")
