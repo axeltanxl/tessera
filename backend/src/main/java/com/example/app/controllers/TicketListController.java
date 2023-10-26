@@ -151,6 +151,16 @@ public class TicketListController {
         return ResponseEntity.ok(ticketListsWithSeats);
     }
 
+    public boolean isTicketListingDuplicated(Long ticketID, Long runID, Long eventID) {
+
+        Optional<TicketListing> ticketListObj = ticketListRepo.findByTicketTicketIDAndEventEventIDAndRunRunID(ticketID, eventID, runID);
+        
+        if (ticketListObj.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
     // to add ticketListings
     @PostMapping("runs/{runID}/tickets/{ticketID}/ticketListings")
     public ResponseEntity<String> addTicketListings(@PathVariable("runID") Long runID,
@@ -189,10 +199,19 @@ public class TicketListController {
             if (!optRun.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Run not found");
             }
+
             Run currRun = optRun.get();
             reqTicketListing.setRun(currRun);
             reqTicketListing.setEvent(currRun.getEvent());
             reqTicketListing.setMarketplace(currRun.getMarketplace());
+
+            //find ticketList for duplicates
+            boolean isDuplicated = isTicketListingDuplicated(ticketID, runID, currRun.getEvent().getEventID());
+            if (isDuplicated) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Duplicates found. Transaction cancelled."); 
+            }
+
             // for transactionID in ticketListing
             // reqTicketListing.setTransaction(newTrans);
 
