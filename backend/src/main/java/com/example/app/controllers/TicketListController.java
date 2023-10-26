@@ -171,11 +171,10 @@ public class TicketListController {
             }
 
             // go order repo
-            CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
-            if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
-            }
- 
+            // CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
+            // if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
+            //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
+            // }
             // default pricing/event/status/userID.Price will be NULL
             // reqTicketListing.setPrice(currOrder.getPrice());
             // reqTicketListing.setEvent(currOrder.getEvent());
