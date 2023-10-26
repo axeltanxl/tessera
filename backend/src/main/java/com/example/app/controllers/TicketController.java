@@ -78,6 +78,7 @@ public class TicketController {
                 ticketDTO.setSeat(eachTicket.getSeat());
                 ticketDTO.setEvent(eachTicketListing.getEvent());
                 ticketDTO.setRun(eachTicketListing.getRun());
+                ticketDTO.setTicketList(eachTicketListing);
 
                 listOfTickets.add(ticketDTO);
             }

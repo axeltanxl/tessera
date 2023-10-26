@@ -18,5 +18,6 @@ public class TicketDTO {
     private Event event;
     @OneToOne
     private Run run;
-
+    @OneToOne
+    private TicketListing ticketList;
 }
