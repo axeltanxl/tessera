@@ -21,17 +21,12 @@ const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musical
 function Events() {
     const [events, setEvents] = useState([]);
 console.log("get events:", events);
-const token = localStorage.getItem('jwt');
+// const token = localStorage.getItem('jwt');
 useEffect(() => {
     async function fetchData() {
         try {
-
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
             const res = await fetch("http://localhost:8080/api/v1/events", {
                 method: 'GET',
-                headers,
             });
             if (res.ok) {
                 const eventsData = await res.json();

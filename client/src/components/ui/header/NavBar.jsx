@@ -61,7 +61,7 @@ const Navbar = () => {
           onClick={signOut}
           className="bg-amber-300 px-2 rounded-full ml-2 hidden lg:block">Sign Out</button> */}
           
-          <MyAccountDropdown session={session}/>
+          <MyAccountDropdown session={session} status={status}/>
         </div>
 
       </div>

@@ -17,32 +17,24 @@ export const getEvents = async () => {
 }
 function Home() {
 
-    const { data: session, status } = useSession();
-    console.log("home session:", session);
-    if (status === "unauthenticated" || !session || !session.user) {
-        redirect("/login");
-    }
+    // const { data: session, status } = useSession();
+    // console.log("home session:", session);
+    // if (status === "unauthenticated" || !session || !session.user) {
+    //     redirect("/");
+    // }
 
     const [events, setEvents] = useState([]);
     console.log("events:", events);
-    const token = localStorage.getItem('jwt');
-    console.log("token:", token);
+
     useEffect(() => {
-        if (status === "authenticated" && session && session.user) {
+        // if (status === "authenticated" && session && session.user) {
             async function fetchData() {
                 try {
-
-                    // const headers = {
-                    //     Authorization: `Bearer ${token}`,
-                    // };
-                    // const res = await fetch("http://localhost:8080/api/v1/events", {
-                    //     method: 'GET',
-                    //     headers,
-                    // });
-                    const res = await axiosSpring("/events");
-                    console.log(res);
+                    const res = await fetch("http://localhost:8080/api/v1/events", {
+                        method: 'GET',
+                    });
                     if (res.status === 200) {
-                        const eventsData = res.data
+                        const eventsData = await res.json()
                         setEvents(eventsData);
                     } else {
                         console.error("API request failed.");
@@ -52,8 +44,8 @@ function Home() {
                 }
             }
             fetchData();
-        }
-    }, [status, session]);
+        // }
+    }, []);
 
     return (
         <div className="z-0">

@@ -124,8 +124,8 @@ export async function POST(request){
             }
         ],
         mode : 'payment', // one time payment
-        success_url : "http://localhost:3000/paymentFeedback/success",
-        cancel_url : "http://localhost:3000/paymentFeedback/cancel",
+        success_url : `${process.env.NEXTAUTH_URL}/paymentFeedback/success`,
+        cancel_url : `${process.env.NEXTAUTH_URL}/paymentFeedback/cancel`,
         payment_intent_data : {
             metadata : {
                 paymentReason : "purchase", 

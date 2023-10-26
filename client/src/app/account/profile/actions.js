@@ -2,6 +2,7 @@
 import { cookies } from "next/headers"
 // import { signOut } from "next-auth/react"
 import { revalidatePath } from 'next/cache'
+import { unAuth } from "@/lib/utils";
 
 
 export const fetchDetails = async () => {

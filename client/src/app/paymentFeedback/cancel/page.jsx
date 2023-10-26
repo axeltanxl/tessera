@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const CancelPage = () => {
 
@@ -23,13 +24,17 @@ const CancelPage = () => {
                 <p className="text-4xl">Purchase Cancelled</p>
             </div>
             <div className="flex gap-4">
-                <Button variant="outlined"  className="text-primary bg-secondary ">
-                    Return to Home
-                </Button>
+                <Link href="/">
+                    <Button variant="outlined"  className="text-primary bg-secondary ">
+                        Return to Home
+                    </Button>
+                </Link>
 
+            <Link href="/account/transfer-history">
                 <Button variant="outlined"  className="text-primary bg-secondary ">
                     View Purchase History
                 </Button>
+            </Link>
             </div>
         </div>
     </div>

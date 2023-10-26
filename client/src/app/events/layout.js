@@ -5,18 +5,18 @@ import { jwtHasExpired } from "@/lib/utils";
 
 
 export default ({children}) =>  {
-    const { data: session, status } = useSession();
-    console.log("home session:", session);
+    // const { data: session, status } = useSession();
+    // console.log("home session:", session);
 
-    const jwt = localStorage.getItem("jwt");
+    // const jwt = localStorage.getItem("jwt");
     
-    if (status === "unauthenticated" || !session || !session.user) {
-        redirect("/login");
-    }
+    // if (status === "unauthenticated" || !session || !session.user) {
+    //     redirect("/login");
+    // }
 
-    if(!jwt || jwtHasExpired(jwt)){
-        redirect("/login");
-    }
+    // if(!jwt || jwtHasExpired(jwt)){
+    //     redirect("/login");
+    // }
 
     return (
     <>
