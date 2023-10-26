@@ -125,11 +125,11 @@ const MyTickets = () => {
         return response.data;
 
       } else {
-        throw new Error('Failed to create ticket listing hihihihi');
+        throw new Error('Failed to create ticket listing');
       }
 
     } catch (err) {
-      console.error(err + "err");
+      console.error(err);
     }
   }
 
@@ -346,9 +346,9 @@ const MyTickets = () => {
 
                       <div className='flex justify-center mt-2'>
                         <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm' onClick={handleClose}>Cancel</button>
-                        {/* <Link href="/account/resell-tickets"> */}
+                        <Link href="/account/resell-tickets">
                           <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm' onClick={handleResell}>Confirm </button>
-                        {/* </Link> */}
+                        </Link>
                       </div>
                     </div>
                   )}

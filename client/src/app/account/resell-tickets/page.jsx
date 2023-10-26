@@ -14,16 +14,56 @@ import Modal from '@mui/material/Modal';
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import axios from "axios";
+import { formatDate, formatTime } from '@/lib/formatUtil';
+import ResellModal from '@/components/ui/modals/ResellModal';
+import DeleteModal from '@/components/ui/modals/DeleteModal';
 
 const ResellTickets = () => {
     //modal 
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
+    const handleOpen = (item) => {
+        setSelectedItem(item)
+        setOpen(true)
+    };
     const handleClose = () => setOpen(false);
+    // modal data
+    const [selectedItem, setSelectedItem] = useState(null);
+
 
     //ticketlistings
     const [ticketListings, setTicketListings] = useState([]);
     const token = localStorage.getItem('jwt');
+    const [hasUpdate, setHasUpdate] = useState(false);
+    const fetchVenueDetails = async (eventid) => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventid}/venue`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const handleChange = () => {
+        setHasUpdate(false);
+    }
+
+    
+    //delete confirmation modal
+    const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+    const handleOpenDeleteModal = (item) => {
+        setSelectedItem(item)
+        setOpenDeleteModal(true)
+    };
+    const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
     useEffect(() => {
         async function fetchDetails() {
             try {
@@ -57,6 +97,15 @@ const ResellTickets = () => {
                 if (res.ok) {
                     const result = await res.json();
                     setTicketListings(result);
+                    setHasUpdate(true);
+                    if (hasUpdate === true) {
+                        const ticketListingsWithVenue = await Promise.all(ticketListings.map(async (item) => {
+                            const eventid = item.event.eventID;
+                            const venueData = await fetchVenueDetails(eventid);
+                            return { ...item, venue: venueData };
+                        }))
+                        setTicketListings(ticketListingsWithVenue);
+                    }
                 } else {
                     console.error("API request failed.");
                 }
@@ -65,9 +114,9 @@ const ResellTickets = () => {
             }
         };
         fetchDetails();
-    }, [])
+    }, [hasUpdate])
 
-    console.log("ticketlistings:", ticketListings);
+    // console.log("ticketlistings:", ticketListings);
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -79,59 +128,32 @@ const ResellTickets = () => {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="font-semibold w-[400px]">Ticket Information</TableHead>
+                                <TableHead className="font-semibold w-[480px]">Ticket Information</TableHead>
                                 <TableHead className="font-semibold">Status</TableHead>
                                 <TableHead className="font-semibold">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {ticketListings.length > 0 ? (ticketListings.map((item, index) => (
-                            <TableRow key={index}>
-                                <TableCell className='flex'>
-                                    <p>Taylor Swift The Eras Tour in Singapore</p>
-                                    <TicketCard category={"A"} section={"B"} row={"18"} seatNo={"22"} />
-                                </TableCell>
-                                <TableCell>
-                                    Listed at $200
-                                </TableCell>
-                                <TableCell>
-                                    <button onClick={handleOpen} className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Set price</button>
-                                    <button className='bg-black text-white rounded-sm px-4 py-1 ml-4 text-sm'>Remove</button>
-                                </TableCell>
-                                <Modal
-                                    open={open}
-                                    onClose={handleClose}
-                                    aria-labelledby="modal-modal-title"
-                                    aria-describedby="modal-modal-description"
-                                >
-                                    <div className='absolute top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] w-[500px] h-[350px] bg-white rounded-sm'>
-                                        <div className="flex flex-col flex-1 p-10">
-                                            <div className='grid grid-cols-2 w-[450px]'>
-                                                <div className='flex justify-center flex-col w-3/4'>
-                                                    <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
-                                                    <p className='flex items-center'><CalendarIcon />8 March 2024</p>
-                                                    <p className='flex items-center'><IoLocationOutline />National Stadium</p>
-                                                </div>
-                                                <div className='w-1/4'>
-                                                    <TicketCard category={"A"} section={"PA"} row={"18"} seatNo={"22"} />
-                                                </div>
-                                            </div>
-                                            <p className='mt-1 font-bold'>Original price: $200</p>
-                                            <div className='flex mt-4'>
-                                                <p className='font-bold'>Input resale price:</p>
-                                                <p className='ml-4'>$</p>
-                                                <input type="price" placeholder='e.g. 200' className='border border-[#B4C1DB] rounded-sm px-2'>
-                                                </input>
-                                            </div>
-
+                                <TableRow key={index}>
+                                    <TableCell className='flex'>
+                                        <div className="pr-4">
+                                            <p>{item.event.name}</p>
+                                            <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{formatDate(item.run.date)} {formatTime(item.run.startTime)} - {formatTime(item.run.endTime)}</span></p>
+                                            <p><IoLocationOutline size={20} className='inline-block' /><span>{item.venue?.name}</span></p>
                                         </div>
-                                        <div className='flex justify-center mt-1'>
-                                            <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm' onClick={handleClose}>Cancel</button>
-                                            <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Resell </button>
-                                        </div>
-                                    </div>
-                                </Modal>
-                            </TableRow>))
+                                        <TicketCard category={item.seat.category} section={item.seat.section} row={item.seat.row} seatNo={item.seat.seatNo} />
+                                    </TableCell>
+                                    <TableCell>
+                                        {item.ticketList.status === "Not Listed" ? (<p>{item.ticketList.status}</p>) : (<p>{item.ticketList.status} at ${item.ticketList.price}</p>)}
+                                    </TableCell>
+                                    <TableCell>
+                                        <button onClick={() => handleOpen(item)} className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Set price</button>
+                                        <button onClick={() => handleOpenDeleteModal(item)} className='bg-black text-white rounded-sm px-4 py-1 ml-4 text-sm'>Remove</button>
+                                    </TableCell>
+                                    <ResellModal item={selectedItem} handleClose={handleClose} open={open} handleUpdateInPrice={handleChange} />
+                                    <DeleteModal item={selectedItem} handleCloseDeleteModal={handleCloseDeleteModal} openDeleteModal={openDeleteModal} handleDeleteListing={handleChange}/>
+                                </TableRow>))
                             ) : (<></>)}
                         </TableBody>
                     </Table>

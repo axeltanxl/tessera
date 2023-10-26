@@ -170,17 +170,20 @@ public class TicketListController {
             }
 
             // go order repo
-            // CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
-            // if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
-            //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
+            // CustOrder currOrder =
+            // orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
+            // if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() ||
+            // reqTicketListing.getQuantity() == 0) {
+            // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid
+            // quantity.");
             // }
             // default pricing/event/status/userID.Price will be NULL
             // reqTicketListing.setPrice(currOrder.getPrice());
             // reqTicketListing.setEvent(currOrder.getEvent());
-  
+
             reqTicketListing.setStatus("Not Listed");
             reqTicketListing.setUser(authenticatedUser);
-            
+
             // For ticketID in TicketListing
             reqTicketListing.setTicket(currTicket);
 
@@ -215,24 +218,27 @@ public class TicketListController {
     }
 
     // private boolean isAuthorized(Long listingID) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     User authenticatedUser = (User) authentication.getPrincipal();
+    // Authentication authentication =
+    // SecurityContextHolder.getContext().getAuthentication();
+    // User authenticatedUser = (User) authentication.getPrincipal();
 
-    //     // retrieve obj. Ensure that listing is associated to the correct user.
-    //     Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
-    //     TicketListing oneTicketListing = optTicketListing.get();
+    // // retrieve obj. Ensure that listing is associated to the correct user.
+    // Optional<TicketListing> optTicketListing =
+    // ticketListRepo.findById(listingID);
+    // TicketListing oneTicketListing = optTicketListing.get();
 
-    //     // Check if the currently authenticated user matches the user being updated
-    //     if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-    //         return false;
-    //     }
-    //     return true;
+    // // Check if the currently authenticated user matches the user being updated
+    // if (!(authenticatedUser.getUserID() ==
+    // oneTicketListing.getUser().getUserID())) {
+    // return false;
+    // }
+    // return true;
     // }
 
-    //Update listing with price.
+    // Update listing with price.
     @PutMapping("ticketListings/{listingID}")
-    public ResponseEntity<String> updateTicketListing(@PathVariable("listingID") Long listingID, 
-    @RequestBody TicketListing requestedTicketListing) {
+    public ResponseEntity<String> updateTicketListing(@PathVariable("listingID") Long listingID,
+            @RequestBody TicketListing requestedTicketListing) {
         try {
             if (!ticketListRepo.existsById(listingID)) {
                 return ResponseEntity.notFound().build();
@@ -249,7 +255,7 @@ public class TicketListController {
             if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
             }
-            
+
             oneTicketListing.setPrice(requestedTicketListing.getPrice());
             oneTicketListing.setStatus("Listed");
 
@@ -284,10 +290,10 @@ public class TicketListController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
             }
 
-            //get transactionID.
+            // get transactionID.
             // long getTransactionID = oneTicketListing.getTransaction().getTransactionID();
 
-            //find and delete from table.
+            // find and delete from table.
             ticketListRepo.deleteById(listingID);
 
             return ResponseEntity.status(HttpStatus.OK).body("TicketListing deleted successfully.");
