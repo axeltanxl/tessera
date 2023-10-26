@@ -20,14 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.app.models.CustOrder;
 import com.example.app.models.Run;
 import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
 import com.example.app.models.TicketListingWithSeat;
 import com.example.app.models.User;
-import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
@@ -46,8 +44,6 @@ public class TicketListController {
     private SeatRepository seatRepo;
     @Autowired
     private RunRepository runRepo;
-    @Autowired
-    private OrderRepository orderRepo;
 
     // For general public who wants to see each listing.
     @GetMapping("ticketListings/{listingID}")
