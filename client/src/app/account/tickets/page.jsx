@@ -33,56 +33,56 @@ const MyTickets = () => {
 
   const fetchRunDetails = async (orderid) => {
     const token = Cookies.get("jwt_spring");
-      try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/run`,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.status === 200) {
-          return response.data;
-        } else {
-          throw new Error('Failed to fetch data');
-        }
-      }catch(e){
-        console.error(e);
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/run`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error('Failed to fetch data');
       }
+    } catch (e) {
+      console.error(e);
+    }
   }
   const fetchEventDetails = async (orderid) => {
     const token = Cookies.get("jwt_spring");
-      try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/event`,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.status === 200) {
-          console.log("event: ", response.data);
-          return response.data;
-        } else {
-          throw new Error('Failed to fetch data');
-        }
-      }catch(e){
-        console.error(e);
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/event`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        console.log("event: ", response.data);
+        return response.data;
+      } else {
+        throw new Error('Failed to fetch data');
       }
+    } catch (e) {
+      console.error(e);
+    }
   }
   const fetchVenueDetails = async (orderid) => {
     const token = Cookies.get("jwt_spring");
-      try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/event/venue`,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.status === 200) {
-          console.log("venue: ", response.data);
-          return response.data;
-        } else {
-          throw new Error('Failed to fetch data');
-        }
-      }catch(e){
-        console.error(e);
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/event/venue`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        console.log("venue: ", response.data);
+        return response.data;
+      } else {
+        throw new Error('Failed to fetch data');
       }
+    } catch (e) {
+      console.error(e);
+    }
   }
   const fetchSeats = async (orderid) => {
     const token = Cookies.get("jwt_spring");
@@ -95,7 +95,7 @@ const MyTickets = () => {
 
       if (response.status === 200) {
         return response.data;
-        
+
       } else {
         throw new Error('Failed to fetch data');
       }
@@ -104,7 +104,35 @@ const MyTickets = () => {
       console.error(err);
     }
   }
-  
+
+  const addTicketListing = async (quantity, runID, ticketID) => {
+    const token = Cookies.get("jwt_spring");
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/runs/${runID}/tickets/${ticketID}/ticketListings`, 
+      {
+        quantity: 1,
+        runID: runID,
+        ticketID: ticketID,
+        listingDate: Date.now()
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 201) {
+        return response.data;
+
+      } else {
+        throw new Error('Failed to create ticket listing hihihihi');
+      }
+
+    } catch (err) {
+      console.error(err + "err");
+    }
+  }
+
   useEffect(() => {
     const fetchDetails = async () => {
       const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
@@ -121,7 +149,7 @@ const MyTickets = () => {
 
           const userid = response.data.userID;
           fetchOrders(userid);
-          
+
         } else {
           throw new Error('Failed to fetch data');
         }
@@ -132,14 +160,14 @@ const MyTickets = () => {
 
     const fetchOrders = async (userid) => {
       const token = Cookies.get("jwt_spring");
-      try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userid}/orders`,{
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userid}/orders`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         if (response.status === 200) {
-        
+
           setOrders(response.data);
           console.log("orders: ", response.data);
           const tempOrder = response.data
@@ -167,7 +195,7 @@ const MyTickets = () => {
         } else {
           throw new Error('Failed to fetch data');
         }
-      }catch(e){
+      } catch (e) {
         console.error(e);
       }
     }
@@ -182,7 +210,7 @@ const MyTickets = () => {
   useEffect(() => {
     console.log("selectedtickets:", selectedTickets);
   }, [selectedTickets]);
-  
+
   const handleSelectTickets = (ticket, isChecked) => {
     if (isChecked) {
       setSelectedTickets((prevSelectedTickets) => [
@@ -203,7 +231,30 @@ const MyTickets = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // function to find the event run details for the specific selected ticket
+  function findOrderIndex(ticketID) {
+    for (let i = 0; i < orders.length; i++) {
+      const secArray = orders[i].tickets;
+      console.log(secArray);
+      for (let j = 0; j < secArray.length; j++) {
+        if (secArray[j].ticketID === ticketID) {
+          return i;
+        }
+      }
+    }
+    return -1; // seatID not found in the orders array
+  }
 
+  //handle reselling
+  const handleResell = () => {
+    
+    for(let i = 0; i < selectedTickets.length; i++){
+      const ticketIndex = selectedTickets[i].tickets[0].ticketID;
+      const orderIndex = (findOrderIndex(ticketIndex))
+      const runIndex = runs[orderIndex].runID
+      addTicketListing(1, runIndex, ticketIndex)
+    }
+  }
   return (
     <section className='flex mt-10'>
       <div className='mr-20 ml-10'>
@@ -222,33 +273,35 @@ const MyTickets = () => {
             </TableHeader>
             <TableBody>
               {orders.map((item, index) => {
-                return(
-                <TableRow key={index} >
-                  <TableCell className="font-medium">
-                    <p className='mt-6 font-semibold'>{ events[index] == undefined ? "" : events[index].name }</p>
-                    <br />
-                    <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : formatDate(runs[index].date) + " " + formatTime(runs[index].startTime) + " - " + formatTime(runs[index].endTime) }</span></p>
-                    <p><IoLocationOutline size={20} className='inline-block' /><span>{ venues[index] == undefined ? "" : venues[index].name }</span></p>
+                return (
+                  <TableRow key={index} >
+                    <TableCell className="font-medium">
+                      <p className='mt-6 font-semibold'>{events[index] == undefined ? "" : events[index].name}</p>
+                      <br />
+                      <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : formatDate(runs[index].date) + " " + formatTime(runs[index].startTime) + " - " + formatTime(runs[index].endTime)}</span></p>
+                      <p><IoLocationOutline size={20} className='inline-block' /><span>{venues[index] == undefined ? "" : venues[index].name}</span></p>
 
-                  </TableCell>
-                  <TableCell>
-                    {seats[index]==undefined? "": seats[index].map ((item, index) => {
-                      return (
-                        <div className='flex items-center' key={index}>
-                          <Checkbox handleSelect={handleSelectTickets} ticket={item} />
-                        <div className="flex gap-2">
+                    </TableCell>
+                    <TableCell>
+                      {seats[index] == undefined ? "" : seats[index].map((item, index) => {
+                        return (
+                          <div className='flex items-center' key={index}>
+                            <Checkbox handleSelect={handleSelectTickets} ticket={item} />
+                            <div className="flex gap-2">
 
-                        </div>
-                        <Link href={`/account/tickets/${item.seatID}`}>
-                            <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo}/>
-                          </Link>
-  
-                        </div>
-                      )})}
-                  </TableCell>
+                            </div>
+                            <Link href={`/account/tickets/${item.seatID}`}>
+                              <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
+                            </Link>
 
-                </TableRow>
-              )})}
+                          </div>
+                        )
+                      })}
+                    </TableCell>
+
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </div>
@@ -268,32 +321,34 @@ const MyTickets = () => {
             aria-describedby="modal-modal-description"
           >
             <div className='absolute overflow-y-scroll top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] w-[800px] h-[400px] bg-white rounded-sm'>
-              <div className="flex flex-1 justify-center p-10">
+              <div className="flex flex-1 justify-center p-6">
                 <div>
                   {selectedTickets.length === 0 ? (<div>No tickets have been selected</div>) : (
                     <div>
                       <p>You have selected these ticket(s) to resell</p>
 
                       {selectedTickets.map((item, index) => {
+                        console.log("item:", item, " order index:", findOrderIndex(item.tickets[0].ticketID));
+                        const orderIndex = findOrderIndex(item.tickets[0].ticketID);
                         return (
-                          <div className='grid grid-cols-2 w-[500px]' key={index}>
-                            <div className='flex justify-center flex-col w-3/4'>
-                              <p className='font-bold'>Taylor Swift The Eras Tour in Singapore </p>
-                              <p className='flex items-center'><CalendarIcon/>8 March 2024</p>
-                              <p className='flex items-center'><IoLocationOutline/>National Stadium</p>
+                          <div className='grid grid-cols-2 gap-x-4' key={index}>
+                            <div className='flex justify-center flex-col'>
+                              <p className='font-bold'>{events[orderIndex].name}</p>
+                              <p className='flex items-center'><CalendarIcon />{formatDate(runs[orderIndex].date)} {formatTime(runs[orderIndex].startTime)} - {formatTime(runs[orderIndex].endTime)}</p>
+                              <p className='flex items-center'><IoLocationOutline />National Stadium</p>
                             </div>
-                            <div className='w-1/4'>
+                            <div className=''>
                               <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
                             </div>
                           </div>
-                          )
+                        )
                       })}
 
                       <div className='flex justify-center mt-2'>
                         <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm' onClick={handleClose}>Cancel</button>
-                        <Link href="/account/resell-tickets">
-                          <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Confirm </button>
-                        </Link>
+                        {/* <Link href="/account/resell-tickets"> */}
+                          <button className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm' onClick={handleResell}>Confirm </button>
+                        {/* </Link> */}
                       </div>
                     </div>
                   )}

@@ -158,7 +158,6 @@ public class TicketListController {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User authenticatedUser = (User) authentication.getPrincipal();
-
             Optional<Ticket> ticketObj = ticketRepo.findById(ticketID);
             if (!ticketObj.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");

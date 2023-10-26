@@ -4,7 +4,7 @@ const Checkbox = ({handleSelect, ticket}) => {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    console.log(isChecked);
+    // console.log(isChecked);
     handleSelect(ticket, isChecked)
   }, [isChecked])
   const toggleCheckbox = () => {
