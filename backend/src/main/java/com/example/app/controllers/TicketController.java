@@ -15,6 +15,7 @@ import com.example.app.models.Ticket;
 import com.example.app.models.TicketDTO;
 import com.example.app.models.TicketListing;
 import com.example.app.models.User;
+import com.example.app.models.Seat;
 import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
@@ -87,6 +88,13 @@ public class TicketController {
             System.out.println("Error getting listed tickets: " + ex.getMessage());
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @GetMapping ("tickets/{ticketID}/seat")
+    public Seat getSeatByTicketID (@PathVariable long ticketID){
+        Optional <Ticket> ticket = ticketRepository.findById(ticketID);
+        Seat seats = ticket.get().getSeat();
+        return seats;
     }
 }
 
