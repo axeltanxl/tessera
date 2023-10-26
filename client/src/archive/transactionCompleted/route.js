@@ -114,7 +114,10 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
         JSON.stringify(uniqueJson , (key, value) => {return typeof value === 'bigint' ? value.toString() : value;}),
         process.env.QR_SECRET_KEY1)
         .toString();
-    // havent implement
+
+
+
+    // update ticket to new user
     await prisma.ticket.update({
         where : {
             ticketID : ticketID,
@@ -122,6 +125,17 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
         data : {
             userID : buyerID,
             uniqueCode : ticketUniqueCode,
+        }
+    })
+
+    // update status of ticketlisting since it is now sold
+    await prisma.ticketlisting.update({
+        where : {
+            listingID : listingID,
+        },
+        data : {
+            transactionID : transactionID,
+            status : "sold",
         }
     })
 
@@ -146,4 +160,6 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
             destination: stripeUserID,
           });
           console.log(transfer)
-      }
+
+
+}

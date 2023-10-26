@@ -23,7 +23,7 @@ import axios from "axios"
 
 const hardCodedValues = {
     "jwt" : localStorage.getItem("jwt"),
-    "listingID" : 1,
+    "listingID" : 2,
     "paymentMethod" : "card",
 };
 
