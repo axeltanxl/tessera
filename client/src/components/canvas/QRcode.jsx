@@ -6,19 +6,19 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 export const QRcode =  ({qrUrl}) => {
     const TIMEOUT = 5000;
-    const [key, setKey] = useState(new Date().toISOString());
+    const [key, setKey] = useState(0);
     const router = useRouter()
     useEffect(() => {
-        setTimeout(() => {
-            router.refresh();
-            setKey(new Date().toISOString())
-        }, TIMEOUT)
-    }, [qrUrl])
+        router.refresh();
+        // setTimeout(() => {
+        //     setKey(new Date().toISOString())
+        // }, TIMEOUT)
+    }, [key])
     
     return (
         <>
             <img src={qrUrl} alt='loading' className="w-[200px] h-[200px]"/>
-                <CountdownCircleTimer
+                {/* <CountdownCircleTimer
                 key={key}
                 isPlaying
                 duration={TIMEOUT / 1000}
@@ -28,7 +28,31 @@ export const QRcode =  ({qrUrl}) => {
                 strokeWidth={1}
             >
                 {({ remainingTime }) => remainingTime}
-            </CountdownCircleTimer>
+            </CountdownCircleTimer> */}
+            <CountdownCircleTimer
+                key={key}
+                isPlaying
+                strokeWidth={1}
+                size={30}
+                duration={10}
+                colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
+                onComplete={() => {
+                    setKey(prevKey => prevKey + 1);
+                    return [true, 1000];
+                    }}
+                >
+                {renderTime}
+                </CountdownCircleTimer>
         </>
     )
 }
+
+const renderTime = ({ remainingTime }) => {
+ 
+    return (
+      <div className="timer">
+        <div className="value">{remainingTime}</div>
+      </div>
+    );
+  };
+  
