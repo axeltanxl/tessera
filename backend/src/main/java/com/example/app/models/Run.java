@@ -43,4 +43,8 @@ public class Run {
     @OneToOne
     @JoinColumn(name="marketplaceID")
     private Marketplace marketplace;
+
+    @JsonManagedReference(value="run-runSeat")
+    @OneToMany(mappedBy = "run")
+    private List<RunSeat> seats;
 }

@@ -29,7 +29,6 @@ public class TicketController {
 
     @Autowired
     private OrderRepository orderRepository; // Rename it to match the repository name
-
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
@@ -99,3 +98,4 @@ public class TicketController {
     }
 
 }
+
