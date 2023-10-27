@@ -230,7 +230,7 @@ const TransactionHistory = () => {
                                     return (
                                         <TableRow key={index}>
                                             <TableCell>{item.orderID}</TableCell>
-                                            <TableCell>{item.date}</TableCell>
+                                            <TableCell>{formatDate(item.date)}</TableCell>
                                             <TableCell>
                                                 <p><span>{events[index] == undefined ? "" : events[index].name}</span></p>
                                                 <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : formatDate(runs[index].date) + " " + formatTime(runs[index].startTime) + " - " + formatTime(runs[index].endTime)}</span></p>
@@ -282,7 +282,7 @@ const TransactionHistory = () => {
                             <TableBody>
                                 {transactions.length > 0 ? (
                                     transactions.map((item, index) => {return(
-                                        <TableRow>
+                                        <TableRow key={item.transactionID}>
                                             <TableCell>{item.transactionID}</TableCell>
                                             <TableCell>{formatDate(item.date)}</TableCell>
                                             <TableCell>Sell</TableCell>
@@ -301,7 +301,7 @@ const TransactionHistory = () => {
 
                                                 <div className='grid grid-cols-2 mt-6'>
                                                     <p className='font-semibold'>Tickets Quantity:</p>
-                                                    <p>_ticket qty_ ticket(s)</p>
+                                                    <p>1</p>
                                                     <p className='font-semibold'>Total:</p>
                                                     <p>$total paid</p></div>
                                             </TableCell>
