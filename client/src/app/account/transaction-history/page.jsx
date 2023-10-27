@@ -17,9 +17,180 @@ import {
 } from "@/components/ui/table"
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
-
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { formatDate, formatTime } from '@/lib/formatUtil'
 
 const TransactionHistory = () => {
+    const [details, setDetails] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [runs, setRuns] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [venues, setVenues] = useState([]);
+    const [seats, setSeats] = useState([]);
+    const [transactions, setTransactions] = useState([]);
+
+    const token = localStorage.getItem('jwt');
+    const fetchRunDetails = async (orderid) => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/run`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const fetchEventDetails = async (orderid) => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/event`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.status === 200) {
+                console.log("event: ", response.data);
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const fetchVenueDetails = async (orderid) => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/event/venue`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.status === 200) {
+                console.log("venue: ", response.data);
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const fetchSeats = async (orderid) => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/orders/${orderid}/seats`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                return response.data;
+
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    setDetails(response.data);
+
+                    const userid = response.data.userID;
+                    fetchOrders(userid);
+
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchOrders = async (userid) => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userid}/orders`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (response.status === 200) {
+
+                    setOrders(response.data);
+                    console.log("orders: ", response.data);
+                    const tempOrder = response.data
+
+                    const runpromises = tempOrder.map(order => fetchRunDetails(order.orderID));
+                    const runresults = await Promise.all(runpromises);
+                    setRuns(runresults);
+                    console.log("runs: ", runresults);
+
+                    const eventpromises = tempOrder.map(order => fetchEventDetails(order.orderID));
+                    const eventresults = await Promise.all(eventpromises);
+                    setEvents(eventresults);
+                    console.log("event: ", eventresults);
+
+                    const venuepromises = tempOrder.map(order => fetchVenueDetails(order.orderID));
+                    const venueresults = await Promise.all(venuepromises);
+                    setVenues(venueresults);
+                    console.log("venue: ", venueresults);
+
+                    const seatpromises = tempOrder.map(order => fetchSeats(order.orderID));
+                    const seatresults = await Promise.all(seatpromises);
+                    setSeats(seatresults);
+                    console.log("seats: ", seatresults);
+
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        const fetchTransactions = async () => {
+            try {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/transactionHistory`, {
+                    method: 'GET',
+                    headers
+                });
+                if (res.ok) {
+                    const fetchedTransactions = await res.json();
+                    setTransactions(fetchedTransactions);
+                } else {
+                    console.error("API request failed");
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+        fetchDetails();
+        fetchTransactions();
+    }, []);
+    console.log("transactions:", transactions)
+
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -45,29 +216,55 @@ const TransactionHistory = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell>12345</TableCell>
-                                    <TableCell>14 Oct 2023, 2.20pm</TableCell>
-                                    <TableCell>
-                                        <p><span>event title</span></p>
-                                        <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>event date</span></p>
-                                        <p><IoLocationOutline size={20} className='inline-block' /><span>event venue</span></p>
+                                {orders.length > 0 ? orders.map((item, index) => {
+                                    const event = events[index];
+                                    let pricePerCategory;
+                                    if (event !== undefined) {
+                                        pricePerCategory = JSON.parse(event.pricePerCategory);
+                                    }
+                                    const category = item.ticketCategory;
+                                    let price;
+                                    if (category !== undefined && pricePerCategory !== undefined) {
+                                        price = pricePerCategory[category];
+                                    }
+                                    return (
+                                        <TableRow key={index}>
+                                            <TableCell>{item.orderID}</TableCell>
+                                            <TableCell>{item.date}</TableCell>
+                                            <TableCell>
+                                                <p><span>{events[index] == undefined ? "" : events[index].name}</span></p>
+                                                <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{runs[index] == undefined ? "" : formatDate(runs[index].date) + " " + formatTime(runs[index].startTime) + " - " + formatTime(runs[index].endTime)}</span></p>
+                                                <p><IoLocationOutline size={20} className='inline-block' /><span>{venues[index] == undefined ? "" : venues[index].name}</span></p>
 
 
-                                        <div className='grid grid-cols-2 mt-6'>
-                                            <p className='font-semibold'>Tickets Category:</p>
-                                            <p>ticket cat</p>
-                                            <span className='font-semibold'>Standard:</span>
-                                            <span>$price</span>
-                                        </div>
+                                                <div className='grid grid-cols-2 mt-6'>
+                                                    <p className='font-semibold'>Tickets Category:</p>
+                                                    <p>{item.ticketCategory}</p>
+                                                    <span className='font-semibold'>Standard:</span>
+                                                    <span>${price}</span>
+                                                </div>
 
-                                        <div className='grid grid-cols-2 mt-6'>
-                                            <p className='font-semibold'>Tickets Quantity:</p>
-                                            <p>_ticket qty_ ticket(s)</p>
-                                            <p className='font-semibold'>Total:</p>
-                                            <p>$total paid</p></div>
-                                    </TableCell>
-                                </TableRow>
+                                                <div className='grid grid-cols-2 mt-6'>
+                                                    <p className='font-semibold'>Tickets Quantity:</p>
+                                                    <p>{item.ticketQuantity}</p>
+                                                    <p className='font-semibold'>Total:</p>
+                                                    <p>${price * item.ticketQuantity}</p>
+                                                </div>
+
+                                                <div className='mt-6'>
+                                                    <p className='font-semibold'>Tickets purchased:</p>
+                                                    <div className="flex flex-col">
+                                                        {seats[index] == undefined ? "" : seats[index].map((item, i) => {
+                                                            return (
+                                                                <div key={i} className="p-2 flex w-[320px] bg-white border border-[#B4C1DB] rounded my-2">Category {item.category}, Zone {item.section},Row {item.row}, Seat {item.seatNo}</div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>)
+                                }) : (<></>)}
+
                             </TableBody>
                         </Table>
                     </TabsContent>
@@ -83,30 +280,35 @@ const TransactionHistory = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                <TableRow>
-                                    <TableCell>12345</TableCell>
-                                    <TableCell>14 October 2023, 2.20pm</TableCell>
-                                    <TableCell>Sell</TableCell>
-                                    <TableCell>
-                                        <p><span>event title</span></p>
-                                        <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>event date</span></p>
-                                        <p><IoLocationOutline size={20} className='inline-block' /><span>event venue</span></p>
+                                {transactions.length > 0 ? (
+                                    transactions.map((item, index) => {return(
+                                        <TableRow>
+                                            <TableCell>{item.transactionID}</TableCell>
+                                            <TableCell>{formatDate(item.date)}</TableCell>
+                                            <TableCell>Sell</TableCell>
+                                            <TableCell>
+                                                <p><span>event title</span></p>
+                                                <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>event date</span></p>
+                                                <p><IoLocationOutline size={20} className='inline-block' /><span>event venue</span></p>
 
 
-                                        <div className='grid grid-cols-2 mt-6'>
-                                            <p className='font-semibold'>Tickets Category:</p>
-                                            <p>ticket cat</p>
-                                            <span className='font-semibold'>Standard:</span>
-                                            <span>$price</span>
-                                        </div>
+                                                <div className='grid grid-cols-2 mt-6'>
+                                                    <p className='font-semibold'>Tickets Category:</p>
+                                                    <p>ticket cat</p>
+                                                    <span className='font-semibold'>Standard:</span>
+                                                    <span>$price</span>
+                                                </div>
 
-                                        <div className='grid grid-cols-2 mt-6'>
-                                            <p className='font-semibold'>Tickets Quantity:</p>
-                                            <p>_ticket qty_ ticket(s)</p>
-                                            <p className='font-semibold'>Total:</p>
-                                            <p>$total paid</p></div>
-                                    </TableCell>
-                                </TableRow>
+                                                <div className='grid grid-cols-2 mt-6'>
+                                                    <p className='font-semibold'>Tickets Quantity:</p>
+                                                    <p>_ticket qty_ ticket(s)</p>
+                                                    <p className='font-semibold'>Total:</p>
+                                                    <p>$total paid</p></div>
+                                            </TableCell>
+                                        </TableRow>)
+                                    })
+                                ) : (<></>)}
+
                             </TableBody>
                         </Table>
                     </TabsContent>
