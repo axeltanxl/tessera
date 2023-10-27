@@ -2,13 +2,11 @@ package com.example.app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,16 +14,12 @@ import com.example.app.models.CustOrder;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketDTO;
 import com.example.app.models.TicketListing;
-import com.example.app.models.TicketUserDTO;
 import com.example.app.models.User;
 import com.example.app.models.Seat;
 import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
 import com.example.app.repositories.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import java.util.*;
 
