@@ -28,22 +28,21 @@ import java.util.*;
 public class TicketController {
 
     @Autowired
-    private OrderRepository orderRepository; // Rename it to match the repository name
-
+    private OrderRepository orderRepo; // Rename it to match the repository name
     @Autowired
-    private TicketRepository ticketRepository;
+    private TicketRepository ticketRepo;
     @Autowired
-    private TicketListRepository ticketListRepository;
+    private TicketListRepository ticketListRepo;
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepo;
 
     @GetMapping("users/{userID}/tickets")
     public List<Ticket> getTicketByUserID(@PathVariable long userID) {
-        List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);
+        List<CustOrder> orders = orderRepo.findOrderByUserUserID(userID);
         List<Ticket> tickets = new ArrayList<>();
-        for (CustOrder o : orders) {
-            List<Ticket> tix = ticketRepository.findTicketByOrderOrderID(o.getOrderID());
-            for (Ticket t : tix) {
+        for (CustOrder o : orders){
+            List<Ticket> tix = ticketRepo.findTicketByOrderOrderID(o.getOrderID());
+            for (Ticket t: tix){
                 tickets.add(t);
             }
         }
@@ -57,7 +56,7 @@ public class TicketController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User authenticatedUser = (User) authentication.getPrincipal();
 
-            Optional<User> getUser = userRepository.findById(userID);
+            Optional<User> getUser = userRepo.findById(userID);
             if (!getUser.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -66,8 +65,8 @@ public class TicketController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
-            // find all associated ticketListings with logged in user.
-            List<TicketListing> listOfTicketListings = ticketListRepository.findAllByUserUserID(userID);
+            //find all associated ticketListings with logged in user.   
+            List<TicketListing> listOfTicketListings = ticketListRepo.findAllByUserUserID(userID);
 
             List<TicketDTO> listOfTickets = new ArrayList<>();
             for (TicketListing eachTicketListing : listOfTicketListings) {
@@ -93,8 +92,20 @@ public class TicketController {
 
     @GetMapping ("tickets/{ticketID}/seat")
     public Seat getSeatByTicketID (@PathVariable long ticketID){
-        Optional <Ticket> ticket = ticketRepository.findById(ticketID);
+        Optional <Ticket> ticket = ticketRepo.findById(ticketID);
         Seat seats = ticket.get().getSeat();
         return seats;
+    }
+
+    @GetMapping("tickets/{ticketID}/events/runs") 
+    public ResponseEntity<TicketDTO> getEventsAndRunsByTicketID(@PathVariable long ticketID) {
+
+        TicketListing oneTicketListing = ticketListRepo.findByTicketTicketID(ticketID);
+
+        TicketDTO ticket = new TicketDTO();
+        ticket.setEvent(oneTicketListing.getEvent());
+        ticket.setRun(oneTicketListing.getRun());
+
+        return ResponseEntity.ok(ticket);
     }
 }
