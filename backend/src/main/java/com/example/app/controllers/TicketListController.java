@@ -65,7 +65,6 @@ public class TicketListController {
     }
 
     //Get all ticket listing with ticketID 
-    ////TO TEST
     @GetMapping("ticketListings/tickets/{ticketID}")
     public ResponseEntity<List<TicketListing>> getListingByTicketID(@PathVariable long ticketID) {
 
