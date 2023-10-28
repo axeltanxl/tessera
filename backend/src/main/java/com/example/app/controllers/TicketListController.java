@@ -20,14 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.app.models.CustOrder;
 import com.example.app.models.Run;
 import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
 import com.example.app.models.TicketListingWithSeat;
 import com.example.app.models.User;
-import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
@@ -46,8 +44,6 @@ public class TicketListController {
     private SeatRepository seatRepo;
     @Autowired
     private RunRepository runRepo;
-    @Autowired
-    private OrderRepository orderRepo;
 
     // For general public who wants to see each listing.
     @GetMapping("ticketListings/{listingID}")
@@ -67,6 +63,26 @@ public class TicketListController {
 
         return ResponseEntity.ok(ticketLists);
     }
+
+    //Get all ticket listing with ticketID 
+    ////TO TEST
+    @GetMapping("ticketListings/tickets/{ticketID}")
+    public ResponseEntity<List<TicketListing>> getListingByTicketID(@PathVariable long ticketID) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        List<TicketListing> ticketListingsByTix = 
+        ticketListRepo.findAllByTicketTicketIDAndUserUserID(ticketID, authenticatedUser.getUserID());
+
+        if (ticketListingsByTix.isEmpty() || ticketListingsByTix == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ticketListingsByTix);
+    }
+
+
 
     /* UNUSED METHOD */
     // @Autowired
