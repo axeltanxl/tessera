@@ -29,7 +29,7 @@ public class TicketController {
 
     @Autowired
     private OrderRepository orderRepository; // Rename it to match the repository name
-    
+
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
@@ -41,9 +41,9 @@ public class TicketController {
     public List<Ticket> getTicketByUserID(@PathVariable long userID) {
         List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);
         List<Ticket> tickets = new ArrayList<>();
-        for (CustOrder o : orders){
+        for (CustOrder o : orders) {
             List<Ticket> tix = ticketRepository.findTicketByOrderOrderID(o.getOrderID());
-            for (Ticket t: tix){
+            for (Ticket t : tix) {
                 tickets.add(t);
             }
         }
@@ -66,7 +66,7 @@ public class TicketController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
-            //find all associated ticketListings with logged in user.   
+            // find all associated ticketListings with logged in user.
             List<TicketListing> listOfTicketListings = ticketListRepository.findAllByUserUserID(userID);
 
             List<TicketDTO> listOfTickets = new ArrayList<>();
@@ -98,4 +98,3 @@ public class TicketController {
         return seats;
     }
 }
-
