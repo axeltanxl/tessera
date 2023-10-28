@@ -29,7 +29,6 @@ public class TicketController {
 
     @Autowired
     private OrderRepository orderRepo; // Rename it to match the repository name
-    
     @Autowired
     private TicketRepository ticketRepo;
     @Autowired
@@ -110,4 +109,3 @@ public class TicketController {
         return ResponseEntity.ok(ticket);
     }
 }
-
