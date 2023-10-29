@@ -76,7 +76,7 @@ public class OrderController {
         for (Ticket t : tickets){
             Seat s = t.getSeat();
             seats.add(s);
-        }
+        }   
         return seats;
     }
 }

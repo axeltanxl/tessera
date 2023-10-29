@@ -22,6 +22,11 @@ const TicketPurchase = () => {
     const token = localStorage.getItem('jwt');
     const [runMap, setRunMap] = useState([]);
     const [event, setEvent] = useState(null);
+
+    const [table, setTable] = useState();
+
+
+
     useEffect(() => { 
         async function fetchRuns() {
             try {
@@ -42,6 +47,7 @@ const TicketPurchase = () => {
                 console.error(e);
             }
         };
+
         async function fetchEvent(){
             try {
                 const headers = {
@@ -54,6 +60,9 @@ const TicketPurchase = () => {
                 if (res.ok) {
                     const result = await res.json();
                     setEvent(result);
+                    setTable(JSON.stringify(result.pricePerCategory));
+                    console.log("event2: " + JSON.stringify(result.pricePerCategory))
+                    
                 } else {
                     console.error("API request failed.");
                 }
@@ -64,7 +73,10 @@ const TicketPurchase = () => {
         fetchRuns();
         fetchEvent();
     }, []);
+
     console.log("event:", event)
+    console.log("table: " + table)
+    
     const run = runMap.find(item => item.runID === runID);
     const date = run?.date ?? null;
     const startTime = run?.startTime ?? null;
@@ -77,7 +89,11 @@ const TicketPurchase = () => {
 
     const handleNext = () => setPage(prev => prev + 1)
 
-    console.log({ selectedCat }, { selectedPrice }, { selectedQuant }, { selectedZone })
+    console.log({ selectedCat }, { selectedPrice }, { selectedQuant }, { selectedZone }, table)
+
+
+
+
     return (
         <div>
             <div style={{ fontWeight: "bold", textAlign: "center" }}>{event?.name ?? null}</div>
@@ -94,7 +110,7 @@ const TicketPurchase = () => {
                         <div aligncontent="center">
                             <SeatingPlan setSelectedZone={setSelectedZone} selectedZone={selectedZone}
                                 setSelectedCat={setSelectedCat} selectedCat={selectedCat} setSelectedPrice={setSelectedPrice}
-                                selectedPrice={selectedPrice} />
+                                selectedPrice={selectedPrice} table={table}/>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
@@ -141,6 +157,8 @@ const TicketPurchase = () => {
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
+
+            
 
 
             <button disabled={!{ selectedPrice }} onClick={handleNext} style={{

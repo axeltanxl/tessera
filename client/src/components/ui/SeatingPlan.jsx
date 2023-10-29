@@ -1,11 +1,20 @@
-import { useState } from "react";
+import React from "react";
 
-const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,setSelectedPrice,selectedPrice}) => {
+const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,setSelectedPrice,selectedPrice, table}) => {
 
+    const parsedTable = JSON.parse(table);
+    const keyValuePairs = parsedTable.slice(1, -1).split(',');
+    const jsonObject = {};
+    for (const pair of keyValuePairs) {
+        const [key, value] = pair.split(':');
+        const cleanKey = key.trim().replace(/"/g, '');
+        const cleanValue = parseInt(value.trim());
+        jsonObject[cleanKey] = cleanValue;
+    }
 
     const seatingPlan = [
 
-        { category: "A", price: 348, zones: [
+        { category: "A", zones: [
             {zoneId: "PA1", style: { top:"100%",left:"22%",height:"70%",width:"8%",backgroundColor:"#FFDB0E" }},
             {zoneId: "PA2", style: { top:"100%",right:"22%",height:"70%",width:"8%",backgroundColor:"#FFDB0E" }},
             {zoneId: "PB1", style: { top:"100%",left:"22%",height:"70%",width:"12%",marginTop:"4%",backgroundColor:"#FFDB0E" }},
@@ -30,7 +39,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "PG4", style: { top:"100%",right:"30%",height:"100%",width:"12%",marginTop:"25%",backgroundColor:"#FFDB0E" }},
             {zoneId: "PG5", style: { top:"100%",right:"30%",height:"100%",width:"12%",marginTop:"30%",backgroundColor:"#FFDB0E" }},
         ] },
-        { category: "B", price: 328, zones: [
+        { category: "B", zones: [
             {zoneId: "PH1", style: { top:"100%",left:"25%",height:"100%",width:"10%",marginTop:"36%",backgroundColor:"#68CDFF" }},
             {zoneId: "PH2", style: { top:"100%",left:"35%",height:"100%",width:"10%",marginTop:"36%",backgroundColor:"#68CDFF" }},
             {zoneId: "PH3", style: { top:"100%",left:"45%",height:"100%",width:"10%",marginTop:"36%",backgroundColor:"#68CDFF" }},
@@ -43,7 +52,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "100", style: { top:"100%",left:"40%",height:"100%",width:"10%",marginTop:"42%",backgroundColor:"#68CDFF" }},
             {zoneId: "150", style: { top:"100%",right:"40%",height:"100%",width:"10%",marginTop:"42%",backgroundColor:"#68CDFF" }},
         ] },
-        { category: "C", price: 288, zones: [
+        { category: "C", zones: [
             {zoneId: "200", style: { top:"100%",left:"40%",height:"100%",width:"10%",marginTop:"48%",backgroundColor:"#FF6A68" }},
             {zoneId: "250", style: { top:"100%",right:"40%",height:"100%",width:"10%",marginTop:"48%",backgroundColor:"#FF6A68" }},
             {zoneId: "106", style: { top:"100%",right:"15%",height:"100%",width:"8%",marginTop:"18%",backgroundColor:"#FF6A68" }},
@@ -55,7 +64,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "158", style: { top:"100%",left:"15%",height:"100%",width:"6%",marginTop:"6%",backgroundColor:"#FF6A68" }},
             {zoneId: "159", style: { top:"100%",left:"15%",height:"100%",width:"6%",backgroundColor:"#FF6A68" }},
         ] },
-        { category: "D", price: 248, zones: [
+        { category: "D", zones: [
             {zoneId: "152", style: { top:"100%",left:"15%",height:"100%",width:"8%",marginTop:"42%",backgroundColor:"#68FFAC" }},
             {zoneId: "153", style: { top:"100%",left:"15%",height:"100%",width:"8%",marginTop:"36%",backgroundColor:"#68FFAC" }},
             {zoneId: "154", style: { top:"100%",left:"15%",height:"100%",width:"8%",marginTop:"30%",backgroundColor:"#68FFAC" }},
@@ -65,7 +74,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "104", style: { top:"100%",right:"15%",height:"100%",width:"8%",marginTop:"30%",backgroundColor:"#68FFAC" }},
             {zoneId: "105", style: { top:"100%",right:"15%",height:"100%",width:"8%",marginTop:"24%",backgroundColor:"#68FFAC" }},
         ] },
-        { category: "E", price: 168, zones: [
+        { category: "E", zones: [
             {zoneId: "252", style: { top:"100%",left:"8%",height:"100%",width:"6%",marginTop:"42%",backgroundColor:"#C168FF" }},
             {zoneId: "253", style: { top:"100%",left:"8%",height:"100%",width:"6%",marginTop:"36%",backgroundColor:"#C168FF" }},
             {zoneId: "254", style: { top:"100%",left:"8%",height:"100%",width:"6%",marginTop:"30%",backgroundColor:"#C168FF" }},
@@ -75,7 +84,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             {zoneId: "204", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"30%",backgroundColor:"#C168FF" }},
             {zoneId: "205", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"24%",backgroundColor:"#C168FF" }},
         ] },
-        { category: "F", price: 108, zones: [
+        { category: "F", zones: [
             {zoneId: "206", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"18%",backgroundColor:"#FFAF68"}},
             {zoneId: "207", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"12%",backgroundColor:"#FFAF68" }},
             {zoneId: "208", style: { top:"100%",right:"8%",height:"100%",width:"6%",marginTop:"6%",backgroundColor:"#FFAF68" }},
@@ -93,15 +102,30 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
         setSelectedZone(zoneId);
     };
 
-    const selectPrice = (price) => {
-      setSelectedPrice(price);
+    const selectPrice = (cat) => {
+        const char = cat.toString();
+        switch(char){
+            case "A":
+                setSelectedPrice(parseInt(jsonObject["A"]));
+                break;
+            case "B":
+                setSelectedPrice(parseInt(jsonObject["B"]));
+                break;
+            case "C":
+                setSelectedPrice(parseInt(jsonObject["C"]));
+                break;
+            case "D":
+                setSelectedPrice(parseInt(jsonObject["D"]));
+                break;
+            default:
+                setSelectedPrice(0);
+        }
     }
 
     const selectCat = (cat) => {
       setSelectedCat(cat);
     }
 
-    console.log({selectedCat},{selectedPrice})
     return (
         <div>
             <h1 className="text-center">Seating Plan</h1><br/>
@@ -113,7 +137,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
                             {cat.zones.map((zone, zoneIndex) => (
                                 <div
                                     key={zoneIndex} className={`zone ${selectedZone === zone.zoneId ? "selected" : ""}`}
-                                    style={zone.style} onClick={ () => {selectZone(zone.zoneId);selectCat(cat.category);selectPrice(cat.price);} }>
+                                    style={zone.style} onClick={ () => {selectZone(zone.zoneId); selectCat(cat.category); selectPrice(cat.category);} }>
                                       {zone.zoneId}
                                 </div>
                                 
@@ -121,6 +145,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
                         </div>
                     </div>
                 ))}
+                `
 
             </div>
 
