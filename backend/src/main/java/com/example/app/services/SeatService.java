@@ -2,10 +2,12 @@ package com.example.app.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.app.configs.SeatNotFoundException;
 import com.example.app.models.RunSeat;
 import com.example.app.models.RunSeatDTO;
 import com.example.app.models.Seat;
@@ -24,19 +26,6 @@ public class SeatService {
         this.seatRepo = seatRepository;
     }
 
-    // public int getQtyOfSeats(String CAT, String section) {
-
-    //     // int qty = 0;
-    //     List<RunSeat> runSeatList = null;
-
-    //     List<Seat> seatRepoList = seatRepo.findAllBySectionAndCategory(CAT, section);
-    //     for (Seat eachSeat : seatRepoList) {
-    //         runSeatList = runSeatRepo.findAllBySeatSeatID(eachSeat.getSeatID());
-    //     }
-
-    //     return runSeatList.size();
-    // }
-
     public List<RunSeatDTO> getAllSeatIDs(String CAT, String section, Long runID) {
 
         List<Seat> seatRepoList = seatRepo.findAllBySectionAndCategory(CAT, section);
@@ -54,7 +43,7 @@ public class SeatService {
                     // Create a RunSeatDTO instance and populate it
                     RunSeatDTO runSeatDTO = new RunSeatDTO();
                     runSeatDTO.setRunSeatID(runSeat.getRunSeatID());
-                    runSeatDTO.setAvailable(runSeat.isAvailable());
+                    runSeatDTO.setIsAvailable(runSeat.getIsAvailable());
                     runSeatDTO.setRunID(getRunID);
                     runSeatDTO.setSeatID(seatID);
 
@@ -63,5 +52,15 @@ public class SeatService {
             }
         }
         return seatWithRunList;
+    }
+
+    public Seat getSeat(Long seatID) {
+      Optional<Seat> seat = seatRepo.findById(seatID);
+
+      if (seat.isPresent()){
+        return seat.get();
+      } else {
+        throw new SeatNotFoundException("Seat with ID " + seatID + " not found");
+      }
     }
 }

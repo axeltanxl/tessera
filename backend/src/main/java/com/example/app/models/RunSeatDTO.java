@@ -14,7 +14,7 @@ public class RunSeatDTO {
     // private Run run;
     // private RunSeat runSeat;
     private Long runSeatID;
-    private boolean isAvailable;
+    private int isAvailable;
     private Long runID;
     private Long seatID;
 }

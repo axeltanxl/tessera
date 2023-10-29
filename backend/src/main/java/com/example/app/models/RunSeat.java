@@ -17,7 +17,7 @@ import lombok.Setter;
 public class RunSeat {
   @Id
   private long runSeatID;
-  private boolean isAvailable;
+  private int isAvailable;
 
   @JsonBackReference(value="run-runSeat")
   @ManyToOne
@@ -28,5 +28,4 @@ public class RunSeat {
   @ManyToOne
   @JoinColumn(name="seatID")
   private Seat seat;
-
 }

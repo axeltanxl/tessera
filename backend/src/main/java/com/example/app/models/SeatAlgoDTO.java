@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CATandSectDTO {
+public class SeatAlgoDTO {
     private String category;
     private String section;
+    private int quantity;
 }
