@@ -2,13 +2,10 @@ package com.example.app.controllers;
 
 import java.util.*;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.app.models.RunSeatDTO;
 import com.example.app.services.SeatService;
 
-import com.example.app.models.Event;
 import com.example.app.models.RunSeat;
 import com.example.app.models.Seat;
 import com.example.app.models.SeatAlgoDTO;
-import com.example.app.models.TicketDTO;
-import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.RunSeatRepository;
 
 @RestController
@@ -37,7 +31,7 @@ public class SeatController {
         this.runSeatRepo = runSeatRepo;
     }
 
-    @GetMapping("/runs/{runID}/getSeatAllocation")
+    @PostMapping("/runs/{runID}/seatAllocation")
     public ResponseEntity<Object> getSeats (@RequestBody SeatAlgoDTO reqBody, @PathVariable("runID") Long runID){
       List<RunSeatDTO> seatLists = seatService.getAllSeatIDs(reqBody.getSection(), reqBody.getCategory(), runID);
       int quantity = reqBody.getQuantity();
