@@ -19,7 +19,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { formatDate, formatTime } from '@/lib/formatUtil'
+import { formatDate, formatTime } from '@/lib/formatUtil';
 
 const TransactionHistory = () => {
     const [details, setDetails] = useState([]);
@@ -29,7 +29,7 @@ const TransactionHistory = () => {
     const [venues, setVenues] = useState([]);
     const [seats, setSeats] = useState([]);
     const [transactions, setTransactions] = useState([]);
-
+    const [userID, setUserID] = useState();
     const token = localStorage.getItem('jwt');
     const fetchRunDetails = async (orderid) => {
         try {
@@ -101,7 +101,62 @@ const TransactionHistory = () => {
         }
     }
 
+    const fetchVenueByEventID = async (eventid) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/events/${eventid}/venue`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const fetchRunDetailsForTicketListing = async (ticketid) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/tickets/${ticketid}/events/runs`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const fetchTicketListingDetails = async (ticketid) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/ticketListings/tickets/${ticketid}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                return response.data;
+            } else {
+                throw new Error('Failed to fetch data');
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
     useEffect(() => {
         const fetchDetails = async () => {
 
@@ -117,7 +172,7 @@ const TransactionHistory = () => {
 
                     const userid = response.data.userID;
                     fetchOrders(userid);
-
+                    setUserID(userid);
                 } else {
                     throw new Error('Failed to fetch data');
                 }
@@ -177,8 +232,37 @@ const TransactionHistory = () => {
                     headers
                 });
                 if (res.ok) {
+                    // const fetchedTransactions = await res.json();
+                    // setTransactions(fetchedTransactions);
+                    // fetchedTransactions.map((item, index) => {
+                    //     const obj = fetchRunDetailsForTicketListing(item.ticketID);
+                    // })
                     const fetchedTransactions = await res.json();
                     setTransactions(fetchedTransactions);
+
+                    const mergedTransactions = [];
+                    await Promise.all(
+                        fetchedTransactions.map(async (item, index) => {
+                            const runDetails = await fetchRunDetailsForTicketListing(item.ticketID);
+                            const ticketListingDetails = await fetchTicketListingDetails(item.ticketID);
+                            const mergedItem = { ...item, runDetails, ticketListingDetails };
+                            mergedTransactions.push(mergedItem);
+                        })
+
+                    );
+                    
+                    const mergedTransactionsWithVenue = [];
+                    await Promise.all(mergedTransactions.map(async(item, index) => {
+                        if(item.runDetails !== undefined){
+                        const venueDetails = await fetchVenueByEventID(item.runDetails.event.eventID);
+                        console.log("venue ee:", venueDetails);
+                        const mergeVenue = {...item, venueDetails};
+                        mergedTransactionsWithVenue.push(mergeVenue);}
+                    }))
+                    setTransactions(mergedTransactionsWithVenue);
+                    
+
+                    // console.log("merged:", mergedTransactions);
                 } else {
                     console.error("API request failed");
                 }
@@ -190,7 +274,6 @@ const TransactionHistory = () => {
         fetchTransactions();
     }, []);
     console.log("transactions:", transactions)
-
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -281,31 +364,34 @@ const TransactionHistory = () => {
                             </TableHeader>
                             <TableBody>
                                 {transactions.length > 0 ? (
-                                    transactions.map((item, index) => {return(
-                                        <TableRow key={item.transactionID}>
-                                            <TableCell>{item.transactionID}</TableCell>
-                                            <TableCell>{formatDate(item.date)}</TableCell>
-                                            <TableCell>Sell</TableCell>
-                                            <TableCell>
-                                                <p><span>event title</span></p>
-                                                <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>event date</span></p>
-                                                <p><IoLocationOutline size={20} className='inline-block' /><span>event venue</span></p>
+                                    transactions.map((item, index) => {
+                                        return (
+                                            <TableRow key={item.transactionID}>
+                                                <TableCell>{item.transactionID}</TableCell>
+                                                <TableCell>{formatDate(item.date)}</TableCell>
+                                                <TableCell>{
+                                                    item.buyerID === userID ? "Bought from Marketplace" : "Resold on Marketplace"
+                                                    }</TableCell>
+                                                <TableCell>
+                                                    <p><span>{item.runDetails?.event.name}</span></p>
+                                                    <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{formatDate(item.runDetails?.run.date)} {formatTime(item.runDetails?.run.startTime)} - {formatTime(item.runDetails?.run.endTime)}</span></p>
+                                                    <p><IoLocationOutline size={20} className='inline-block' /><span>{item.venueDetails?.name}</span></p>
 
 
-                                                <div className='grid grid-cols-2 mt-6'>
-                                                    <p className='font-semibold'>Tickets Category:</p>
-                                                    <p>ticket cat</p>
-                                                    <span className='font-semibold'>Standard:</span>
-                                                    <span>$price</span>
-                                                </div>
+                                                    <div className='grid grid-cols-2 mt-6'>
+                                                        <p className='font-semibold'>Tickets Category:</p>
+                                                        <p>ticket cat</p>
+                                                        <span className='font-semibold'>Standard:</span>
+                                                        <span>${item.ticketListingDetails !== undefined? item.ticketListingDetails[0].price : ""}</span>
+                                                    </div>
 
-                                                <div className='grid grid-cols-2 mt-6'>
-                                                    <p className='font-semibold'>Tickets Quantity:</p>
-                                                    <p>1</p>
-                                                    <p className='font-semibold'>Total:</p>
-                                                    <p>$total paid</p></div>
-                                            </TableCell>
-                                        </TableRow>)
+                                                    <div className='grid grid-cols-2 mt-6'>
+                                                        <p className='font-semibold'>Tickets Quantity:</p>
+                                                        <p>1</p>
+                                                        <p className='font-semibold'>Total:</p>
+                                                        <p>${item.ticketListingDetails?.price}</p></div>
+                                                </TableCell>
+                                            </TableRow>)
                                     })
                                 ) : (<></>)}
 
