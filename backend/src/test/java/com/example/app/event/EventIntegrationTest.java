@@ -1,6 +1,7 @@
 package com.example.app.event;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.Optional;
@@ -64,6 +65,6 @@ class EventIntegrationTest {
         Event eventResponse = result.getBody();
 
         // Add assertions for the event properties you want to test.
-        assertEquals("ExpectedEventName", eventResponse.getName());
+        assertEquals("Test Event Name", eventResponse.getName());
     }
 }
