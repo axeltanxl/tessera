@@ -80,10 +80,7 @@ public class TicketListController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User authenticatedUser = (User) authentication.getPrincipal();
 
-        String statusOfListing = "Listed";
-
-        List<TicketListing> ticketListingsByTix = 
-        ticketListRepo.findAllByTicketTicketIDAndUserUserIDAndStatus(ticketID, authenticatedUser.getUserID(), statusOfListing);
+        List<TicketListing> ticketListingsByTix = ticketListRepo.findAllByTicketTicketIDAndUserUserID(ticketID, authenticatedUser.getUserID());
 
         if (ticketListingsByTix.isEmpty() || ticketListingsByTix == null) {
             return ResponseEntity.notFound().build();
