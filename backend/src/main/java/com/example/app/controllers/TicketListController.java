@@ -96,7 +96,8 @@ public class TicketListController {
     @GetMapping("events/{eventID}/ticketListings")
     public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
 
-        List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventID(eventID);
+        String getStatus = "Listed";
+        List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventIDAndStatus(eventID, getStatus);
 
         if (ticketListsByEventID.isEmpty()) {
             return ResponseEntity.notFound().build();
