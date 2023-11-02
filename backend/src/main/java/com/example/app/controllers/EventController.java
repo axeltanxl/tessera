@@ -41,8 +41,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1")
 public class EventController {
 
-  EventService eventService = new EventService();
-
   @Autowired
   private EventRepository eventRepository;
 
@@ -54,6 +52,9 @@ public class EventController {
 
   @Autowired
   private MarketplaceRepository marketplaceRepo;
+  
+  @Autowired
+  private EventService eventService;
 
   @GetMapping("/events")
   public ResponseEntity<List<EventDTO>> getAllEvents() {

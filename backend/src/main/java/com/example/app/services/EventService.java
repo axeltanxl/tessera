@@ -6,18 +6,20 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
-import com.example.app.controllers.ImageController;
 import com.example.app.models.Event;
 import com.example.app.models.EventDTO;
 import com.example.app.repositories.EventRepository;
-import com.example.app.repositories.MarketplaceRepository;
-import com.example.app.repositories.RunRepository;
 
+@Service
 public class EventService {
     @Autowired
     private EventRepository eventRepository;
+
+    public EventService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
 
     //Get All Events
     public List<EventDTO> retrieveAllEvents() {
