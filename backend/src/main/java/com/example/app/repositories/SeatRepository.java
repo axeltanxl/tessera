@@ -8,4 +8,6 @@ import com.example.app.models.Seat;
 
 public interface SeatRepository extends JpaRepository<Seat, Long>{
     List<Seat> findAllBySeatID(long seatID);
+
+    List<Seat> findAllBySectionAndCategory(String category, String section);
 }

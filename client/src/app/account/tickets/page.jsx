@@ -18,9 +18,28 @@ import Checkbox from '@/components/ui/Checkbox';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { TbCircleLetterJ } from 'react-icons/tb';
 import { formatDate, formatTime } from '@/lib/formatUtil';
 
+const createAccount = async () => {
+  // const res = await axios.get("/api/stripeTransaction",{
+  //     headers : {
+  //         "Content-Type" : "application/json",
+  //     },
+  // });
+  // const {message} = res.data
+  // console.log(message);
+
+  const res = await axios.post("/api/stripeTransaction",{"jwt" : localStorage.getItem("jwt")},{
+      headers : {
+          "Content-Type" : "application/json",
+      },
+  });
+  console.log("stripe onboard url",res.status)
+  if(res.status === 201){
+      const {stripeSignUp} = res.data
+      window.location.assign(stripeSignUp);
+  }
+}
 const MyTickets = () => {
 
 
@@ -319,7 +338,9 @@ const MyTickets = () => {
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Transfer</button>
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
-          <button onClick={handleOpen} className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Resell</button>
+          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
+          onClick={createAccount}
+          >Resell</button>
           <Modal
             open={open}
             onClose={handleClose}
