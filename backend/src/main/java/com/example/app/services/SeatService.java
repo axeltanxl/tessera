@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.app.configs.SeatNotFoundException;
+import com.example.app.exceptions.SeatNotFoundException;
 import com.example.app.models.RunSeat;
 import com.example.app.models.RunSeatDTO;
 import com.example.app.models.Seat;
