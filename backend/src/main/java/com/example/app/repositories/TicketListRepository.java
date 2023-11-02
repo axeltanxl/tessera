@@ -10,7 +10,7 @@ public interface TicketListRepository extends JpaRepository<TicketListing, Long>
     List<TicketListing> findAllByEventEventID(Long eventID);
     List<TicketListing> findAllByEventEventIDAndStatus(Long eventID, String status);
     List<TicketListing> findAllByUserUserID(Long userID);
-    List<TicketListing> findAllByTicketTicketIDAndUserUserIDAndStatus(Long ticketID, Long userID, String status);
+    List<TicketListing> findAllByTicketTicketIDAndUserUserID(Long ticketID, Long userID);
 
     TicketListing findByTicketTicketID(Long ticketID);
 
