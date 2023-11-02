@@ -25,13 +25,12 @@ const Confirmation = () => {
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
     const handleNext = () => setPage(prev => prev + 1);
     const hardCodedValues = {
-        "name" : "Taylor Swift Concert Tickets 2023",
         "jwt" : localStorage.getItem("jwt"),
-        "eventID" : 1,
+        "runID" : 1,
         "quantity" : parseInt(selectedQuant, 10), 
         "category" : selectedCat, 
-        "images" : "https://static.ticketmaster.sg/images/activity/24_taylorswift_092ae54e8468e29b5300f692d2391d03.jpg",
         "paymentMethod" : "card",
+        "seatIDs" : [4,5,6],
     };
     
     const handlePrev = () => setPage(prev => prev - 1)

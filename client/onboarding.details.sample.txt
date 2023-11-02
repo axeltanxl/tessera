@@ -1,0 +1,6 @@
+date of birth           1901-01-01
+address                 address_full_match​
+ID                      000000000
+image                   https://d37ugbyn3rpeym.cloudfront.net/docs/identity/success.png 
+file tokens             file_identity_document_success
+bank account number 	000123456

@@ -1,16 +1,14 @@
+'use client';
+import React, { useEffect, useState } from 'react'
 import SideNav from '@/components/ui/accountNav/SideNav'
 import { SlArrowLeft } from 'react-icons/sl';
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import Link from 'next/link';
-import { QRcode } from "@/components/canvas/QRcode"
-import { getQRurl } from './actions';
+import { QRcode } from '@/components/canvas/QRcode';
 
-const Ticket = async ({params}) => {
-    // console.log(params)
-    const ticketID = params.ticketID
-    const qrUrl = await getQRurl(ticketID);
-
+const Ticket = ({qrString, dtg}) => {
+    
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
@@ -58,7 +56,7 @@ const Ticket = async ({params}) => {
                             <hr></hr>
                             <div className='flex justify-center'>
                                 {/* <img src="/qr-code.png" /> */}
-                                <QRcode qrUrl={qrUrl}/>
+                                <QRcode qrString={qrString} key={dtg}/>
                             </div>
                         </div>
                     </div>
