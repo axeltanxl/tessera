@@ -146,90 +146,83 @@ public class TicketListController {
         @PathVariable("runID") Long runID, @PathVariable("ticketID") Long ticketID, 
         @RequestBody TicketListing reqTicketListing) {
 
-        // try {
-            String addTicketListStatus = ticketListService.addTicketListing(authentication, ticketID, runID, reqTicketListing);
-
-            if (addTicketListStatus.equals("Invalid access")) {
-                throw new UnauthorizedException("Unauthorized: Invalid access.");
-            }
-
-            if (addTicketListStatus.equals("Ticket not found")) {
-                throw new TicketNotFoundException("Ticket not found. Transaction cancelled.");
-            }
-
-            if (addTicketListStatus.equals("Duplicates found")) {
-                throw new DuplicateListingFoundException("Duplicates found. Transaction cancelled.");
-            }
-
-            if (addTicketListStatus.equals("Run not found")) {
-                throw new RunNotFoundException("Run not found. Transaction cancelled.");
-            }
+        try {
+            ticketListService.addTicketListing(authentication, ticketID, runID, reqTicketListing);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Successfully created ticketlisting.");
 
-        // } 
-        // catch (Exception ex) {
-        //     System.out.println("Error while adding ticketListing: " + ex.getMessage());
-        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        //             .body("An error occurred while adding ticketlisting");
-        // }
+        }
+        catch (UnauthorizedException ue) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ue.getMessage());
+        }
+        catch (TicketNotFoundException tnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(tnf.getMessage());
+        }
+        catch (DuplicateListingFoundException dlf) {
+             return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(dlf.getMessage());
+        }
+        catch (RunNotFoundException rnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(rnf.getMessage());
+        }
+        catch (Exception ex) {
+            // System.out.println("Error while adding ticketListing: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while adding ticketlisting");
+        }
     }
-
-    // private boolean isAuthorized(Long listingID) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     User authenticatedUser = (User) authentication.getPrincipal();
-
-    //     // retrieve obj. Ensure that listing is associated to the correct user.
-    //     Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
-    //     TicketListing oneTicketListing = optTicketListing.get();
-
-    //     // Check if the currently authenticated user matches the user being updated
-    //     if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     //Update listing with price.
     @PutMapping("ticketListings/{listingID}")
     public ResponseEntity<String> updateTicketListing(Authentication authentication, 
         @PathVariable("listingID") Long listingID, @RequestBody TicketListing requestedTicketListing) {
-        // try {
-            String updateTicketListStatus = ticketListService.updateTicketList(authentication, listingID, requestedTicketListing);
+        
+        try {
+            ticketListService.updateTicketList(authentication, listingID, requestedTicketListing);
 
-            if (updateTicketListStatus.equals("Invalid access")) {
-                throw new UnauthorizedException("Unauthorized: Invalid access.");
-            }
-
-            if (updateTicketListStatus.equals("Ticket List not found")) {
-                throw new ListingNotFoundException("Listing ID is invalid.");
-            }
-           
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Successfully updated ticketListing.");
+
+        }
+        catch (UnauthorizedException ue) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ue.getMessage());
+        }
+        catch (ListingNotFoundException lnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(lnf.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("Error while deleting ticket listing: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while deleting the ticketlisting.");
+        }
     }
 
     @DeleteMapping(path = "ticketListings/{listingID}")
     public ResponseEntity<Object> deleteListing(Authentication authentication, 
         @PathVariable("listingID") Long listingID) {
-        // try {
-            String deleteTicketListStatus = ticketListService.removeListing(authentication, listingID);
-
-            if (deleteTicketListStatus.equals("Invalid access")) {
-                throw new UnauthorizedException("Unauthorized: Invalid access.");
-            }
-
-            if (deleteTicketListStatus.equals("Ticket List not found")) {
-                throw new ListingNotFoundException("Listing ID is invalid.");
-            }
+        try {
+            ticketListService.removeListing(authentication, listingID);
 
             return ResponseEntity.status(HttpStatus.OK).body("TicketListing deleted successfully.");
-        // } catch (Exception e) {
-        //     System.out.println("Error while deleting ticket listing: " + e.getMessage());
+        } catch (UnauthorizedException ue) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ue.getMessage());
+        } catch (ListingNotFoundException lnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(lnf.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error while deleting ticket listing: " + e.getMessage());
 
-        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        //             .body("An error occurred while deleting the ticketlisting.");
-        // }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while deleting the ticketlisting.");
+        }
+
     }
 }

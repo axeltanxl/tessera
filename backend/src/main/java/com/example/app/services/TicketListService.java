@@ -3,13 +3,14 @@ package com.example.app.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.app.exceptions.DuplicateListingFoundException;
+import com.example.app.exceptions.ListingNotFoundException;
+import com.example.app.exceptions.RunNotFoundException;
+import com.example.app.exceptions.TicketNotFoundException;
+import com.example.app.exceptions.UnauthorizedException;
 import com.example.app.models.Run;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
@@ -38,20 +39,22 @@ public class TicketListService {
         return false;
     }
 
-    public String addTicketListing(Authentication authentication, Long ticketID, Long runID, 
+    public void addTicketListing(Authentication authentication, Long ticketID, Long runID, 
         TicketListing reqTicketListing) {
 
         User authenticatedUser = (User) authentication.getPrincipal();
 
         Optional<Ticket> ticketObj = ticketRepo.findById(ticketID);
         if (!ticketObj.isPresent()) {
-            return "Ticket not found";
+            throw new TicketNotFoundException("Ticket not found.");
+            // return "Ticket not found";
         }
 
         Ticket currTicket = ticketObj.get();
         // Check if the currently authenticated user matches the user being updated
         if (!(authenticatedUser.getUserID() == currTicket.getUser().getUserID())) {
-            return "Invalid access";
+            // return "Invalid access";
+            throw new UnauthorizedException("Unauthorized: Invalid access.");
         }
 
         reqTicketListing.setStatus("Not Listed");
@@ -62,7 +65,8 @@ public class TicketListService {
 
         Optional<Run> optRun = runRepo.findById(runID);
         if (!optRun.isPresent()) {
-            return "Run not found";
+            // return "Run not found";
+            throw new RunNotFoundException("Run not found.");
         }
 
         Run currRun = optRun.get();
@@ -73,19 +77,19 @@ public class TicketListService {
         //find ticketList for duplicates
         boolean isDuplicated = isTicketListingDuplicated(ticketID, runID, currRun.getEvent().getEventID());
         if (isDuplicated) {
-            return "Duplicates found";
+            // return "Duplicates found";
+            throw new DuplicateListingFoundException("Duplicates found. Transaction cancelled.");
         }
 
         ticketListRepo.save(reqTicketListing);
-
-        return "Saved";
     }
 
-    public String updateTicketList(Authentication authentication, Long listingID, 
+    public void updateTicketList(Authentication authentication, Long listingID, 
         TicketListing requestedTicketListing) {
 
         if (!ticketListRepo.existsById(listingID)) {
-            return "Ticket List not found";
+            // return "Ticket List not found";
+            throw new ListingNotFoundException("Ticket Listing not found.");
         }
 
         User authenticatedUser = (User) authentication.getPrincipal();
@@ -96,7 +100,8 @@ public class TicketListService {
 
         // Check if the currently authenticated user matches the user being updated
         if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-            return "Invalid access";        
+            // return "Invalid access";
+            throw new UnauthorizedException("Unauthorized: Invalid access.");
         }
         
         oneTicketListing.setPrice(requestedTicketListing.getPrice());
@@ -104,13 +109,14 @@ public class TicketListService {
 
         ticketListRepo.save(oneTicketListing);
 
-        return "Updated";
+        // return "Updated";
     }
 
-    public String removeListing(Authentication authentication, Long listingID) {
+    public void removeListing(Authentication authentication, Long listingID) {
 
         if (!ticketListRepo.existsById(listingID)) {
-            return "Ticket List not found";
+            // return "Ticket List not found";
+            throw new ListingNotFoundException("Ticket Listing not found.");
         }
 
         User authenticatedUser = (User) authentication.getPrincipal();
@@ -121,12 +127,13 @@ public class TicketListService {
 
         // Check if the currently authenticated user matches the user being updated
         if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-            return "Invalid access";
+            // return "Invalid access";
+            throw new UnauthorizedException("Unauthorized: Invalid access.");
         }
         //find and delete from table.
         ticketListRepo.deleteById(listingID);
 
-        return "Removed";
+        // return "Removed";
     }
 
 }
