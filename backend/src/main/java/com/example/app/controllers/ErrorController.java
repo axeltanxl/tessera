@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.example.app.configs.DuplicateListingFoundException;
-import com.example.app.configs.ListingNotFoundException;
-import com.example.app.configs.RunNotFoundException;
-import com.example.app.configs.TicketNotFoundException;
-import com.example.app.configs.UnauthorizedException;
+import com.example.app.exceptions.DuplicateListingFoundException;
+import com.example.app.exceptions.ListingNotFoundException;
+import com.example.app.exceptions.RunNotFoundException;
+import com.example.app.exceptions.TicketNotFoundException;
+import com.example.app.exceptions.UnauthorizedException;
 
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {

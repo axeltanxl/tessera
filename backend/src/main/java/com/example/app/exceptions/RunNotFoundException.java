@@ -1,4 +1,4 @@
-package com.example.app.configs;
+package com.example.app.exceptions;
 
 public class RunNotFoundException extends RuntimeException {
     public RunNotFoundException(String message) {

@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.app.configs.DuplicateListingFoundException;
-import com.example.app.configs.ListingNotFoundException;
-import com.example.app.configs.RunNotFoundException;
-import com.example.app.configs.TicketNotFoundException;
-import com.example.app.configs.UnauthorizedException;
+import com.example.app.exceptions.DuplicateListingFoundException;
+import com.example.app.exceptions.ListingNotFoundException;
+import com.example.app.exceptions.RunNotFoundException;
+import com.example.app.exceptions.TicketNotFoundException;
+import com.example.app.exceptions.UnauthorizedException;
 import com.example.app.models.Run;
 import com.example.app.models.Seat;
 import com.example.app.models.Ticket;

@@ -1,4 +1,4 @@
-package com.example.app.configs;
+package com.example.app.exceptions;
 
 public class ListingNotFoundException extends RuntimeException {
     public ListingNotFoundException(String message) {
