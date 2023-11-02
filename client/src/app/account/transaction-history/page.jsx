@@ -284,10 +284,10 @@ const TransactionHistory = () => {
             <div>
                 <p className='text-xl mb-4 font-semibold'>Transaction History</p>
                 <Tabs defaultValue="purchases" className="w-[1000px]">
-                    <TabsList className="grid grid-cols-3">
+                    <TabsList className="grid grid-cols-2">
                         <TabsTrigger className='w-full data-[state=active]:bg-black data-[state=active]:text-white' value="purchases">Purchases</TabsTrigger>
                         <TabsTrigger className='w-full data-[state=active]:bg-black data-[state=active]:text-white' value="marketplace">Marketplace</TabsTrigger>
-                        <TabsTrigger className='w-full data-[state=active]:bg-black data-[state=active]:text-white' value="direct transfers">Direct transfers</TabsTrigger>
+                        {/* <TabsTrigger className='w-full data-[state=active]:bg-black data-[state=active]:text-white' value="direct transfers">Direct transfers</TabsTrigger> */}
                     </TabsList>
                     <TabsContent value="purchases">
                         <p className='font text-sm text-[#1F6EB7] my-1'>Records of your purchases bought directly from concert organiser</p>
@@ -340,7 +340,7 @@ const TransactionHistory = () => {
                                                     <div className="flex flex-col">
                                                         {seats[index] == undefined ? "" : seats[index].map((item, i) => {
                                                             return (
-                                                                <div key={i} className="p-2 flex w-[320px] bg-white border border-[#B4C1DB] rounded my-2">Category {item.category}, Zone {item.section},Row {item.row}, Seat {item.seatNo}</div>
+                                                                <div key={i} className="p-2 flex w-[320px] bg-white border border-[#B4C1DB] rounded my-2">Category {item.category}, Zone {item.section}, Row {item.row}, Seat {item.seatNo}</div>
                                                             )
                                                         })}
                                                     </div>
@@ -379,28 +379,24 @@ const TransactionHistory = () => {
                                                     <p><IoLocationOutline size={20} className='inline-block' /><span>{item.venueDetails?.name}</span></p>
 
 
-                                                    <div className='grid grid-cols-2 mt-6'>
-                                                        <p className='font-semibold'>Tickets Category:</p>
-                                                        <p>ticket cat</p>
-                                                        <span className='font-semibold'>Standard:</span>
-                                                        <span>${item.ticketListingDetails !== undefined ? item.ticketListingDetails[0].price : ""}</span>
-                                                    </div>
 
                                                     <div className='grid grid-cols-2 mt-6'>
-                                                        <p className='font-semibold'>Tickets Quantity:</p>
+                                                        <p className='font-semibold'>Ticket Quantity:</p>
                                                         <p>1</p>
                                                         <p className='font-semibold'>Total:</p>
-                                                        <p>${item.ticketListingDetails?.price}</p>
+                                                        <p>${item.ticketListingDetails !== undefined ? item.ticketListingDetails[0].price : ""}</p>
                                                     </div>
 
                                                     <div className='mt-6'>
-                                                        <p className='font-semibold'>Tickets purchased:</p>
+                                                        <p className='font-semibold'>{
+                                                            item.buyerID === userID ? "Ticket purchased:" : "Ticket sold:"
+                                                        }</p>
                                                         <div className="flex flex-col">
-                                                            {seats[index] == undefined ? "" : seats[index].map((item, i) => {
-                                                                return (
-                                                                    <div key={i} className="p-2 flex w-[320px] bg-white border border-[#B4C1DB] rounded my-2">Category {item.category}, Zone {item.section},Row {item.row}, Seat {item.seatNo}</div>
+                                                            {item.runDetails == undefined ? "" : 
+                                                                (
+                                                                    <div key={index} className="p-2 flex w-[320px] bg-white border border-[#B4C1DB] rounded my-2">Category {item.runDetails.seat.category}, Zone {item.runDetails.seat.section}, Row {item.runDetails.seat.row}, Seat {item.runDetails.seat.seatNo}</div>
                                                                 )
-                                                            })} 
+                                                            } 
                                                         </div>
                                                     </div>
 
@@ -412,7 +408,7 @@ const TransactionHistory = () => {
                             </TableBody>
                         </Table>
                     </TabsContent>
-                    <TabsContent value="direct transfers">
+                    {/* <TabsContent value="direct transfers">
                         <p className='font text-sm text-[#1F6EB7] my-1'>View your ticket transfer history here.
                             Your transferred tickets will show as ‘Transfer in progress’. You may cancel the transfer before your recipient accepts the tickets. Once accepted, the ticket(s) will show as Transferred and can no longer be accessed in your account.</p>
                         <Table>
@@ -453,7 +449,7 @@ const TransactionHistory = () => {
                                 </TableRow>
                             </TableBody>
                         </Table>
-                    </TabsContent>
+                    </TabsContent> */}
                 </Tabs>
             </div>
 

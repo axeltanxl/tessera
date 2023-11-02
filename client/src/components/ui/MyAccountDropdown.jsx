@@ -31,10 +31,10 @@ const menuItems = [
         link: "/account/resell-tickets",
         name: "Resell Tickets"
     },
-    {
-        link: "/account/receive-transfer",
-        name: "Receive Transfer"
-    },
+    // {
+    //     link: "/account/receive-transfer",
+    //     name: "Receive Transfer"
+    // },
     {
         link: "/account/transaction-history",
         name: "Transaction History"
