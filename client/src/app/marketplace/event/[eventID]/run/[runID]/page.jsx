@@ -22,6 +22,7 @@ function MarketplaceListing() {
     const token = localStorage.getItem('jwt');
     const [eventName, setEventName] = useState('');
     const [marketplace, setMarketplace] = useState('');
+    const [displayImage, setDisplayImage] = useState('');
     useEffect(() => {
         async function fetchTicketListingsByEvent() {
             try {
@@ -75,12 +76,10 @@ function MarketplaceListing() {
                 });
                 if (res.ok) {
                     const runsByEvent = await res.json();
-                    console.log("runs:", runsByEvent);
                     const runDates = runsByEvent.runs.map((item) => formatDate(item.date));
                     setRuns(runDates);
                     setEventName(runsByEvent.name);
-                    // setRun(runsByEvent.runs.find((item) => item.runID === runID));
-                    // console.log("run info:", runsByEvent.runs.find((item) => item.runID === runID));
+                    setDisplayImage(runsByEvent.displayImage);
                 }
             } catch (error) {
                 console.error("An error occurred:", error);
@@ -160,7 +159,7 @@ function MarketplaceListing() {
     const [timerHours, setTimerHours] = useState('00');
     const [timerMinutes, setTimerMinutes] = useState('00');
     const [timerSeconds, setTimerSeconds] = useState('00');
-    console.log("marketplace closing date:", marketplace.closingDate);
+    // console.log("marketplace closing date:", marketplace.closingDate);
     const closingDate = marketplace.closingDate !== undefined ? marketplace.closingDate : '1 January 2023';
     let interval = useRef();
     const startTimer = () => {
@@ -208,7 +207,7 @@ function MarketplaceListing() {
                 <p className="text-xl mb-4 mt-10 font-semibold">Marketplace</p>
             </div>
             <div className="bg-cover bg-center bg-[url('/gradient.png')]  h-[284px] flex items-center p-10">
-                <img src={"/image-9.jpg"} className='h-[230px]' />
+                <img src={displayImage === '' ? 'grey-temp.jpg' : displayImage} className='h-[230px]' />
                 <div className="items-start flex flex-col flex-1 p-16">
                     <p className='text-2xl'>{eventName} on {formatDate(marketplace.run?.date)}, {formatTime(marketplace.run?.startTime)} to {formatTime(marketplace.run?.endTime)}</p>
                     <p className='mb-2'>Ticket marketplace closing in</p>

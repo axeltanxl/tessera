@@ -18,12 +18,12 @@ function formatDate(inputDate) {
 
 export function MarketplaceCard({ details }) {
     const { eventDTO, openingDate, closingDate, run } = details;
-    const {eventID, name,startDate, endDate, category,} = eventDTO;
+    const {eventID, name,startDate, endDate, category, displayImage} = eventDTO;
     return (
         <Card className="w-full z-0 bg-[#F5F7FB] hover:cursor-pointer shadow-md">
       <div className='relative bg-clip-border rounded-xl overflow-hidden text-gray-700 h-52 bg-[#F5F7FB] p-2'>
         <img
-          src={"./image-9.jpg"}
+          src={displayImage}
           alt="card-image"
           className="h-full w-full object-cover rounded"
         />

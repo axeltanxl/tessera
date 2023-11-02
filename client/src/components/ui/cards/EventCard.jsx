@@ -18,12 +18,12 @@ function formatDate(inputDate) {
 }
 
 export function EventCard({ details }) {
-  const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = details;
+  const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID, displayImage } = details;
   return (
     <Card className="w-full z-0 bg-[#F5F7FB] hover:cursor-pointer hover:mix-blend-multiply shadow-md">
       <div className='relative bg-clip-border rounded-xl overflow-hidden text-gray-700 h-52 bg-[#F5F7FB] p-2'>
         <img
-          src={'./image-9.jpg'}
+          src={displayImage === "" ? 'grey-temp.jpg' : displayImage}
           alt="card-image"
           className="h-full w-full object-cover rounded"
         />
