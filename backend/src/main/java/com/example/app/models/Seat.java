@@ -36,6 +36,10 @@ public class Seat {
   @OneToMany(mappedBy = "seat")
   private List<Ticket> tickets;
 
+  @JsonManagedReference(value="seat-runSeat")
+  @OneToMany(mappedBy = "seat")
+  private List<RunSeat> runs;
+
   public long getSeatID() {
     return seatID;
   }
@@ -90,5 +94,13 @@ public class Seat {
 
   public void setTickets(List<Ticket> tickets) {
     this.tickets = tickets;
+  }
+
+  public List<RunSeat> getRuns() {
+    return runs;
+  }
+
+  public void setRuns(List<RunSeat> runs) {
+    this.runs = runs;
   }
 }

@@ -20,14 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.app.models.CustOrder;
 import com.example.app.models.Run;
 import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
 import com.example.app.models.TicketListing;
 import com.example.app.models.TicketListingWithSeat;
 import com.example.app.models.User;
-import com.example.app.repositories.OrderRepository;
 import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
@@ -46,8 +44,6 @@ public class TicketListController {
     private SeatRepository seatRepo;
     @Autowired
     private RunRepository runRepo;
-    @Autowired
-    private OrderRepository orderRepo;
 
     // For general public who wants to see each listing.
     @GetMapping("ticketListings/{listingID}")
@@ -67,6 +63,25 @@ public class TicketListController {
 
         return ResponseEntity.ok(ticketLists);
     }
+
+    //Get all ticket listing with ticketID 
+    @GetMapping("ticketListings/tickets/{ticketID}")
+    public ResponseEntity<List<TicketListing>> getListingByTicketID(@PathVariable long ticketID) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        List<TicketListing> ticketListingsByTix = 
+        ticketListRepo.findAllByTicketTicketIDAndUserUserID(ticketID, authenticatedUser.getUserID());
+
+        if (ticketListingsByTix.isEmpty() || ticketListingsByTix == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ticketListingsByTix);
+    }
+
+
 
     /* UNUSED METHOD */
     // @Autowired
@@ -151,6 +166,16 @@ public class TicketListController {
         return ResponseEntity.ok(ticketListsWithSeats);
     }
 
+    public boolean isTicketListingDuplicated(Long ticketID, Long runID, Long eventID) {
+
+        Optional<TicketListing> ticketListObj = ticketListRepo.findByTicketTicketIDAndEventEventIDAndRunRunID(ticketID, eventID, runID);
+        
+        if (ticketListObj.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
     // to add ticketListings
     @PostMapping("runs/{runID}/tickets/{ticketID}/ticketListings")
     public ResponseEntity<String> addTicketListings(@PathVariable("runID") Long runID,
@@ -171,11 +196,10 @@ public class TicketListController {
             }
 
             // go order repo
-            CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
-            if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
-            }
- 
+            // CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
+            // if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
+            //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
+            // }
             // default pricing/event/status/userID.Price will be NULL
             // reqTicketListing.setPrice(currOrder.getPrice());
             // reqTicketListing.setEvent(currOrder.getEvent());
@@ -190,10 +214,19 @@ public class TicketListController {
             if (!optRun.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Run not found");
             }
+
             Run currRun = optRun.get();
             reqTicketListing.setRun(currRun);
             reqTicketListing.setEvent(currRun.getEvent());
             reqTicketListing.setMarketplace(currRun.getMarketplace());
+
+            //find ticketList for duplicates
+            boolean isDuplicated = isTicketListingDuplicated(ticketID, runID, currRun.getEvent().getEventID());
+            if (isDuplicated) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Duplicates found. Transaction cancelled."); 
+            }
+
             // for transactionID in ticketListing
             // reqTicketListing.setTransaction(newTrans);
 
