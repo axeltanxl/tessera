@@ -20,7 +20,7 @@ useEffect(() => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch("http://localhost:8080/api/v1/events", {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`, {
                     method: 'GET',
                     headers,
                 });

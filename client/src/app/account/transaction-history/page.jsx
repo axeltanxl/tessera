@@ -103,7 +103,7 @@ const TransactionHistory = () => {
 
     const fetchVenueByEventID = async (eventid) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/events/${eventid}/venue`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventid}/venue`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -122,7 +122,7 @@ const TransactionHistory = () => {
 
     const fetchRunDetailsForTicketListing = async (ticketid) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/tickets/${ticketid}/events/runs`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/${ticketid}/events/runs`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -141,7 +141,7 @@ const TransactionHistory = () => {
 
     const fetchTicketListingDetails = async (ticketid) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/ticketListings/tickets/${ticketid}`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/ticketListings/tickets/${ticketid}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -227,7 +227,7 @@ const TransactionHistory = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/transactionHistory`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/transactionHistory`, {
                     method: 'GET',
                     headers
                 });

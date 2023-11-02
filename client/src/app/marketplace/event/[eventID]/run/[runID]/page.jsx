@@ -28,7 +28,7 @@ function MarketplaceListing() {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/ticketListings`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/ticketListings`, {
                     method: 'GET',
                     headers
                 });
@@ -50,7 +50,7 @@ function MarketplaceListing() {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/categories`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/categories`, {
                     method: 'GET',
                     headers
                 });
@@ -69,7 +69,7 @@ function MarketplaceListing() {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}`, {
                     method: 'GET',
                     headers
                 });
@@ -92,7 +92,7 @@ function MarketplaceListing() {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/openMarketplaces`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/openMarketplaces`, {
                     method: 'GET',
                     headers
                 });

@@ -339,7 +339,7 @@ const MyTickets = () => {
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
-          onClick={createAccount}
+          onClick={handleOpen}
           >Resell</button>
           <Modal
             open={open}

@@ -90,7 +90,7 @@ const ResellTickets = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/users/${userID}/listedTickets`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userID}/listedTickets`, {
                     method: 'GET',
                     headers,
                 });

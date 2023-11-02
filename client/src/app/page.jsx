@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { toast } from "@/components/ui/use-toast";
 
 export const getEvents = async () => {
-    const res = await fetch("http://localhost:8080/api/v1/events");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`);
     // const res = await axiosSpring("events");
     console.log(res);
     const events = await res.json()
@@ -35,7 +35,7 @@ function Home() {
                     // const headers = {
                     //     Authorization: `Bearer ${token}`,
                     // };
-                    // const res = await fetch("http://localhost:8080/api/v1/events", {
+                    // const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`, {
                     //     method: 'GET',
                     //     headers,
                     // });

@@ -15,7 +15,7 @@ const Marketplace = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/openMarketplaces`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/openMarketplaces`, {
                     method: 'GET',
                     headers
                 });
