@@ -122,7 +122,7 @@ const TransactionHistory = () => {
 
     const fetchRunDetailsForTicketListing = async (ticketid) => {
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/${ticketid}/events/runs`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/tickets/${ticketid}/events/runs`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
