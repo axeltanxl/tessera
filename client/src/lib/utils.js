@@ -52,6 +52,7 @@ export const isAuthenticated = (session, status) => {
     }
 
     if(!jwt || jwtHasExpired(jwt)){
+        signOut();
         redirect("/login");
     }
 }

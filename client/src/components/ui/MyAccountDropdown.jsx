@@ -42,6 +42,7 @@ const menuItems = [
     }
 ]
 export default function MyAccountDropdown({session, status}) {
+    // console.log(session, status)
     return (
         <DropdownMenu onOpenChange={() => isAuthenticated(session, status)}>
             <DropdownMenuTrigger asChild >
@@ -51,7 +52,7 @@ export default function MyAccountDropdown({session, status}) {
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-[#FCFAFF] shadow-none border-[#B4C1DB]" align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>{!!session ? "My Account" : "Log in "}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     {
