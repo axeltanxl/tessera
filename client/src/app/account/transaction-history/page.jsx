@@ -250,17 +250,18 @@ const TransactionHistory = () => {
                         })
 
                     );
-                    
+
                     const mergedTransactionsWithVenue = [];
-                    await Promise.all(mergedTransactions.map(async(item, index) => {
-                        if(item.runDetails !== undefined){
-                        const venueDetails = await fetchVenueByEventID(item.runDetails.event.eventID);
-                        console.log("venue ee:", venueDetails);
-                        const mergeVenue = {...item, venueDetails};
-                        mergedTransactionsWithVenue.push(mergeVenue);}
+                    await Promise.all(mergedTransactions.map(async (item, index) => {
+                        if (item.runDetails !== undefined) {
+                            const venueDetails = await fetchVenueByEventID(item.runDetails.event.eventID);
+                            console.log("venue ee:", venueDetails);
+                            const mergeVenue = { ...item, venueDetails };
+                            mergedTransactionsWithVenue.push(mergeVenue);
+                        }
                     }))
                     setTransactions(mergedTransactionsWithVenue);
-                    
+
 
                     // console.log("merged:", mergedTransactions);
                 } else {
@@ -371,7 +372,7 @@ const TransactionHistory = () => {
                                                 <TableCell>{formatDate(item.date)}</TableCell>
                                                 <TableCell>{
                                                     item.buyerID === userID ? "Bought from Marketplace" : "Resold on Marketplace"
-                                                    }</TableCell>
+                                                }</TableCell>
                                                 <TableCell>
                                                     <p><span>{item.runDetails?.event.name}</span></p>
                                                     <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span>{formatDate(item.runDetails?.run.date)} {formatTime(item.runDetails?.run.startTime)} - {formatTime(item.runDetails?.run.endTime)}</span></p>
@@ -382,14 +383,27 @@ const TransactionHistory = () => {
                                                         <p className='font-semibold'>Tickets Category:</p>
                                                         <p>ticket cat</p>
                                                         <span className='font-semibold'>Standard:</span>
-                                                        <span>${item.ticketListingDetails !== undefined? item.ticketListingDetails[0].price : ""}</span>
+                                                        <span>${item.ticketListingDetails !== undefined ? item.ticketListingDetails[0].price : ""}</span>
                                                     </div>
 
                                                     <div className='grid grid-cols-2 mt-6'>
                                                         <p className='font-semibold'>Tickets Quantity:</p>
                                                         <p>1</p>
                                                         <p className='font-semibold'>Total:</p>
-                                                        <p>${item.ticketListingDetails?.price}</p></div>
+                                                        <p>${item.ticketListingDetails?.price}</p>
+                                                    </div>
+
+                                                    <div className='mt-6'>
+                                                        <p className='font-semibold'>Tickets purchased:</p>
+                                                        <div className="flex flex-col">
+                                                            {seats[index] == undefined ? "" : seats[index].map((item, i) => {
+                                                                return (
+                                                                    <div key={i} className="p-2 flex w-[320px] bg-white border border-[#B4C1DB] rounded my-2">Category {item.category}, Zone {item.section},Row {item.row}, Seat {item.seatNo}</div>
+                                                                )
+                                                            })} 
+                                                        </div>
+                                                    </div>
+
                                                 </TableCell>
                                             </TableRow>)
                                     })
