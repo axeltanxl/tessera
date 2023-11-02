@@ -24,16 +24,6 @@ export const jwtHasExpired = (jwt) => {
     }
 }
 
-export const axiosSpring = axios.create({
-    // baseURL: process.env.SPRING_BACKEND,
-    baseURL : "http://localhost:8080/api/v1",
-    headers: { 
-        "Access-Control-Allow-Origin": "*",
-        "Authorization" : `Bearer ${localStorage.getItem("jwt_spring")}`,
-        "Content-Type" : "application/json",
-    },
-    withCredentials: false,
-  });
 
 export const axiosNext = axios.create({
     baseURL: process.env.NEXT_BACKEND,
@@ -57,22 +47,4 @@ export const isAuthenticated = (session, status) => {
     }
 }
 
-axiosSpring.interceptors.response.use((response) => {
-    return response;
-}, (error) => {
-    if (!error.response) {
-        alert('NETWORK ERROR')
-    } else {
-        console.log("errrrr")
-        const code = error.response.status
-        if (code === 401 || code === 403) {
-            // alert("jwt invalid or missing")
-            // signOut();
-            toast({ 
-                variant: "destructive",
-                title: "Your session has expired please login again",
-            })
-        }
-        return Promise.reject(error)
-    }
-});
+

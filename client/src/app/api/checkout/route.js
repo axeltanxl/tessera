@@ -88,25 +88,57 @@ export async function POST(request){
         },
       })
     
-    const seats = await prisma.seat.findMany({
-        where : {
-            seatID : { in: seatIDs },
-        },
-        select : {
-            seatRow : true,
-            seatNo : true,
-        }
-    })
-    const seatDescription = seats.map(seat => {
-        return `Row: ${seat.seatRow}, Seat: ${seat.seatNo} `
-    })
-    const seatDesc = seatDescription.join("\n");
+    let seatDesc = "";
+    const listRunSeat = [];
+
+    for(let seatID of seatIDs){
+        const { seatRow, seatNo } = await prisma.seat.findUnique({
+            where : {
+                seatID :  seatID,
+            },
+            select : {
+                seatRow : true,
+                seatNo : true,
+            }
+        })
+        seatDesc += `Row: ${seatRow}, Seat: ${seatNo}`
+
+        const { runSeatID, isAvailable } = await prisma.runseat.findFirst({
+            where : {
+                seatID : seatID,
+                runID : runID,
+            },
+            select : {
+                runSeatID : true,
+                isAvailable : true,
+            }
+        })
+        listRunSeat.push(runSeatID);
+        // if (isAvailable === 0){
+        //     return NextResponse.json({ error: 'seat(s) is taken' }, { status: 400 });
+        // }
+    }
+    
+    console.log("seatDescription");
+    console.log(seatDesc);
+    console.log("listrunseat",listRunSeat);
+
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     // stripe checkout session 
 
-    console.log("seatDescription");
-    console.log(seatDesc)
+    //     const currentTimeMillis = Date.now();
+
+    // // Calculate the expiration time (24 hours from now) in milliseconds
+    // const expirationTimeMillis = currentTimeMillis +  30 * 60 * 1000;
+
+    // // Convert the expiration time to seconds (Unix timestamp)
+    // const expiresAt = Math.floor(expirationTimeMillis / 1000);
+    //     console.log("expire",expiresAt);
     
+    const runSeats = JSON.stringify(listRunSeat , (key, value) => {
+        return typeof value === 'bigint' ? value.toString() : value;
+    })
     const { url, id : sessionID } = await stripe.checkout.sessions.create({
         line_items : [
             {
@@ -131,10 +163,14 @@ export async function POST(request){
                 paymentReason : "purchase", 
                 userID : userID,
                 seats : JSON.stringify(seatIDs),
+                runSeats : runSeats,
                 orderId : orderID,
                 paymentMethod : paymentMethod,
             },
         },
+        metadata :{
+            runSeats : runSeats
+        }
     })
 
     // update cust order with the session id

@@ -9,7 +9,7 @@ const CancelPage = () => {
 
     useEffect(()=> {
         axios.post("/api/checkout/failure", 
-        {paymentMethod : "card", orderId : 1, transactionId : 1}, 
+        {jwt : localStorage.getItem("jwt")}, 
         {
             headers : {
                 "Content-Type" : "application/json",

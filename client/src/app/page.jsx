@@ -1,15 +1,14 @@
 'use client';
 import { EventCard } from "@/components/ui/EventCard";
 import Carousel from "@/components/ui/carousel"
-import { axiosSpring } from "@/lib/utils";
+import { jwtHasExpired } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from 'react';
-import { toast } from "@/components/ui/use-toast";
+import { signOut } from "next-auth/react";
 
 export const getEvents = async () => {
     const res = await fetch("http://localhost:8080/api/v1/events");
-    // const res = await axiosSpring("events");
     console.log(res);
     const events = await res.json()
 
@@ -22,10 +21,14 @@ function Home() {
     // if (status === "unauthenticated" || !session || !session.user) {
     //     redirect("/");
     // }
-
+   
     const [events, setEvents] = useState([]);
     console.log("events:", events);
 
+    const jwt = localStorage.getItem("jwt");
+    if(!jwt || jwtHasExpired(jwt)){
+        signOut();
+    }
     useEffect(() => {
         // if (status === "authenticated" && session && session.user) {
             async function fetchData() {
