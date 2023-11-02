@@ -17,11 +17,11 @@ public class ImageController {
     public String uploadImage(MultipartFile image, String id) {
         try {
             // Upload the file to Amazon S3
-            String filename = "programmes/displayImage/" + id + "/" + image.getOriginalFilename();
+            String filename = "events/displayImage/" + id + "/" + image.getOriginalFilename();
             PutObjectResponse response = s3Client.putObject(PutObjectRequest.builder()
                     .bucket("cs203-tessera")
                     .key(filename)
-                    .build(), RequestBody.empty());
+                    .build(), RequestBody.fromBytes(image.getBytes()));
             
             if (response != null && response.sdkHttpResponse().isSuccessful()) {
               return s3Client.utilities().getUrl(GetUrlRequest.builder()
