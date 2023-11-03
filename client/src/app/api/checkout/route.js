@@ -127,14 +127,13 @@ export async function POST(request){
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     // stripe checkout session 
 
-    //     const currentTimeMillis = Date.now();
+        const currentTimeMillis = Date.now();
 
-    // // Calculate the expiration time (24 hours from now) in milliseconds
-    // const expirationTimeMillis = currentTimeMillis +  30 * 60 * 1000;
+    // Calculate the expiration time (24 hours from now) in milliseconds
+    const expirationTimeMillis = currentTimeMillis +  30 * 60 * 1000;
 
-    // // Convert the expiration time to seconds (Unix timestamp)
-    // const expiresAt = Math.floor(expirationTimeMillis / 1000);
-    //     console.log("expire",expiresAt);
+    // Convert the expiration time to seconds (Unix timestamp)
+    const expiresAt = Math.floor(expirationTimeMillis / 1000);
     
     const runSeats = JSON.stringify(listRunSeat , (key, value) => {
         return typeof value === 'bigint' ? value.toString() : value;
@@ -170,7 +169,8 @@ export async function POST(request){
         },
         metadata :{
             runSeats : runSeats
-        }
+        },
+        expires_at : expiresAt,
     })
 
     // update cust order with the session id

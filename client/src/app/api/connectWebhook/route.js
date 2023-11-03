@@ -43,12 +43,46 @@ export async function POST(request, response){
                 return NextResponse.json({message : "success yayy"}, {status : 200});
           } catch (error) {
             // console.log("error",error)
-            // return NextResponse.json({message : "no order created "}, {status : 400});
+            return NextResponse.json({message : "no order created "}, {status : 400});
           }
-        // case 'checkout.session.completed':
+
+        //this case means checkout not completed yet expired and was not captured by sending them to fail link
+        case 'checkout.session.expired':
+            const expiredSession = event.data.object;
+            console.log(expiredSession)
+            const { payment_status, metadata} = expiredSession
+            console.log(payment_status, metadata);
+            if (session.payment_status === "unpaid"){
+                const runSeats = JSON.parse(metadata.runSeats);
+                for(let seat of runSeats){
+                    const { isAvailable } = await prisma.runseat.findUnique({
+                        where : {
+                            runSeatID : seat,
+                        },
+                        select : {
+                            isAvailable : true,
+                        }
+                    })
+                    if(isAvailable === 2){
+                        await prisma.runseat.update({
+                            where : {
+                                runSeatID : seat,
+                            },
+                            data : {
+                                isAvailable : 1,
+                            }
+                        }) 
+                    }
+                }
+            }
+            return NextResponse.json({message : "unreserve seat"}, {status : 200});
+
+        // case 'payment_intent.payment_failed':
+        // case 'charge.charge.failed':
         //     console.log(event.data.object)
-        //     // const paymentIntentFailed = event.data.object;
-        //     // console.log(paymentIntentFailed)
+        //     const paymentIntentFailed = event.data.object;
+        //     console.log(paymentIntentFailed)
+        //     return NextResponse.json({message : "captured payment failed"}, {status : 200});
         //     console.log("failed failed failed")
         //     return NextResponse.json({message : "seat unreserved"}, {status : 200});
 
@@ -62,7 +96,6 @@ export async function POST(request, response){
 
 
 
-// get 
 
 const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, paymentMethod, runSeats) => {
     // create payment success
