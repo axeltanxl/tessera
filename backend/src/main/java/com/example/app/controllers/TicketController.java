@@ -101,11 +101,14 @@ public class TicketController {
     public ResponseEntity<TicketDTO> getEventsAndRunsByTicketID(@PathVariable long ticketID) {
 
         TicketListing oneTicketListing = ticketListRepo.findByTicketTicketID(ticketID);
+        Ticket getTicket = ticketRepo.getReferenceById(ticketID);
 
-        TicketDTO ticket = new TicketDTO();
-        ticket.setEvent(oneTicketListing.getEvent());
-        ticket.setRun(oneTicketListing.getRun());
+        TicketDTO ticketDTO = new TicketDTO();
+        ticketDTO.setEvent(oneTicketListing.getEvent());
+        ticketDTO.setRun(oneTicketListing.getRun());
+        ticketDTO.setSeat(getTicket.getSeat());
+        // ticket.setSeat(oneTicketListing);
 
-        return ResponseEntity.ok(ticket);
+        return ResponseEntity.ok(ticketDTO);
     }
 }

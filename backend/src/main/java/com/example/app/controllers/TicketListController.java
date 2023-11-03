@@ -20,6 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.app.exceptions.DuplicateListingFoundException;
+import com.example.app.exceptions.ListingNotFoundException;
+import com.example.app.exceptions.RunNotFoundException;
+import com.example.app.exceptions.TicketNotFoundException;
+import com.example.app.exceptions.UnauthorizedException;
 import com.example.app.models.Run;
 import com.example.app.models.Seat;
 import com.example.app.models.Ticket;
@@ -30,6 +35,7 @@ import com.example.app.repositories.RunRepository;
 import com.example.app.repositories.SeatRepository;
 import com.example.app.repositories.TicketListRepository;
 import com.example.app.repositories.TicketRepository;
+import com.example.app.services.TicketListService;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -44,6 +50,9 @@ public class TicketListController {
     private SeatRepository seatRepo;
     @Autowired
     private RunRepository runRepo;
+
+    @Autowired
+    private TicketListService ticketListService;
 
     // For general public who wants to see each listing.
     @GetMapping("ticketListings/{listingID}")
@@ -80,41 +89,6 @@ public class TicketListController {
 
         return ResponseEntity.ok(ticketListingsByTix);
     }
-
-
-
-    /* UNUSED METHOD */
-    // @Autowired
-    // private Middleware midWare;
-    // @Autowired
-    // private UserRepository userRepo;
-
-    // @GetMapping("ticketListing/{listingID}")
-    // public ResponseEntity<Object>
-    // getListingByTicketListID(@RequestHeader("Authorization") String
-    // authorizationHeader,
-    // @PathVariable long listingID) {
-
-    // final String TOKEN = authorizationHeader.replace("Bearer ", ""); // Remove
-    // "Bearer " prefix
-
-    // final ModelMapper modelMapper = new ModelMapper();
-    // String getCurrEmail = midWare.extractUsername(TOKEN);
-
-    // User user = userRepo.findByEmail(getCurrEmail);
-
-    // // Convert User entity to UserDTO, excluding the password
-    // UserDTO userObj = modelMapper.map(user, UserDTO.class);
-
-    // Optional<TicketListing> ticketList = ticketListRepo.findById(listingID);
-    // if (!ticketList.isPresent() || ticketList.get().getUser().getUserID() !=
-    // userObj.getUserID()) {
-    // return ResponseEntity.notFound().build();
-    // }
-
-    // // String getCurrListing =
-    // return ResponseEntity.ok(ticketList);
-    // }
 
     // For the public who wants to see all the listings for 1 event
     @GetMapping("events/{eventID}/ticketListings")
@@ -166,171 +140,89 @@ public class TicketListController {
         return ResponseEntity.ok(ticketListsWithSeats);
     }
 
-    public boolean isTicketListingDuplicated(Long ticketID, Long runID, Long eventID) {
-
-        Optional<TicketListing> ticketListObj = ticketListRepo.findByTicketTicketIDAndEventEventIDAndRunRunID(ticketID, eventID, runID);
-        
-        if (ticketListObj.isPresent()) {
-            return true;
-        }
-        return false;
-    }
-
     // to add ticketListings
     @PostMapping("runs/{runID}/tickets/{ticketID}/ticketListings")
-    public ResponseEntity<String> addTicketListings(@PathVariable("runID") Long runID,
-            @PathVariable("ticketID") Long ticketID, @RequestBody TicketListing reqTicketListing) {
+    public ResponseEntity<String> addTicketListings(Authentication authentication, 
+        @PathVariable("runID") Long runID, @PathVariable("ticketID") Long ticketID, 
+        @RequestBody TicketListing reqTicketListing) {
+
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User authenticatedUser = (User) authentication.getPrincipal();
-
-            Optional<Ticket> ticketObj = ticketRepo.findById(ticketID);
-            if (!ticketObj.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found");
-            }
-
-            Ticket currTicket = ticketObj.get();
-            // Check if the currently authenticated user matches the user being updated
-            if (!(authenticatedUser.getUserID() == currTicket.getUser().getUserID())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
-            }
-
-            // go order repo
-            // CustOrder currOrder = orderRepo.getReferenceById(currTicket.getOrder().getOrderID());
-            // if (reqTicketListing.getQuantity() > currOrder.getTicketQuantity() || reqTicketListing.getQuantity() == 0) {
-            //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid quantity.");
-            // }
-            // default pricing/event/status/userID.Price will be NULL
-            // reqTicketListing.setPrice(currOrder.getPrice());
-            // reqTicketListing.setEvent(currOrder.getEvent());
-  
-            reqTicketListing.setStatus("Not Listed");
-            reqTicketListing.setUser(authenticatedUser);
-            
-            // For ticketID in TicketListing
-            reqTicketListing.setTicket(currTicket);
-
-            Optional<Run> optRun = runRepo.findById(runID);
-            if (!optRun.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Run not found");
-            }
-
-            Run currRun = optRun.get();
-            reqTicketListing.setRun(currRun);
-            reqTicketListing.setEvent(currRun.getEvent());
-            reqTicketListing.setMarketplace(currRun.getMarketplace());
-
-            //find ticketList for duplicates
-            boolean isDuplicated = isTicketListingDuplicated(ticketID, runID, currRun.getEvent().getEventID());
-            if (isDuplicated) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Duplicates found. Transaction cancelled."); 
-            }
-
-            // for transactionID in ticketListing
-            // reqTicketListing.setTransaction(newTrans);
-
-            // create new transaction assign to ticketListing
-            // Transaction newTrans = new Transaction();
-            // newTrans.setSeller(authenticatedUser);
-            // newTrans.setTicket(currTicket);
-            // newTrans.setDate(reqTicketListing.getListingDate());
-            // transactionRepo.save(newTrans);
-
-            ticketListRepo.save(reqTicketListing);
+            ticketListService.addTicketListing(authentication, ticketID, runID, reqTicketListing);
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Successfully created ticketlisting.");
 
-        } catch (Exception ex) {
-            System.out.println("Error while adding ticketListing: " + ex.getMessage());
+        }
+        catch (UnauthorizedException ue) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ue.getMessage());
+        }
+        catch (TicketNotFoundException tnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(tnf.getMessage());
+        }
+        catch (DuplicateListingFoundException dlf) {
+             return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(dlf.getMessage());
+        }
+        catch (RunNotFoundException rnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(rnf.getMessage());
+        }
+        catch (Exception ex) {
+            // System.out.println("Error while adding ticketListing: " + ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while adding ticketlisting");
         }
     }
 
-    // private boolean isAuthorized(Long listingID) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     User authenticatedUser = (User) authentication.getPrincipal();
-
-    //     // retrieve obj. Ensure that listing is associated to the correct user.
-    //     Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
-    //     TicketListing oneTicketListing = optTicketListing.get();
-
-    //     // Check if the currently authenticated user matches the user being updated
-    //     if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
     //Update listing with price.
     @PutMapping("ticketListings/{listingID}")
-    public ResponseEntity<String> updateTicketListing(@PathVariable("listingID") Long listingID, 
-    @RequestBody TicketListing requestedTicketListing) {
+    public ResponseEntity<String> updateTicketListing(Authentication authentication, 
+        @PathVariable("listingID") Long listingID, @RequestBody TicketListing requestedTicketListing) {
+        
         try {
-            if (!ticketListRepo.existsById(listingID)) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User authenticatedUser = (User) authentication.getPrincipal();
-
-            // retrieve obj. Ensure that listing is associated to the correct user.
-            Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
-            TicketListing oneTicketListing = optTicketListing.get();
-
-            // Check if the currently authenticated user matches the user being updated
-            if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
-            }
-            
-            oneTicketListing.setPrice(requestedTicketListing.getPrice());
-            oneTicketListing.setStatus("Listed");
-
-            ticketListRepo.save(oneTicketListing);
+            ticketListService.updateTicketList(authentication, listingID, requestedTicketListing);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Successfully updated ticketListing.");
 
-        } catch (Exception ex) {
-            System.out.println("Error while updating ticketListing: " + ex.getMessage());
+        }
+        catch (UnauthorizedException ue) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ue.getMessage());
+        }
+        catch (ListingNotFoundException lnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(lnf.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("Error while deleting ticket listing: " + e.getMessage());
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while updating ticketListing");
+                    .body("An error occurred while deleting the ticketlisting.");
         }
     }
 
     @DeleteMapping(path = "ticketListings/{listingID}")
-    public ResponseEntity<Object> deleteListing(@PathVariable("listingID") Long listingID) {
+    public ResponseEntity<Object> deleteListing(Authentication authentication, 
+        @PathVariable("listingID") Long listingID) {
         try {
-            if (!ticketListRepo.existsById(listingID)) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User authenticatedUser = (User) authentication.getPrincipal();
-
-            // retrieve obj. Ensure that listing is associated to the correct user.
-            Optional<TicketListing> optTicketListing = ticketListRepo.findById(listingID);
-            TicketListing oneTicketListing = optTicketListing.get();
-
-            // Check if the currently authenticated user matches the user being updated
-            if (!(authenticatedUser.getUserID() == oneTicketListing.getUser().getUserID())) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Invalid access.");
-            }
-
-            //get transactionID.
-            // long getTransactionID = oneTicketListing.getTransaction().getTransactionID();
-
-            //find and delete from table.
-            ticketListRepo.deleteById(listingID);
+            ticketListService.removeListing(authentication, listingID);
 
             return ResponseEntity.status(HttpStatus.OK).body("TicketListing deleted successfully.");
+        } catch (UnauthorizedException ue) {
+             return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ue.getMessage());
+        } catch (ListingNotFoundException lnf) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(lnf.getMessage());
         } catch (Exception e) {
             System.out.println("Error while deleting ticket listing: " + e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while deleting the ticketlisting.");
         }
+
     }
 }

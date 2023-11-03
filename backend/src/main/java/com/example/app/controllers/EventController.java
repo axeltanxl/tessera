@@ -30,9 +30,7 @@ import com.example.app.models.Venue;
 import com.example.app.models.VenueDTO;
 import com.example.app.repositories.EventRepository;
 import com.example.app.repositories.MarketplaceRepository;
-import com.example.app.repositories.SeatRepository;
-import com.example.app.repositories.TicketListRepository;
-import com.example.app.repositories.TicketRepository;
+import com.example.app.services.EventService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.app.repositories.RunRepository;
@@ -48,44 +46,32 @@ public class EventController {
 
   @Autowired
   private RunRepository runRepository;
-  
+    
   @Autowired
   private ImageController imageController;
-  
-  @Autowired
-  private TicketListRepository ticketListingRepo;
-  
-  @Autowired
-  private TicketRepository ticketRepo;
-  
-  @Autowired
-  private SeatRepository seatRepo;
 
   @Autowired
   private MarketplaceRepository marketplaceRepo;
+  
+  @Autowired
+  private EventService eventService;
 
   @GetMapping("/events")
   public ResponseEntity<List<EventDTO>> getAllEvents() {
-    
-    final ModelMapper modelMapper = new ModelMapper();
-
-    List<Event> listOfEvents = eventRepository.findAll();
-    List<EventDTO> listOfEventsDTO = listOfEvents.stream()
-      .map(eachEvent -> modelMapper.map(eachEvent, EventDTO.class))
-      .collect(Collectors.toList());
-    
-    return ResponseEntity.ok(listOfEventsDTO);
+    List<EventDTO> getAllEventsDTO = eventService.retrieveAllEvents();
+    return ResponseEntity.ok(getAllEventsDTO);
   }
 
   @GetMapping(path = "/events/{eventID}")
   public ResponseEntity<Event> getEvent(@PathVariable("eventID") Long id){
-    Optional<Event> event = eventRepository.findById(id);
 
-    if (!event.isPresent()){
+    Event getEvent = eventService.retrieveOneEvent(id);
+
+    if (getEvent == null){
       return ResponseEntity.notFound().build();
     }
 
-    return ResponseEntity.ok(event.get());
+    return ResponseEntity.ok(getEvent);
   }
 
   @GetMapping(path = "events/{eventID}/categories")
