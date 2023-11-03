@@ -1,3 +1,4 @@
+// "use client"
 import React from 'react'
 import {
     Button,
@@ -9,6 +10,24 @@ function formatDate(inputDate) {
         const formattedDate = format(new Date(inputDate), 'dd MMMM yyyy');
         return formattedDate;
     }
+}
+
+const hardCodedValues = {
+    "jwt" : localStorage.getItem("jwt"),
+    "listingID" : 1,
+    "paymentMethod" : "card",
+};
+
+
+const handlePurchase = async (data) => {
+    const res = await axios.post('/api/stripeTransaction/payment', data, 
+    {
+        headers : {
+            "Content-Type" : "application/json",
+        },
+    });
+    const {webUrl} = res.data
+    window.location.assign(webUrl);
 }
 
 const ListingCard = ({ item }) => {
@@ -34,6 +53,7 @@ const ListingCard = ({ item }) => {
                         ripple={false}
                         fullWidth={false}
                         className="bg-accent text-sm font-normal text-black px-1 w-16 rounded-md shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+                        // onClick={() => handlePurchase(hardCodedValues)}
                     >
                         Buy
                     </Button>
