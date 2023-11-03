@@ -20,14 +20,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { formatDate, formatTime } from '@/lib/formatUtil';
 
-const createAccount = async () => {
-  // const res = await axios.get("/api/stripeTransaction",{
-  //     headers : {
-  //         "Content-Type" : "application/json",
-  //     },
-  // });
-  // const {message} = res.data
-  // console.log(message);
+const createAccount = async (action) => {
 
   const res = await axios.post("/api/stripeTransaction",{"jwt" : localStorage.getItem("jwt")},{
       headers : {
@@ -38,6 +31,8 @@ const createAccount = async () => {
   if(res.status === 201){
       const {stripeSignUp} = res.data
       window.location.assign(stripeSignUp);
+  }else if (res.status === 200) {
+      action();
   }
 }
 const MyTickets = () => {
@@ -339,7 +334,7 @@ const MyTickets = () => {
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
-          onClick={handleOpen}
+          onClick={() => {createAccount(handleOpen)}}
           >Resell</button>
           <Modal
             open={open}
