@@ -3,18 +3,29 @@ import SignUpForm from "@/components/pages/signup/SignUpForm";
 import Link from "next/link"
 import axios from "axios";
 import { signIn } from "next-auth/react";
+import { axiosNext } from "@/lib/utils";
 
-// removed async await kw
+const loginToNext = async (data) => {
+    await signIn("credentials",{
+        email : data.email,
+        password : data.password,
+        redirect : false,
+    });
+}
+
+const loginToSpring = async (data) => {
+    const res = await axios.post("http://localhost:8080/api/v1/auth/register", data)
+                localStorage.setItem("jwt", res.data.token);
+                console.log(res.data.message);
+                await axiosNext.post('api/auth/login', {
+                    "jwt": res.data.token
+                })
+            }
+
 const signup = async (data) => {
     try {
-        const res = await axios.post("http://localhost:8080/api/v1/auth/register", data)
-        localStorage.setItem("jwt", res.data.token);
-        console.log(res.data.message);
-        const resB = await signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-        });
+        loginToSpring(data);
+        loginToNext(data);
     } catch (error) {
         console.log(error);
     }

@@ -17,79 +17,79 @@ import jakarta.persistence.GenerationType;
 
 @Entity
 public class Transaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long transactionID;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long transactionID;
 
-    private Date date;
+  private Date date;
 
-    @JsonBackReference(value="transaction-ticket")
-    @ManyToOne
-    @JoinColumn(name="ticketID")
-    private Ticket ticket;
+  @JsonBackReference(value = "transaction-ticket")
+  @ManyToOne
+  @JoinColumn(name = "ticketID")
+  private Ticket ticket;
 
-    @JsonBackReference(value="user-buyer")
-    @ManyToOne
-    @JoinColumn(name = "buyerID")
-    private User buyer;
+  @JsonBackReference(value = "user-buyer")
+  @ManyToOne
+  @JoinColumn(name = "buyerID")
+  private User buyer;
 
-    @JsonBackReference(value="user-seller")
-    @ManyToOne
-    @JoinColumn(name = "sellerID")
-    private User seller;
+  @JsonBackReference(value = "user-seller")
+  @ManyToOne
+  @JoinColumn(name = "sellerID")
+  private User seller;
 
-    @JsonManagedReference(value="transaction-payment")
-    @OneToMany(mappedBy = "transaction")
-    private List<Payment> payments;
+  @JsonManagedReference(value = "transaction-payment")
+  @OneToMany(mappedBy = "transaction")
+  private List<Payment> payments;
 
-    @OneToOne(mappedBy = "transaction")
-    private TicketListing ticketListing;
+  @OneToOne(mappedBy = "transaction")
+  private TicketListing ticketListing;
 
-    public long getTransactionID() {
-      return transactionID;
-    }
+  public long getTransactionID() {
+    return transactionID;
+  }
 
-    public void setTransactionID(long transactionID) {
-      this.transactionID = transactionID;
-    }
+  public void setTransactionID(long transactionID) {
+    this.transactionID = transactionID;
+  }
 
-    public Date getDate() {
-      return date;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public void setDate(Date date) {
-      this.date = date;
-    }
+  public void setDate(Date date) {
+    this.date = date;
+  }
 
-    public Ticket getTicket() {
-      return ticket;
-    }
+  public Ticket getTicket() {
+    return ticket;
+  }
 
-    public void setTicket(Ticket ticket) {
-      this.ticket = ticket;
-    }
+  public void setTicket(Ticket ticket) {
+    this.ticket = ticket;
+  }
 
-    public User getBuyer() {
-      return buyer;
-    }
+  public User getBuyer() {
+    return buyer;
+  }
 
-    public void setBuyer(User buyer) {
-      this.buyer = buyer;
-    }
+  public void setBuyer(User buyer) {
+    this.buyer = buyer;
+  }
 
-    public User getSeller() {
-      return seller;
-    }
+  public User getSeller() {
+    return seller;
+  }
 
-    public void setSeller(User seller) {
-      this.seller = seller;
-    }
+  public void setSeller(User seller) {
+    this.seller = seller;
+  }
 
-    public List<Payment> getPayments() {
-      return payments;
-    }
+  public List<Payment> getPayments() {
+    return payments;
+  }
 
-    public void setPayments(List<Payment> payments) {
-      this.payments = payments;
-    }
+  public void setPayments(List<Payment> payments) {
+    this.payments = payments;
+  }
 }

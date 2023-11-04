@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -17,6 +17,8 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { signUpSchema } from "./signUpschema"
 import { Icons } from "@/components/ui/icons/icons"
 import { useRouter } from "next/navigation"
+import { axiosSpring } from "@/lib/utils"
+
 
 
 const SignUpForm = ({actionName, action}) => {
@@ -33,7 +35,6 @@ const SignUpForm = ({actionName, action}) => {
         },
         resolver : yupResolver(signUpSchema)
     })
-
     const {control ,formState: {errors} , handleSubmit, reset} = form;
 
     const onSubmit = async(data) => {
@@ -44,16 +45,6 @@ const SignUpForm = ({actionName, action}) => {
         setTimeout(() => {
             setIsLoading(false)
         }, 5000)
-
-
-        toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-secondary bg-black">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
     }
     return (
             <Form {...form}>
