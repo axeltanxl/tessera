@@ -37,7 +37,22 @@ public class TicketListing {
     @JoinColumn(name = "ticketID")
     private Ticket ticket;
 
+    @JsonBackReference(value="ticketListing-event")
+    @ManyToOne
+    @JoinColumn(name = "eventID")
+    private Event event;
+
     @OneToOne
     @JoinColumn(name = "transactionID")
     private Transaction transaction;
+
+    @JsonBackReference(value="run-ticketlisting")
+    @ManyToOne
+    @JoinColumn(name = "runID")
+    private Run run;
+
+    @JsonBackReference(value="ticketListing-marketplace")
+    @ManyToOne
+    @JoinColumn(name = "marketplaceID")
+    private Marketplace marketplace;
 }

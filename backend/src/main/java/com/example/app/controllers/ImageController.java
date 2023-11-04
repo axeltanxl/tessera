@@ -1,15 +1,12 @@
 package com.example.app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
-import java.io.IOException;
 
 @Controller
 public class ImageController {
@@ -20,11 +17,11 @@ public class ImageController {
     public String uploadImage(MultipartFile image, String id) {
         try {
             // Upload the file to Amazon S3
-            String filename = "programmes/displayImage/" + id + "/" + image.getOriginalFilename();
+            String filename = "events/displayImage/" + id + "/" + image.getOriginalFilename();
             PutObjectResponse response = s3Client.putObject(PutObjectRequest.builder()
                     .bucket("cs203-tessera")
                     .key(filename)
-                    .build(), RequestBody.empty());
+                    .build(), RequestBody.fromBytes(image.getBytes()));
             
             if (response != null && response.sdkHttpResponse().isSuccessful()) {
               return s3Client.utilities().getUrl(GetUrlRequest.builder()

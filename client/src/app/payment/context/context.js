@@ -7,6 +7,7 @@ export const FormProvider = ({children}) => {
     const title = {
         0: "Seat Selection",
         1: "Confirmation",
+        2: "Loading"
     };
     const [page, setPage] = useState(0);
     const [selectedZone, setSelectedZone] = useState();

@@ -1,6 +1,7 @@
 package com.example.app.models;
 
 import java.util.*;
+import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -21,16 +22,19 @@ public class CustOrder {
 
     private String ticketCategory;
     private int ticketQuantity;
+    private Date date;
+    private int price;
+    private String stripeOrderID;
 
     @JsonBackReference(value="user-order")
     @ManyToOne
     @JoinColumn(name = "userID")
     private User user;
 
-    @JsonBackReference(value="order-event")
+    @JsonBackReference(value="order-run")
     @ManyToOne
-    @JoinColumn(name = "eventID")
-    private Event event;
+    @JoinColumn(name = "runID")
+    private Run run;
     
     @JsonManagedReference(value="order-payment")
     @OneToMany(mappedBy = "order")
@@ -53,14 +57,6 @@ public class CustOrder {
 
     public void setTicketQuantity(int ticketQuantity) {
       this.ticketQuantity = ticketQuantity;
-    }
-
-    public Event getEvent() {
-      return event;
-    }
-
-    public void setEvent(Event event) {
-      this.event = event;
     }
 
     public List<Payment> getPayments() {
@@ -100,8 +96,39 @@ public class CustOrder {
         return user;
     }
 
+    public int getPrice() {
+      return price;
+    }
+
+    public void setPrice(int price) {
+      this.price = price;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
-    
+
+    public Date getDate() {
+      return date;
+    }
+
+    public void setDate(Date date) {
+      this.date = date;
+    }
+
+    public Run getRun() {
+      return run;
+    }
+
+    public void setRun(Run run) {
+      this.run = run;
+    }
+
+    public String getStripeOrderID() {
+      return stripeOrderID;
+    }
+
+    public void setStripeOrderID(String stripeOrderID) {
+      this.stripeOrderID = stripeOrderID;
+    }
 }
