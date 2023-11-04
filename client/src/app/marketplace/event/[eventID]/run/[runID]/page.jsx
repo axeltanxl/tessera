@@ -97,7 +97,7 @@ function MarketplaceListing() {
                 });
                 if (res.ok) {
                     const openMarketplaces = await res.json();
-                    console.log("filter:", openMarketplaces.find((item) => item.run.runID === runID));
+                    // console.log("filter:", openMarketplaces.find((item) => item.run.runID === runID));
                     setMarketplace(openMarketplaces.find((item) => item.run.runID === runID));
                 } else {
                     console.error("API request failed");
@@ -160,7 +160,7 @@ function MarketplaceListing() {
     const [timerMinutes, setTimerMinutes] = useState('00');
     const [timerSeconds, setTimerSeconds] = useState('00');
     // console.log("marketplace closing date:", marketplace.closingDate);
-    const closingDate = marketplace.closingDate !== undefined ? marketplace.closingDate : '1 January 2023';
+    const closingDate = marketplace?.closingDate !== undefined ? marketplace.closingDate : '1 January 2023';
     let interval = useRef();
     const startTimer = () => {
         const countdownDate = new Date(`${closingDate} 00:00:00`).getTime();
@@ -209,7 +209,7 @@ function MarketplaceListing() {
             <div className="bg-cover bg-center bg-[url('/gradient.png')]  h-[284px] flex items-center p-10">
                 <img src={displayImage === '' ? 'grey-temp.jpg' : displayImage} className='h-[230px]' />
                 <div className="items-start flex flex-col flex-1 p-16">
-                    <p className='text-2xl'>{eventName} on {formatDate(marketplace.run?.date)}, {formatTime(marketplace.run?.startTime)} to {formatTime(marketplace.run?.endTime)}</p>
+                    <p className='text-2xl'>{eventName} on {formatDate(marketplace?.run?.date)}, {formatTime(marketplace?.run?.startTime)} to {formatTime(marketplace?.run?.endTime)}</p>
                     <p className='mb-2'>Ticket marketplace closing in</p>
                     <div className='grid grid-cols-7 grid-rows-1 gap-x-1 gap-y-1'>
                         <p className='text-center'>Days</p>
