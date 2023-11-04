@@ -97,7 +97,7 @@ public class TicketListController {
         List<TicketListing> ticketListsByEventID = ticketListRepo.findAllByEventEventIDAndStatus(eventID, getStatus);
 
         if (ticketListsByEventID.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
 
         // Create a map to group TicketListings by listingID
