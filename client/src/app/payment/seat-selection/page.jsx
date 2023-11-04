@@ -28,7 +28,7 @@ const TicketPurchase = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/runs`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/runs`, {
                     method: 'GET',
                     headers,
                 });
@@ -47,7 +47,7 @@ const TicketPurchase = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}`, {
                     method: 'GET',
                     headers,
                 });
@@ -142,22 +142,11 @@ const TicketPurchase = () => {
                 </AccordionItem>
             </Accordion>
 
-<<<<<<< HEAD
-            
-            <button disabled= {!{selectedPrice}} style={{width:"10%", borderRadius:"5px", marginLeft:"45%", marginTop:"1rem",
-            backgroundColor:"#2e6ad7", color:"white", marginBottom:"3rem"}}
-            >
-                <Link href="/payment/confirmation">
-                Proceed
-                </Link>
-            </button>
-=======
 
             <button disabled={!{ selectedPrice }} onClick={handleNext} style={{
                 width: "10%", borderRadius: "5px", marginLeft: "45%", marginTop: "1rem",
                 backgroundColor: "#2e6ad7", color: "white", marginBottom: "3rem"
             }}>Proceed</button>
->>>>>>> 53bef5879f8834994a0ebbb8e9ad80587b754110
 
             <style jsx>{`
                 .table {

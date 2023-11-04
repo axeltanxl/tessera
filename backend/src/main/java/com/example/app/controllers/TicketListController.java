@@ -176,7 +176,7 @@ public class TicketListController {
         }
     }
 
-    //Update listing with price.
+    // Update listing with price.
     @PutMapping("ticketListings/{listingID}")
     public ResponseEntity<String> updateTicketListing(Authentication authentication, 
         @PathVariable("listingID") Long listingID, @RequestBody TicketListing requestedTicketListing) {

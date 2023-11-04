@@ -112,3 +112,67 @@ public class TicketController {
         return ResponseEntity.ok(ticketDTO);
     }
 }
+
+    @GetMapping("users/{userID}/listedTickets")
+    public ResponseEntity<List<TicketDTO>> getListedTicketsByUser(@PathVariable("userID") Long userID) {
+        try {
+            // Get the currently authenticated user from the security context
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User authenticatedUser = (User) authentication.getPrincipal();
+
+            Optional<User> getUser = userRepo.findById(userID);
+            if (!getUser.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            // Check if the currently authenticated user matches the user being updated
+            if (!(authenticatedUser.getUserID() == getUser.get().getUserID())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
+            //find all associated ticketListings with logged in user.   
+            List<TicketListing> listOfTicketListings = ticketListRepo.findAllByUserUserID(userID);
+
+            List<TicketDTO> listOfTickets = new ArrayList<>();
+            for (TicketListing eachTicketListing : listOfTicketListings) {
+                Ticket eachTicket = eachTicketListing.getTicket();
+                TicketDTO ticketDTO = new TicketDTO();
+
+                ticketDTO.setTicketID(eachTicket.getTicketID());
+                ticketDTO.setSeat(eachTicket.getSeat());
+                ticketDTO.setEvent(eachTicketListing.getEvent());
+                ticketDTO.setRun(eachTicketListing.getRun());
+                ticketDTO.setTicketList(eachTicketListing);
+
+                listOfTickets.add(ticketDTO);
+            }
+
+            return ResponseEntity.ok(listOfTickets);
+
+        } catch (Exception ex) {
+            System.out.println("Error getting listed tickets: " + ex.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping ("tickets/{ticketID}/seat")
+    public Seat getSeatByTicketID (@PathVariable long ticketID){
+        Optional <Ticket> ticket = ticketRepo.findById(ticketID);
+        Seat seats = ticket.get().getSeat();
+        return seats;
+    }
+
+    @GetMapping("tickets/{ticketID}/events/runs") 
+    public ResponseEntity<TicketDTO> getEventsAndRunsByTicketID(@PathVariable long ticketID) {
+
+        TicketListing oneTicketListing = ticketListRepo.findByTicketTicketID(ticketID);
+        Ticket getTicket = ticketRepo.getReferenceById(ticketID);
+
+        TicketDTO ticketDTO = new TicketDTO();
+        ticketDTO.setEvent(oneTicketListing.getEvent());
+        ticketDTO.setRun(oneTicketListing.getRun());
+        ticketDTO.setSeat(getTicket.getSeat());
+        // ticket.setSeat(oneTicketListing);
+
+        return ResponseEntity.ok(ticketDTO);
+    }
+}
