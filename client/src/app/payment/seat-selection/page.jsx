@@ -25,10 +25,12 @@ const TicketPurchase = () => {
 
     const [table, setTable] = useState();
     const [check, setCheck] = useState(false);
+    const { title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant } = usePaymentFormContext();
 
 
 
-    useEffect(() => { 
+    useEffect(() => {
+
         async function fetchRuns() {
             try {
                 const headers = {
@@ -67,39 +69,49 @@ const TicketPurchase = () => {
                 } else {
                     console.error("API request failed.");
                 }
+
             } catch (e) {
                 console.error(e);
             }
-        }
+        };
 
-        async function fetchEvent(){
-            try {
-                const headers = {
-                    Authorization: `Bearer ${token}`,
+        async function getCheck(){
+
+            try{
+                const seatReqBody = {
+                    category: selectedCat,
+                    section: selectedZone,
+                    quantity: selectedQuant,
+                }
+                const seatReqOptions = {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": 'application/json',
+                    },
+                    body: JSON.stringify(seatReqBody),
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
-                    method: 'GET',
-                    headers,
-                });
-                if (res.ok) {
-                    const result = await res.json();
-                    setEvent(result);
-                    setTable(result.pricePerCategory);
-                    console.log("event2: " + (result.pricePerCategory))
-                    
+                
+                const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${runID}/availableSeats`, seatReqOptions);
+    
+                if (seatRes.ok) {
+                    const seatjson = await seatRes.json();
+                    setCheck(seatjson);
+                    console.log("seatjson: ", seatjson);
                 } else {
                     console.error("API request failed.");
                 }
-            } catch (e) {
+            }catch(e){
                 console.error(e);
             }
+            
         }
+
 
         fetchRuns();
         fetchEvent();
+        getCheck();
     }, []);
-
-    async function getCheck ()
 
     console.log("event:", event)
     console.log("table: " + table)
@@ -110,13 +122,13 @@ const TicketPurchase = () => {
     const endTime = run?.endTime ?? null;
 
 
-    const { title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant } = usePaymentFormContext();
+    
 
     const total = { selectedQuant } * { selectedPrice };
 
     const handleNext = () => setPage(prev => prev + 1)
 
-    console.log({ selectedCat }, { selectedPrice }, { selectedQuant }, { selectedZone }, table)
+    console.log({ selectedCat }, { selectedPrice }, { selectedQuant }, { selectedZone }, table, check)
 
 
 
@@ -164,7 +176,7 @@ const TicketPurchase = () => {
                             </div>
                             <div className="table-row">
                                 <div className="table-cell">Standard</div>
-                                <div className="table-cell">${selectedPrice}</div>
+                                <div className="table-cell">${selectedPrice/100}</div>
                                 <div className="table-cell">
                                     <div>
                                         <select id="dropdown" value={selectedQuant} onChange={(e) => { setSelectedQuant(e.target.value) }} >
@@ -177,7 +189,7 @@ const TicketPurchase = () => {
                                     </div>
                                 </div>
                                 {
-                                    isNaN({ total }) ? (<div className="table-cell">Your total bill is:<br></br>${selectedQuant * selectedPrice}</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
+                                    isNaN({ total }) ? (<div className="table-cell">Your total bill is:<br></br>${selectedQuant * selectedPrice / 100 }</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
                                 }
                             </div>
                         </div>
@@ -188,7 +200,7 @@ const TicketPurchase = () => {
             
 
 
-            <button disabled={!{ selectedPrice }} onClick={handleNext} style={{
+            <button disabled={!{ selectedQuant }} onClick={handleNext} style={{
                 width: "10%", borderRadius: "5px", marginLeft: "45%", marginTop: "1rem",
                 backgroundColor: "#2e6ad7", color: "white", marginBottom: "3rem"
             }}>Proceed</button>

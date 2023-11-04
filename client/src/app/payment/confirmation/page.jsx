@@ -33,6 +33,7 @@ const Confirmation = () => {
     const [venue, setVenue] = useState();
 
     const[seats, setSeats] = useState();
+    const [seatids, setSeatids] = useState();
 
     const token = localStorage.getItem('jwt');
 
@@ -90,7 +91,7 @@ const Confirmation = () => {
                 if (runRes.ok) {
                     const runData = await runRes.json();
                     setRun(runData);
-                    console.log("2: ", runData)
+
                 } else {
                     console.error("API request failed.");
                 }
@@ -121,12 +122,14 @@ const Confirmation = () => {
                 const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${temprunid}/seatAllocation`, seatReqOptions);
 
                 if (seatRes.ok) {
-                    const seatData = await seatRes.data;
                     const seatjson = await seatRes.json();
                     setSeats(seatjson);
-                    // console.log("seatres:" , seatRes);
                     console.log("seatjson: ", seatjson)
-                    console.log("seats: " + seatData)
+                    const items = [];
+                    for (let i = 0; i < seatjson.length; i++){
+                        items.push(seatjson[i].seatID)
+                    }
+                    setSeatids(items);
 
                 } else {
                     console.error("API request failed.");
@@ -148,7 +151,7 @@ const Confirmation = () => {
         "quantity" : parseInt(selectedQuant, 10), 
         "category" : selectedCat,
         "paymentMethod" : "card",
-        "seatIDs" : [4,5,6],
+        "seatIDs" : seatids,
     };
     
     const handlePrev = () => setPage(prev => prev - 1)
@@ -201,61 +204,14 @@ const Confirmation = () => {
     const handleDeliveryMethodChange = (event) => {
         setSelectedDeliveryMethod(event.target.value);
     };
-
-
-    const getTicketsCheckout = [
-        {   
-            ticketID: 1,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 22,
-            category:selectedCat,
-            section: selectedZone,
-            price: 300
-        },
-        {
-            ticketID: 2,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 23,
-            category: "A",
-            section: "PA1",
-            price: 300
-        },
-        {
-            ticketID: 3,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 24,
-            category: "A",
-            section: "PA1",
-            price: 300
-        },
-        {
-            ticketID: 4,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 25,
-            category: "A",
-            section: "PA1",
-            price: 300
-        }
-    ]
     
     const [rerender, setRerender] = useState(true);
-    const [checkoutTickets, setCheckoutTickets] = useState(getTicketsCheckout);
+    const [checkoutTickets, setCheckoutTickets] = useState(seats);
+    //getTicketsCheckout
     
-    const handleRemoveCheckoutTicket = (ticketID) => {
-        console.log("to remove:", ticketID)
-        const newList = checkoutTickets.filter((item) => item.ticketID != ticketID);
+    const handleRemoveCheckoutTicket = (seatID) => {
+        console.log("to remove:", seatID)
+        const newList = checkoutTickets.filter((item) => item.seatID != seatID);
         console.log("new list:", newList);
         setCheckoutTickets(newList);
         setRerender(true);
@@ -268,6 +224,7 @@ const Confirmation = () => {
     console.log("RET: SECTION: " + selectedZone);
     console.log("RET: QUANTITY: " + selectedQuant + " CAT: " + selectedCat + " RUNID: " + runid);
     console.log("SEAT: " + seats);
+    console.log("seatids: ", seatids);
 
   
     return (
@@ -335,7 +292,7 @@ const Confirmation = () => {
                             </div>
                             <div className="table-cell2">${selectedPrice}</div>
                             <div className="table-cell2">
-                                <button onClick={() => handleRemoveCheckoutTicket(item.ticketID)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
+                                <button onClick={() => handleRemoveCheckoutTicket(item.seatID)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
                             </div>
                         </div>
                     ))}
