@@ -1,5 +1,6 @@
-// "use client"
+"use client"
 import React from 'react'
+import axios from "axios"
 import {
     Button,
 } from "@material-tailwind/react";
@@ -12,11 +13,6 @@ function formatDate(inputDate) {
     }
 }
 
-const hardCodedValues = {
-    "jwt" : localStorage.getItem("jwt"),
-    "listingID" : 1,
-    "paymentMethod" : "card",
-};
 
 
 const handlePurchase = async (data) => {
@@ -31,6 +27,7 @@ const handlePurchase = async (data) => {
 }
 
 const ListingCard = ({ item }) => {
+    const {listingID} = item.ticketListing;
     const seatCategory = item.seat.category;
     const runDate = item.run.date;
     const seatSection = item.seat.section;
@@ -53,7 +50,13 @@ const ListingCard = ({ item }) => {
                         ripple={false}
                         fullWidth={false}
                         className="bg-accent text-sm font-normal text-black px-1 w-16 rounded-md shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
-                        // onClick={() => handlePurchase(hardCodedValues)}
+                        onClick={() => handlePurchase(
+                            {
+                                "jwt" : localStorage.getItem("jwt"),
+                                "listingID" : listingID,
+                                "paymentMethod" : "card"
+                            }
+                        )}
                     >
                         Buy
                     </Button>
