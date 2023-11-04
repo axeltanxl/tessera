@@ -290,7 +290,7 @@ const Confirmation = () => {
                             <div className="table-cell2">
                                 Category {selectedCat}, Section {selectedZone}
                             </div>
-                            <div className="table-cell2">${selectedPrice}</div>
+                            <div className="table-cell2">${selectedPrice/100}</div>
                             <div className="table-cell2">
                                 <button onClick={() => handleRemoveCheckoutTicket(item.seatID)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
                             </div>
