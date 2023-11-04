@@ -14,7 +14,7 @@ import com.example.app.exceptions.DuplicateUsernameException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -61,6 +61,11 @@ public class AuthController {
                 .build();
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResp);
+        } catch (Exception ex) {
+            AuthenticationResponse err = AuthenticationResponse.builder().message(ex.getMessage())
+                .build();
+
+            return ResponseEntity.internalServerError().body(err);
         }
         
 
