@@ -26,16 +26,18 @@ const Confirmation = () => {
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
     const handleNext = () => setPage(prev => prev + 1);
 
+    const [user, setUser] = useState();
     const [runid, setRunid] = useState();
     const [event, setEvent] = useState();
     const [run, setRun] = useState();
     const [venue, setVenue] = useState();
 
-    const[seats, setSeats] = ([])
+    const[seats, setSeats] = useState();
 
     const token = localStorage.getItem('jwt');
 
     useEffect(() => {
+
         async function fetchTickets(){
             try {
 
@@ -52,6 +54,20 @@ const Confirmation = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
+
+                const userRes = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
+                
+                if (userRes.status === 200) {
+                    setUser(userRes.data);
+                } else {
+                   throw new Error('Failed to fetch data');
+                }
+
+                
                 const eventRes = await fetch(`http://localhost:8080/api/v1/events/${eventid}`, {
                     method: 'GET',
                     headers,
@@ -88,6 +104,33 @@ const Confirmation = () => {
 
                 console.log("EVENT: " + event);
                 console.log("RUN: " + run);
+
+                const seatReqBody = {
+                    category: selectedCat,
+                    section: selectedZone,
+                    quantity: selectedQuant,
+                }
+                const seatReqOptions = {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": 'application/json',
+                    },
+                    body: JSON.stringify(seatReqBody),
+                };
+                const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${temprunid}/seatAllocation`, seatReqOptions);
+
+                if (seatRes.ok) {
+                    const seatData = await seatRes.data;
+                    const seatjson = await seatRes.json();
+                    setSeats(seatjson);
+                    // console.log("seatres:" , seatRes);
+                    console.log("seatjson: ", seatjson)
+                    console.log("seats: " + seatData)
+
+                } else {
+                    console.error("API request failed.");
+                }
 
             } catch (error) {
                 console.error("An error occurred:", error);
@@ -223,6 +266,7 @@ const Confirmation = () => {
 
     console.log("RET: SECTION: " + selectedZone);
     console.log("RET: QUANTITY: " + selectedQuant + " CAT: " + selectedCat + " RUNID: " + runid);
+    console.log("SEAT: " + seats);
 
   
     return (
@@ -244,22 +288,24 @@ const Confirmation = () => {
                     <div className="table">
                         <div className="table-row">
                             <div className="table-cell">Full Name</div>
-                            <div className="table-cell">{infoName}</div>
+                            <div className="table-cell">{user?user.name:""} </div>
                             <div className="table-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                             <div className="table-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                         </div>
                         <div className="table-row">
                             <div className="table-cell">Email</div>
-                            <div className="table-cell">{infoEmail}</div>
+                            <div className="table-cell">{user?user.email:""}</div>
                         </div>
                         <div className="table-row">
                             <div className="table-cell">Contact Number</div>
-                            <div className="table-cell">{infoHp}</div>
+                            <div className="table-cell">{user?user.contactNum :""}</div>
                         </div>
 
                     </div>
                 </div>
             </div>
+
+            {seats?
 
             <div style={{ marginTop: "1rem", width: "80%", marginLeft: "10%", marginTop: "5%" }}>
                 <div style={{ fontSize: "12px" }}>Order Details</div>
@@ -274,7 +320,7 @@ const Confirmation = () => {
                         <div className="table-cell2">Price</div>
                         <div className="table-cell2">Action</div>
                     </div>
-                    {getTicketsCheckout.map((item, index) => (
+                    {seats.map((item, index) => (
                         <div className="table-row2" key={index}>
                             <div className="table-cell2">
                                 <div style={{ textAlign: "center", fontWeight: "bold" }}>{event? event.name : ""}</div>
@@ -294,6 +340,11 @@ const Confirmation = () => {
                     ))}
                 </div>
             </div>
+            :
+            <div style={{textAlign:"center", fontSize:"12px", paddingTop:"3rem"}}>
+                No seats of selected quantity and section available
+            </div>
+            }
 
             <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
@@ -360,6 +411,10 @@ const Confirmation = () => {
                     .table-header2 {
                         font-weight: bold;
                         background-color: #f0f0f0;
+                    }
+                    
+                    .fresh {
+
                     }
                 `}
             </style>

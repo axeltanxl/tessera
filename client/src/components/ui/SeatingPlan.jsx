@@ -2,15 +2,11 @@ import React from "react";
 
 const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,setSelectedPrice,selectedPrice, table}) => {
 
-    const parsedTable = JSON.parse(table);
-    const keyValuePairs = parsedTable.slice(1, -1).split(',');
-    const jsonObject = {};
-    for (const pair of keyValuePairs) {
-        const [key, value] = pair.split(':');
-        const cleanKey = key.trim().replace(/"/g, '');
-        const cleanValue = parseInt(value.trim());
-        jsonObject[cleanKey] = cleanValue;
-    }
+    var jsonString = table.replace(/'/g, '"');
+// Parse the JSON string into a JavaScript object
+    var jsonObject = JSON.parse(jsonString);
+
+console.log(jsonObject);
 
     const seatingPlan = [
 
@@ -140,12 +136,11 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
                                     style={zone.style} onClick={ () => {selectZone(zone.zoneId); selectCat(cat.category); selectPrice(cat.category);} }>
                                       {zone.zoneId}
                                 </div>
-                                
                             ))}
                         </div>
                     </div>
                 ))}
-                `
+                '
 
             </div>
 

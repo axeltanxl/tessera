@@ -24,6 +24,7 @@ const TicketPurchase = () => {
     const [event, setEvent] = useState(null);
 
     const [table, setTable] = useState();
+    const [check, setCheck] = useState(false);
 
 
 
@@ -60,8 +61,8 @@ const TicketPurchase = () => {
                 if (res.ok) {
                     const result = await res.json();
                     setEvent(result);
-                    setTable(JSON.stringify(result.pricePerCategory));
-                    console.log("event2: " + JSON.stringify(result.pricePerCategory))
+                    setTable(result.pricePerCategory);
+                    console.log("event2: " + (result.pricePerCategory))
                     
                 } else {
                     console.error("API request failed.");
@@ -70,9 +71,35 @@ const TicketPurchase = () => {
                 console.error(e);
             }
         }
+
+        async function fetchEvent(){
+            try {
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
+                    method: 'GET',
+                    headers,
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    setEvent(result);
+                    setTable(result.pricePerCategory);
+                    console.log("event2: " + (result.pricePerCategory))
+                    
+                } else {
+                    console.error("API request failed.");
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         fetchRuns();
         fetchEvent();
     }, []);
+
+    async function getCheck ()
 
     console.log("event:", event)
     console.log("table: " + table)
