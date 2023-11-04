@@ -147,7 +147,7 @@ const Confirmation = () => {
     const stripeValues = {
         "runID": runid,
         "jwt" : localStorage.getItem("jwt"),
-        "seatIDs": [],
+        // "seatIDs": [],
         "quantity" : parseInt(selectedQuant, 10), 
         "category" : selectedCat,
         "paymentMethod" : "card",

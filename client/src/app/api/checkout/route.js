@@ -17,7 +17,11 @@ export async function POST(request){
     const prisma = new PrismaClient();
     const { jwt, runID, quantity, category, paymentMethod, seatIDs} = await request.json();
     console.log("jwt:", jwt);
+    console.log(seatIDs)
 
+    if(!seatIDs || seatIDs.length !== quantity){
+        return NextResponse.json({ message: 'insufficient seats' }, { status: 400 });
+    }
     // get run 
     const { eventID, startTime, date } = await prisma.run.findUnique({
         where : {
