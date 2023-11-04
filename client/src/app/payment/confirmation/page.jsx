@@ -133,6 +133,13 @@ const Confirmation = () => {
 
                 } else {
                     console.error("API request failed.");
+                    const userConfirmed = window.confirm("There are no tickets available for this option. Please choose another section.");
+                    if (userConfirmed) {
+                    // Reload the page if the user confirmed
+                        window.location.reload();
+                    }else{
+                        window.location.reload();
+                    }   
                 }
 
             } catch (error) {
@@ -226,18 +233,18 @@ const Confirmation = () => {
     console.log("SEAT: " + seats);
     console.log("seatids: ", seatids);
 
-  
     return (
         
         <div>
-            <div style={{
+            {seats? <div style={{
                 width: "80%", marginLeft: "10%", marginRight: "10%", textAlign: "center", marginTop: "1rem",
                 padding: "1rem", backgroundColor: "#fbe7e6", border: "1px solid #c2292e", borderRadius: "5px", color: "#c2292e", fontSize: "14px"
             }}>
                 Please fill out details below and submit your order within 00:00
-            </div>
+            </div>:""
+            }
 
-            <div style={{ fontSize: "12px" }}>
+            {seats? <div style={{ fontSize: "12px" }}>
                 <div style={{ marginLeft: "10%", marginTop: "2rem" }}>Contact Details</div>
                 <div style={{
                     width: "80%", marginLeft: "10%", marginRight: "10%", marginTop: "",
@@ -261,7 +268,7 @@ const Confirmation = () => {
 
                     </div>
                 </div>
-            </div>
+            </div>:""}
 
             {seats?
 
@@ -304,7 +311,7 @@ const Confirmation = () => {
             </div>
             }
 
-            <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
+            {seats? <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order
                 </button>
@@ -313,7 +320,7 @@ const Confirmation = () => {
                 onClick={() => {handleConfirmation(stripeValues);handleNext();}}>
                     Confirm
                 </button>
-            </div>
+            </div>:""}
 
             <style jsx>
                 {`
