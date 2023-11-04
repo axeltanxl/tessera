@@ -24,8 +24,14 @@ public class TransactionController {
 
     private TransactionsDTO createTransactionsDTO(Transaction transaction) {
         TransactionsDTO transacDTO = new TransactionsDTO();
-        transacDTO.setBuyerID(transaction.getBuyer().getUserID());
-        transacDTO.setSellerID(transaction.getSeller().getUserID());
+
+        if (transaction.getBuyer() != null) {
+            transacDTO.setBuyerID(transaction.getBuyer().getUserID());
+        }
+
+        if (transaction.getSeller() != null) {
+            transacDTO.setSellerID(transaction.getSeller().getUserID());
+        }
         transacDTO.setDate(transaction.getDate());
         transacDTO.setTicketID(transaction.getTicket().getTicketID());
         transacDTO.setTransactionID(transaction.getTransactionID());
