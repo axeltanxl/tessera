@@ -20,7 +20,7 @@ import Cookies from 'js-cookie';
 import { TbCircleLetterJ } from 'react-icons/tb';
 import { formatDate, formatTime } from '@/lib/formatUtil';
 
-const createAccount = async () => {
+const createAccount = async (action) => {
     const res = await axios.post("/api/stripeTransaction",{"jwt" : localStorage.getItem("jwt")},{
         headers : {
             "Content-Type" : "application/json",
@@ -30,6 +30,8 @@ const createAccount = async () => {
     if(res.status === 201){
         const {stripeSignUp} = res.data
         window.location.assign(stripeSignUp);
+    }else{
+        action();
     }
 }
 
@@ -253,7 +255,7 @@ const MyTickets = () => {
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
-          onClick={createAccount}
+          onClick={() => createAccount()}
           >Resell</button>
         </div>
       </div>

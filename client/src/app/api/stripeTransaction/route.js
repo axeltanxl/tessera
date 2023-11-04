@@ -11,7 +11,7 @@ export async function GET (request){
     const prisma = new PrismaClient();
     try{
         const session = await getServerSession(authOptions);
-        // console.log(session?.user?.email);
+        console.log(session?.user?.email);
         const email = session?.user?.email;
         const { userID, stripeUserID } = await prisma.user.findFirst({
             where : {
