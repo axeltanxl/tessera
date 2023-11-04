@@ -43,6 +43,10 @@ public class SecurityConfig {
                 .requestMatchers(mvcMatcherBuilder.pattern("/auth/**")).permitAll()
                 .requestMatchers(mvcMatcherBuilder.pattern("/events/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
+                // .requestMatchers(new AntPathRequestMatcher("/actuator/metrics/http.server.requests")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/ws/**")).permitAll()
+
+
                 .anyRequest().authenticated()
             )
             // stateless authentication 

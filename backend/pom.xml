@@ -104,11 +104,12 @@
     		<artifactId>modelmapper</artifactId>
     		<version>2.4.4</version>
 		</dependency>
-		<!-- Added 02112023 -->
+		<!-- Added 04112023 -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+  			<groupId>org.springframework.boot</groupId>            
+  			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
