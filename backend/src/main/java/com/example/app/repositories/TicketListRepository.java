@@ -8,6 +8,7 @@ import com.example.app.models.TicketListing;
 
 public interface TicketListRepository extends JpaRepository<TicketListing, Long>{
     List<TicketListing> findAllByEventEventID(Long eventID);
+    List<TicketListing> findAllByEventEventIDAndStatus(Long eventID, String status);
     List<TicketListing> findAllByUserUserID(Long userID);
     List<TicketListing> findAllByTicketTicketIDAndUserUserID(Long ticketID, Long userID);
 
