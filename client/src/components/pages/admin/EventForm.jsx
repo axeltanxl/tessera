@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/use-toast"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { AdminDropDown } from "@/components/ui/AdminDropDown";
+import { DatePicker } from "@/components/ui/DatePicker";
 
 const EventForm = () => {
     const form = useForm({
@@ -84,7 +85,8 @@ const EventForm = () => {
                     </FormItem>
                 )}
             />
-
+            <FormLabel>First run date</FormLabel>
+            <DatePicker/>
         </Form>
     )
 }

@@ -19,7 +19,7 @@ export function AdminDropDown({name, dropdownItems, handleChange}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className={`rounded-full border-[#B4C1DB] h-8 hover:bg-[#F5F7FB] ${name === "Venue" ? "w-56":"w-36"}`}>{position}</Button>
+        <Button variant="outline" className={`rounded-sm h-8 hover:bg-[#F5F7FB] ${name === "Venue" ? "w-56":"w-36"}`}>{position}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-[#FDFBFF]">
         {/* <DropdownMenuLabel>Panel Position</DropdownMenuLabel> */}
