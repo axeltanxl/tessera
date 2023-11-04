@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.exceptions.DuplicateListingFoundException;
@@ -38,7 +37,7 @@ import com.example.app.repositories.TicketRepository;
 import com.example.app.services.TicketListService;
 
 @RestController
-@RequestMapping("/api/v1/")
+// @RequestMapping("/api/v1/")
 public class TicketListController {
 
     @Autowired
@@ -55,7 +54,7 @@ public class TicketListController {
     private TicketListService ticketListService;
 
     // For general public who wants to see each listing.
-    @GetMapping("ticketListings/{listingID}")
+    @GetMapping("/ticketListings/{listingID}")
     public ResponseEntity<Object> getListingByTicketListID(@PathVariable long listingID) {
 
         Optional<TicketListing> eachTicket = ticketListRepo.findById(listingID);
@@ -66,7 +65,7 @@ public class TicketListController {
     }
 
     // For the public who wants to see all the listings
-    @GetMapping("ticketListings")
+    @GetMapping("/ticketListings")
     public ResponseEntity<List<TicketListing>> getAllListings() {
         List<TicketListing> ticketLists = ticketListRepo.findAll();
 
@@ -74,7 +73,7 @@ public class TicketListController {
     }
 
     //Get all ticket listing with ticketID 
-    @GetMapping("ticketListings/tickets/{ticketID}")
+    @GetMapping("/ticketListings/tickets/{ticketID}")
     public ResponseEntity<List<TicketListing>> getListingByTicketID(@PathVariable long ticketID) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -90,7 +89,7 @@ public class TicketListController {
     }
 
     // For the public who wants to see all the listings for 1 event
-    @GetMapping("events/{eventID}/ticketListings")
+    @GetMapping("/events/{eventID}/ticketListings")
     public ResponseEntity<List<TicketListingWithSeat>> getAllListingsByEventID(@PathVariable long eventID) {
 
         String getStatus = "Listed";
@@ -141,7 +140,7 @@ public class TicketListController {
     }
 
     // to add ticketListings
-    @PostMapping("runs/{runID}/tickets/{ticketID}/ticketListings")
+    @PostMapping("/runs/{runID}/tickets/{ticketID}/ticketListings")
     public ResponseEntity<String> addTicketListings(Authentication authentication, 
         @PathVariable("runID") Long runID, @PathVariable("ticketID") Long ticketID, 
         @RequestBody TicketListing reqTicketListing) {
@@ -176,8 +175,8 @@ public class TicketListController {
         }
     }
 
-    // Update listing with price.
-    @PutMapping("ticketListings/{listingID}")
+    //Update listing with price.
+    @PutMapping("/ticketListings/{listingID}")
     public ResponseEntity<String> updateTicketListing(Authentication authentication, 
         @PathVariable("listingID") Long listingID, @RequestBody TicketListing requestedTicketListing) {
         
@@ -204,7 +203,7 @@ public class TicketListController {
         }
     }
 
-    @DeleteMapping(path = "ticketListings/{listingID}")
+    @DeleteMapping(path = "/ticketListings/{listingID}")
     public ResponseEntity<Object> deleteListing(Authentication authentication, 
         @PathVariable("listingID") Long listingID) {
         try {

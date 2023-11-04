@@ -38,7 +38,7 @@ import com.example.app.repositories.RunRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1")
+// @RequestMapping("/api/v1")
 public class EventController {
 
   @Autowired
@@ -74,7 +74,7 @@ public class EventController {
     return ResponseEntity.ok(getEvent);
   }
 
-  @GetMapping(path = "events/{eventID}/categories")
+  @GetMapping(path = "/events/{eventID}/categories")
   // public ResponseEntity<Object> getAllCATByEvent(@PathVariable("eventID") Long eventID){
   public ResponseEntity<List<String>> getAllCATByEvent(@PathVariable("eventID") Long eventID){
 
@@ -235,7 +235,7 @@ public class EventController {
     return ResponseEntity.ok(runs);
   }
 
-  @GetMapping(path = "events/{eventID}/venue") 
+  @GetMapping(path = "/events/{eventID}/venue") 
   public ResponseEntity<VenueDTO> getVenueByEvent(@PathVariable("eventID") Long id){ 
     Optional<Event> event = eventRepository.findById(id); 
     if (!event.isPresent()){ 
