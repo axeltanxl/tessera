@@ -20,6 +20,27 @@ import Cookies from 'js-cookie';
 import { TbCircleLetterJ } from 'react-icons/tb';
 import { formatDate, formatTime } from '@/lib/formatUtil';
 
+const createAccount = async () => {
+    // const res = await axios.get("/api/stripeTransaction",{
+    //     headers : {
+    //         "Content-Type" : "application/json",
+    //     },
+    // });
+    // const {message} = res.data
+    // console.log(message);
+
+    const res = await axios.post("/api/stripeTransaction",{"jwt" : localStorage.getItem("jwt")},{
+        headers : {
+            "Content-Type" : "application/json",
+        },
+    });
+    console.log("stripe onboard url",res.status)
+    if(res.status === 201){
+        const {stripeSignUp} = res.data
+        window.location.assign(stripeSignUp);
+    }
+}
+
 const MyTickets = () => {
 
   const [numTicketsSelected, setNumTicketsSelected] = useState(0);
@@ -107,18 +128,18 @@ const MyTickets = () => {
   useEffect(() => {
     const fetchDetails = async () => {
       const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
-
+        console.log("token",token);
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
+        console.log("response",response)
         if (response.status === 200) {
-          setDetails(response.data);
-
-          const userid = response.data.userID;
+            setDetails(response.data);
+            
+            const userid = response.data.userID;
           fetchOrders(userid);
           
         } else {
@@ -137,6 +158,7 @@ const MyTickets = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+
         if (response.status === 200) {
         
           setOrders(response.data);
@@ -238,7 +260,9 @@ const MyTickets = () => {
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Transfer</button>
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
-          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Resell</button>
+          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
+          onClick={createAccount}
+          >Resell</button>
         </div>
       </div>
     </section>

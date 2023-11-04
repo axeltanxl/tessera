@@ -148,6 +148,7 @@ const Confirmation = () => {
         "quantity" : parseInt(selectedQuant, 10), 
         "category" : selectedCat,
         "paymentMethod" : "card",
+        "seatIDs" : [4,5,6],
     };
     
     const handlePrev = () => setPage(prev => prev - 1)
