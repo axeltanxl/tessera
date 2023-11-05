@@ -1,4 +1,4 @@
-package com.example.app.configs;
+package com.example.app.exceptions;
 
 public class SeatNotFoundException extends RuntimeException {
     public SeatNotFoundException(String message) {

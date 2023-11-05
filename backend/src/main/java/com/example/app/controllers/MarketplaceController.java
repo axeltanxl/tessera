@@ -1,13 +1,11 @@
 package com.example.app.controllers;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.models.Event;
@@ -16,7 +14,7 @@ import com.example.app.models.Marketplace;
 import com.example.app.repositories.MarketplaceRepository;
 
 @RestController
-@RequestMapping("/api/v1")
+// @RequestMapping("/api/v1")
 public class MarketplaceController {
 
   @Autowired

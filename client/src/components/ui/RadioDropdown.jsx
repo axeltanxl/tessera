@@ -13,18 +13,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
  
-export function RadioDropdown({name, dropdownItems, handleChange}) {
-  const [position, setPosition] = React.useState("All events");
-  console.log("position:", position);
+export function RadioDropdown({name, dropdownItems, handleChange, defaultValue}) {
+  const [position, setPosition] = React.useState(defaultValue);
   
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="rounded-full border-[#B4C1DB] h-8 hover:bg-[#F5F7FB] w-28">{position}</Button>
+        <Button variant="outline" className="rounded-full border-[#B4C1DB] h-8 hover:bg-[#F5F7FB] w-32">{name}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-[#FDFBFF]">
         {/* <DropdownMenuLabel>Panel Position</DropdownMenuLabel> */}
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator /> */}
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
             {dropdownItems.map((item, index) => {
                 return(

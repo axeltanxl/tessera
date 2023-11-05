@@ -14,7 +14,7 @@ const loginToNext = async (data) => {
 }
 
 const loginToSpring = async (data) => {
-    const res = await axios.post("http://localhost:8080/api/v1/auth/register", data)
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/auth/register`, data)
                 localStorage.setItem("jwt", res.data.token);
                 console.log(res.data.message);
                 await axiosNext.post('api/auth/login', {

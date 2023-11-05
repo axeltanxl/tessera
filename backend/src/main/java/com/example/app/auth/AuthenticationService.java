@@ -5,8 +5,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.app.configs.DuplicateUsernameException;
 import com.example.app.configs.Middleware;
+import com.example.app.exceptions.DuplicateUsernameException;
 import com.example.app.models.Role;
 import com.example.app.models.User;
 import com.example.app.repositories.UserRepository;
