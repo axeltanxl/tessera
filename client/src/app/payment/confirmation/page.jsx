@@ -216,22 +216,59 @@ const Confirmation = () => {
     const [checkoutTickets, setCheckoutTickets] = useState(seats);
     //getTicketsCheckout
     
-    const handleRemoveCheckoutTicket = (seatID) => {
-        console.log("to remove:", seatID)
-        const newList = checkoutTickets.filter((item) => item.seatID != seatID);
-        console.log("new list:", newList);
-        setCheckoutTickets(newList);
-        setRerender(true);
+    const handleRemoveCheckoutTicket = async (seat) => {
+        const seatID = seat.seatID;
+        console.log("seatid special: ", seatID);
+        const size = seats.length;
+        console.log("length special: ", size);
+        try{
+
+            const seatRemBody = [{
+                seatID: seatID,
+            }]
+            const seatRemOptions = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json',
+                },
+            };
+            const seatRemRes = await axios.post(`http://localhost:8080/api/v1/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
+
+            if (seatRemRes.status === 200) {
+                if (size === 1) window.location.reload();
+                console.log("to remove:", seatID)
+                const newSeatArr = [];
+                const newSeatIdArr = [];
+                for (const item of seats) {
+                    if (item.seatID !== seatID) {
+                        newSeatArr.push(item);
+                        newSeatIdArr.push(item.seatID)
+
+                    }
+                }
+                setSeats(newSeatArr);
+                setSeatids(newSeatIdArr)
+                setSelectedQuant(selectedQuant - 1);
+                setRerender(true);
+
+            } else {
+                console.error("not working")
+            }
+        } catch (err){
+            console.error('Error: ', err);
+        }
+        
     }
+
     useEffect(() => {
         //api call
+
 
     }, [rerender]);
 
     console.log("RET: SECTION: " + selectedZone);
     console.log("RET: QUANTITY: " + selectedQuant + " CAT: " + selectedCat + " RUNID: " + runid);
     console.log("SEAT: " + seats);
-    console.log("seatids: ", seatids);
 
     return (
         
@@ -299,7 +336,7 @@ const Confirmation = () => {
                             </div>
                             <div className="table-cell2">${selectedPrice/100}</div>
                             <div className="table-cell2">
-                                <button onClick={() => handleRemoveCheckoutTicket(item.seatID)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
+                                <button onClick={() => handleRemoveCheckoutTicket(item)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
                             </div>
                         </div>
                     ))}
