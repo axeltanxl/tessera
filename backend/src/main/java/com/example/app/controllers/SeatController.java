@@ -128,8 +128,10 @@ public class SeatController {
       try {
         reqBody.forEach(seat -> {
           RunSeat runSeat = runSeatRepo.findBySeatSeatIDAndRunRunID(seat.getSeatID(), runID);
-          runSeat.setIsAvailable(1);
-          runSeatRepo.save(runSeat);
+          if (runSeat.getIsAvailable() == 2){
+            runSeat.setIsAvailable(1);
+            runSeatRepo.save(runSeat);
+          }
         });
         return ResponseEntity.ok().body("Seats status reset");
       } catch (Exception e) {
