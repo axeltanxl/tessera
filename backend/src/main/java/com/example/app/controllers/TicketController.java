@@ -7,7 +7,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.models.CustOrder;
@@ -24,7 +23,6 @@ import com.example.app.repositories.UserRepository;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/v1")
 public class TicketController {
 
     @Autowired
@@ -36,7 +34,7 @@ public class TicketController {
     @Autowired
     private UserRepository userRepo;
 
-    @GetMapping("users/{userID}/tickets")
+    @GetMapping("/users/{userID}/tickets")
     public List<Ticket> getTicketByUserID(@PathVariable long userID) {
         List<CustOrder> orders = orderRepo.findOrderByUserUserID(userID);
         List<Ticket> tickets = new ArrayList<>();
@@ -49,7 +47,7 @@ public class TicketController {
         return tickets;
     }
 
-    @GetMapping("users/{userID}/listedTickets")
+    @GetMapping("/users/{userID}/listedTickets")
     public ResponseEntity<List<TicketDTO>> getListedTicketsByUser(@PathVariable("userID") Long userID) {
         try {
             // Get the currently authenticated user from the security context
@@ -88,16 +86,16 @@ public class TicketController {
             System.out.println("Error getting listed tickets: " + ex.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-    }
+    } 
 
-    @GetMapping ("tickets/{ticketID}/seat")
+    @GetMapping ("/tickets/{ticketID}/seat")
     public Seat getSeatByTicketID (@PathVariable long ticketID){
         Optional <Ticket> ticket = ticketRepo.findById(ticketID);
         Seat seats = ticket.get().getSeat();
         return seats;
     }
 
-    @GetMapping("tickets/{ticketID}/events/runs") 
+    @GetMapping("/tickets/{ticketID}/events/runs") 
     public ResponseEntity<TicketDTO> getEventsAndRunsByTicketID(@PathVariable long ticketID) {
 
         TicketListing oneTicketListing = ticketListRepo.findByTicketTicketID(ticketID);

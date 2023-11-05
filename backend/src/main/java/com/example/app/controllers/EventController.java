@@ -3,7 +3,6 @@ package com.example.app.controllers;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,7 +36,7 @@ import com.example.app.repositories.RunRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1")
+// @RequestMapping("/api/v1")
 public class EventController {
 
   @Autowired
@@ -74,7 +72,7 @@ public class EventController {
     return ResponseEntity.ok(getEvent);
   }
 
-  @GetMapping(path = "events/{eventID}/categories")
+  @GetMapping(path = "/events/{eventID}/categories")
   // public ResponseEntity<Object> getAllCATByEvent(@PathVariable("eventID") Long eventID){
   public ResponseEntity<List<String>> getAllCATByEvent(@PathVariable("eventID") Long eventID){
 
@@ -235,7 +233,7 @@ public class EventController {
     return ResponseEntity.ok(runs);
   }
 
-  @GetMapping(path = "events/{eventID}/venue") 
+  @GetMapping(path = "/events/{eventID}/venue") 
   public ResponseEntity<VenueDTO> getVenueByEvent(@PathVariable("eventID") Long id){ 
     Optional<Event> event = eventRepository.findById(id); 
     if (!event.isPresent()){ 

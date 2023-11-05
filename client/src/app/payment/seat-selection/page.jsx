@@ -36,7 +36,7 @@ const TicketPurchase = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/runs`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/runs`, {
                     method: 'GET',
                     headers,
                 });
@@ -56,7 +56,7 @@ const TicketPurchase = () => {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}`, {
                     method: 'GET',
                     headers,
                 });

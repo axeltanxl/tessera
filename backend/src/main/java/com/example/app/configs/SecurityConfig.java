@@ -16,6 +16,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import com.example.app.auth.AuthEntryPoint;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.Arrays;
@@ -39,16 +41,18 @@ public class SecurityConfig {
             .cors(withDefaults())
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/admin/**")).hasAuthority("ADMIN")
-                .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/auth/**")).permitAll()
-                .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/events/**")).permitAll()
+                .requestMatchers(mvcMatcherBuilder.pattern("/admin/**")).hasAuthority("ADMIN")
+                .requestMatchers(mvcMatcherBuilder.pattern("/auth/**")).permitAll()
+                .requestMatchers(mvcMatcherBuilder.pattern("/events/**")).permitAll()
+                .requestMatchers(mvcMatcherBuilder.pattern("/health")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
                 .anyRequest().authenticated()
             )
             // stateless authentication 
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling(handling -> handling.authenticationEntryPoint(new AuthEntryPoint()));
 
         return http.build();
     }
@@ -57,7 +61,7 @@ public class SecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-		configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);

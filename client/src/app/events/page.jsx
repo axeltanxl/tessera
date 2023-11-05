@@ -1,20 +1,11 @@
 'use client';
 import Head from 'next/head';
-import { EventCard } from '@/components/ui/EventCard';
+import { EventCard } from '@/components/ui/cards/EventCard';
 import { RadioDropdown } from '@/components/ui/RadioDropdown';
 import { DateRangePicker } from '@/components/ui/DateRangePicker';
 import { useEffect, useState } from 'react';
 import { select } from '@material-tailwind/react';
 import { Shower } from '@mui/icons-material';
-
-
-export const getEvents = async () => {
-    const res = await fetch("http://localhost:8080/api/v1/events");
-    console.log(res);
-    const events = await res.json()
-
-    return events
-}
 
 const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
@@ -26,26 +17,26 @@ useEffect(() => {
     async function fetchData() {
         try {
 
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-            const res = await fetch("http://localhost:8080/api/v1/events", {
-                method: 'GET',
-                headers,
-            });
-            if (res.ok) {
-                const eventsData = await res.json();
-                setEvents(eventsData);
-            } else {
-                console.error("API request failed.");
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`, {
+                    method: 'GET',
+                    headers,
+                });
+                if (res.ok) {
+                    const eventsData = await res.json();
+                    setEvents(eventsData);
+                } else {
+                    console.error("API request failed.");
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
             }
-        } catch (error) {
-            console.error("An error occurred:", error);
         }
-    }
 
-    fetchData();
-}, []);
+        fetchData();
+    }, []);
 
     const [category, setCategory] = useState("All events");
     const [startDateSelected, setStartDateSelected] = useState(null);
@@ -80,11 +71,21 @@ useEffect(() => {
             showEvents = events.filter((item) => item.category === category);
         }
 
-        if (startDateSelected && endDateSelected) {
+        if (startDateSelected || endDateSelected) {
             showEvents = showEvents.filter((item) => {
                 const startDate = new Date(item.startDate);
                 const endDate = new Date(item.endDate);
-                return startDate <= endDateSelected && endDate >= startDateSelected;
+                const selectedStartDate = new Date(startDateSelected);
+                let selectedEndDate = new Date(endDateSelected);
+                if (isNaN(selectedEndDate)) { //if selectedEndDate is invalid / not selected properly
+                    selectedEndDate = selectedStartDate; 
+                }
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(0, 0, 0, 0);
+                selectedStartDate.setHours(0, 0, 0, 0);
+                selectedEndDate.setHours(0, 0, 0, 0);
+                
+                return startDate <= selectedEndDate && endDate >= selectedStartDate;
             })
         }
         setFilteredEvents(showEvents);
@@ -103,7 +104,7 @@ useEffect(() => {
                         <RadioDropdown name={"All events"} dropdownItems={allEventsDropdownOptions} />
                     </div> */}
                     <div className='mr-2 xs:mr-4'>
-                        <RadioDropdown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} />
+                        <RadioDropdown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} defaultValue={"All events"}/>
                     </div>
                     <div className='mr-2 xs:mr-4'>
                         <DateRangePicker onDateChange={handleDateChange} />

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+// import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.app.models.RunSeatDTO;
@@ -21,7 +21,7 @@ import com.example.app.models.SeatAlgoDTO;
 import com.example.app.repositories.RunSeatRepository;
 
 @RestController
-@RequestMapping("/api/v1")
+// @RequestMapping("/api/v1")
 public class SeatController {
     
     @Autowired
@@ -91,7 +91,7 @@ public class SeatController {
       } catch (Exception e){
         System.out.println("Error while checking for available seats: " + e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while adding the event");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while checking for available seats");
       }
     }
 
@@ -121,5 +121,23 @@ public class SeatController {
       });
 
       return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/runs/{runID}/resetSeatStatus")
+    public ResponseEntity<Object> getSeats (@RequestBody List<Seat> reqBody, @PathVariable("runID") Long runID){
+      try {
+        reqBody.forEach(seat -> {
+          RunSeat runSeat = runSeatRepo.findBySeatSeatIDAndRunRunID(seat.getSeatID(), runID);
+          if (runSeat.getIsAvailable() == 2){
+            runSeat.setIsAvailable(1);
+            runSeatRepo.save(runSeat);
+          }
+        });
+        return ResponseEntity.ok().body("Seats status reset");
+      } catch (Exception e) {
+        System.out.println("Error while resetting seat status: " + e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while resetting seat status");
+      }
     }
 }

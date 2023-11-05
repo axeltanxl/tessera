@@ -25,7 +25,7 @@ import com.example.app.models.UserDTO;
 import com.example.app.repositories.UserRepository;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
