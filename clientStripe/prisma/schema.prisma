@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model custorder {
+  orderID        BigInt    @id @default(autoincrement())
+  date           DateTime? @db.Date
+  price          Int
+  stripeOrderID  String?   @db.VarChar(255)
+  ticketCategory String?   @db.VarChar(255)
+  ticketQuantity Int
+  runID          BigInt?
+  userID         BigInt?
+
+  @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
+  @@index([runID], map: "FKif7961o0kcvcdtu367120seoi")
+}
+
+model event {
+  eventID          BigInt    @id @default(autoincrement())
+  category         String?   @db.VarChar(255)
+  description      String?   @db.Text
+  displayImage     String?   @db.VarChar(255)
+  duration         Int
+  endDate          DateTime? @db.Date
+  maxSlots         Int
+  name             String    @db.VarChar(255)
+  pricePerCategory String?   @db.VarChar(255)
+  startDate        DateTime? @db.Date
+  venueID          BigInt?
+
+  @@index([venueID], map: "FKfkg0rjjt6ca7ck5mojidks7r7")
+}
+
+model marketplace {
+  marketplaceID BigInt    @id
+  closingDate   DateTime? @db.Date
+  openingDate   DateTime? @db.Date
+  status        String?   @db.VarChar(255)
+}
+
+model payment {
+  paymentID       BigInt  @id @default(autoincrement())
+  paymentMethod   String? @db.VarChar(255)
+  stripePaymentID String? @db.VarChar(255)
+  orderID         BigInt?
+  transactionID   BigInt?
+
+  @@index([orderID], map: "FKb33lw05499g9grnvp6ufpjjwg")
+  @@index([transactionID], map: "FKmuaxt57agmtuiovehhauvchmq")
+}
+
+model run {
+  runID         BigInt    @id
+  date          DateTime? @db.Date
+  endTime       String?   @db.VarChar(255)
+  startTime     String?   @db.VarChar(255)
+  eventID       BigInt?
+  marketplaceID BigInt?   @unique(map: "UK_mn6t8ii8gtxh4v7tpijo9tp1u")
+
+  @@index([eventID], map: "FKni6xubxc2bq4lmaxubip68iy4")
+}
+
+model seat {
+  seatID   BigInt  @id @default(autoincrement())
+  category String? @db.VarChar(255)
+  seatRow  String? @db.VarChar(255)
+  seatNo   Int
+  section  String? @db.VarChar(255)
+  venueID  BigInt?
+
+  @@index([venueID], map: "FKfj8lt431up6yqyeakinimp591")
+}
+
+model ticket {
+  ticketID   BigInt  @id @default(autoincrement())
+  uniqueCode String? @db.VarChar(255)
+  orderID    BigInt?
+  seatID     BigInt?
+  userID     BigInt?
+
+  @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
+  @@index([orderID], map: "FKks8gd5eaa20qau296r9fgcc9n")
+  @@index([userID], map: "FKc16fvc0gd76qdgro0au29h8ab")
+}
+
+model ticketlisting {
+  listingID     BigInt    @id @default(autoincrement())
+  listingDate   DateTime? @db.DateTime(6)
+  price         Float
+  quantity      Int
+  status        String?   @db.VarChar(255)
+  eventID       BigInt?
+  marketplaceID BigInt?
+  runID         BigInt?
+  ticketID      BigInt?
+  transactionID BigInt?   @unique(map: "UK_4vy5x6o4q6m3y4rppqavccbn2")
+  userID        BigInt?
+
+  @@index([runID], map: "FK19h0ku2x5pr7s75w0s7sbon6g")
+  @@index([marketplaceID], map: "FK91beud6r09v7ry2gbxpw94jo6")
+  @@index([userID], map: "FKnflg4egmodkj1gmynr3s0fpkh")
+  @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
+  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
+}
+
+model transaction {
+  transactionID BigInt    @id @default(autoincrement())
+  date          DateTime? @db.DateTime(6)
+  buyerID       BigInt?
+  sellerID      BigInt?
+  ticketID      BigInt?
+
+  @@index([sellerID], map: "FK2nlddhdsd1n20718nunwqyp69")
+  @@index([buyerID], map: "FK7j96qpqvnqa1wplxx8g64t1x4")
+  @@index([ticketID], map: "FKdcjhq8tyb6mwfawkmomggmlag")
+}
+
+model user {
+  userID       BigInt     @id @default(autoincrement())
+  address      String?    @db.VarChar(255)
+  contactNum   String?    @db.VarChar(255)
+  email        String     @db.VarChar(255)
+  name         String?    @db.VarChar(255)
+  password     String     @db.VarChar(255)
+  role         user_role?
+  stripeUserID String?    @db.VarChar(255)
+}
+
+model venue {
+  venueID  BigInt  @id @default(autoincrement())
+  capacity Int
+  name     String? @db.VarChar(255)
+}
+
+enum user_role {
+  ADMIN
+  USER
+}
