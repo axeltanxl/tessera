@@ -66,6 +66,15 @@ const LoginForm = () => {
             await loginToSpring(data);
             await loginToNext(data);
             router.push('/');
+            // const res = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/auth/login`, data)
+            // localStorage.setItem("jwt", res.data.token);
+            // console.log(res.data.message);
+            // const resB = await signIn("credentials",{
+            //     email : data.email,
+            //     password : data.password,
+            //     redirect : false,
+            // });
+            // console.log(resB)
             toast({ 
                 title: "Welcome back!",
             })

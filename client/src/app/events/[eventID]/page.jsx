@@ -12,10 +12,17 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { formatDate, formatTime } from '@/lib/formatUtil';
+import { usePathname } from 'next/navigation';
+import axios from "axios";
+
 
 function EventDetails() {
+    const url = usePathname();
+    const parts = url.split("/");
+    const eventID = parseInt(parts[2]);
     const [event, setEvent] = useState([]);
-    const { eventID, category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
+    const { category, description, duration, endDate, maxSlots, name, pricePerCategory, startDate, venueID } = event;
+    console.log("eventID:", eventID);
     console.log("pricePerCategory:", pricePerCategory)
     const token = localStorage.getItem('jwt');
     console.log("token:", token);
@@ -24,7 +31,7 @@ function EventDetails() {
     const [selectedRun, setSelectedRun] = useState('');
     const [runMap, setRunMap] = useState([]);
     const soldOut = false;
-
+    const [venue, setVenue] = useState();
     function buttonAvailability() {
         if (!soldOut && !runTime) {
             return "Choose date";
@@ -36,12 +43,12 @@ function EventDetails() {
 
     async function fetchRuns(eventID) {
         try {
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-            const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/runs`, {
+            // const headers = {
+            //     Authorization: `Bearer ${token}`,
+            // };
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/runs`, {
                 method: 'GET',
-                headers,
+                // headers,
             });
             if (res.ok) {
                 const result = await res.json();
@@ -58,25 +65,17 @@ function EventDetails() {
     useEffect(() => {
         async function fetchData() {
             try {
-
-                const search = window.location.href;
-                const split = search.split("/");
-                const eid = parseInt(split[split.length - 1])
-
-                console.log(search);
-                console.log("eid: ", eid);
-
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eid}`, {
+                // const headers = {
+                //     Authorization: `Bearer ${token}`,
+                // };
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}`, {
                     method: 'GET',
-                    headers,
+                    // headers,
                 });
                 if (res.ok) {
                     const eventData = await res.json();
                     setEvent(eventData);
-                    fetchRuns(eid);
+                    fetchRuns(eventID);
                 } else {
                     console.error("API request failed.");
                 }
@@ -85,17 +84,35 @@ function EventDetails() {
             }
         }
 
+        async function fetchVenueDetails() {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/venue`, {
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
+                });
+                if (response.status === 200) {
+                    setVenue(response.data.name);
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         fetchData();
+        fetchVenueDetails();
     }, [])
 
     useEffect(() => {
         // use the selectedRun state to determine if runTime should be true or false
         if (selectedRun !== '') {
-          setRunTime(true);
+            setRunTime(true);
         } else {
-          setRunTime(false);
+            setRunTime(false);
         }
-      }, [selectedRun]); 
+    }, [selectedRun]);
 
 
     return (
@@ -115,14 +132,14 @@ function EventDetails() {
             <div className='w-full h-full bg-primary py-8'>
                 <p className="text-xl mb-4 mt-2 font-semibold">Event Details</p>
                 <Separator />
-                <div className='flex justify-between'>
-                    <div aria-label='details' className='flex flex-col justify-center items-start py-8 gap-4'>
-                        <div className="mb-4 font-semibold inline">{name}</div>
+                <div className='flex flex-col justify-between'>
+                    <div aria-label='details' className='flex flex-col justify-center items-start py-8'>
+                        <div className="mb-4 font-semibold inline text-xl">{name}</div>
 
 
-                        <p className='text-md font-semibold'>Event from {formatDate(startDate)} to {formatDate(endDate)} </p>
+                        <p className='text-md font-semibold'>From {formatDate(startDate)} to {formatDate(endDate)} </p>
                         <div>
-                            <select id="dropdown" value={selectedRun} onChange={(e) => { setSelectedRun(e.target.value);}} className="border border-[#B4C1DB] rounded outline-none">
+                            <select id="dropdown" value={selectedRun} onChange={(e) => { setSelectedRun(e.target.value); }} className="border border-[#B4C1DB] rounded outline-none">
                                 <option value="" >Select</option>
                                 {runMap.map((item, index) => (
                                     <option value={item.runID} key={item.runID}>
@@ -139,12 +156,16 @@ function EventDetails() {
                             </Link>)}
 
                         </div>
-                        <p className='text-md font-semibold'>Venue {venueID} </p>
+                        <p className='text-md'><span className='font-semibold'>Venue</span> {venue} </p>
                         {/* <p className='text-md'>Ticket sale start: {ticketSaleDate} </p> */}
                         <div className='flex items-center gap-2'>
                             <p className='text-md font-semibold'>Category </p>
                             <Badge variant="outline" className="text-primary bg-secondary">{category}</Badge>
                         </div>
+
+                    </div>
+                    <div>
+                        <div className='text-md font-semibold'>About the event</div>
                         <p className='text-md'>{description}</p>
                     </div>
                 </div>

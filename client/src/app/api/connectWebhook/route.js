@@ -250,7 +250,7 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
         },
         data : {
             transactionID : transactionID,
-            status : "sold",
+            status : "Sold",
         }
     })
 

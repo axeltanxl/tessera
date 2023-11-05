@@ -21,7 +21,7 @@ const Profile = async () => {
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
-                <SideNav activeTab={3} />
+                <SideNav activeTab={4} />
             </div>
             <div className="flex flex-1 flex-col space-y-6">
                 <div className="flex flex-row justify-between">

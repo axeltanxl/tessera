@@ -46,8 +46,11 @@ export async function POST(request){
 
     for(let order of orderIDs){
         const {orderID, stripeOrderID} = order;
-
+        if(!stripeOrderID){
+            continue;
+        }
         const session = await stripe.checkout.sessions.retrieve(stripeOrderID);
+
         if (session.payment_status === "unpaid"){
             const runSeats = JSON.parse(session.metadata.runSeats);
             for(let seat of runSeats){
