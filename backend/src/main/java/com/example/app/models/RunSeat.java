@@ -1,7 +1,5 @@
 package com.example.app.models;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;

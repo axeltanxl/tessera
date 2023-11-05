@@ -16,6 +16,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import com.example.app.auth.AuthEntryPoint;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.Arrays;
@@ -49,7 +51,8 @@ public class SecurityConfig {
             // stateless authentication 
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling(handling -> handling.authenticationEntryPoint(new AuthEntryPoint()));
 
         return http.build();
     }
