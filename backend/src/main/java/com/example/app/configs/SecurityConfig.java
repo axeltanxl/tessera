@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers(mvcMatcherBuilder.pattern("/admin/**")).hasAuthority("ADMIN")
                 .requestMatchers(mvcMatcherBuilder.pattern("/auth/**")).permitAll()
                 .requestMatchers(mvcMatcherBuilder.pattern("/events/**")).permitAll()
+                .requestMatchers(mvcMatcherBuilder.pattern("/health")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
                 .anyRequest().authenticated()
             )
