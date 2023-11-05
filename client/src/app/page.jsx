@@ -34,7 +34,7 @@ function Home() {
         // if (status === "authenticated" && session && session.user) {
             async function fetchData() {
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}events`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`, {
                         method: 'GET',
                     });
                     if (res.status === 200) {
