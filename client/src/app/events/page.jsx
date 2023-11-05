@@ -12,7 +12,7 @@ const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musical
 function Events() {
     const [events, setEvents] = useState([]);
 console.log("get events:", events);
-const token = localStorage.getItem('jwt');
+// const token = localStorage.getItem('jwt');
 useEffect(() => {
     async function fetchData() {
         try {

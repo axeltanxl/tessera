@@ -38,6 +38,7 @@ export async function GET(request, {params : {ticketID}}){
         uniqueCode : uniqueCode,
     }
     const qrString = CryptoJS.AES.encrypt(JSON.stringify(data), process.env.QR_SECRET_KEY2).toString();
+    // console.log("qrstring")
     // console.log(qrString)
     const decrypted1 = JSON.parse(CryptoJS.AES.decrypt(qrString, process.env.QR_SECRET_KEY2).toString(CryptoJS.enc.Utf8));
     // console.log("decrypted",decrypted1);
@@ -45,3 +46,4 @@ export async function GET(request, {params : {ticketID}}){
     // console.log("decrypted2",decrypted2);
     return NextResponse.json({qrString : qrString}, { status: 201});
 }
+

@@ -4,13 +4,12 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import { QRcode } from "@/components/canvas/QRcode"
-import { getQRurl } from './actions';
+import {  getQRurl } from './actions';
 
 const Ticket = async ({params}) => {
     // console.log(params)
     const ticketID = params.ticketID
     const qrUrl = await getQRurl(ticketID);
-
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>

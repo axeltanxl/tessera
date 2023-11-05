@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import Link from 'next/link'
 
 const SuccessPage = () => {
     const {reward: confettiRewardLeft } = useReward('confettiRewardLeft', 'confetti', {
@@ -45,13 +46,16 @@ const SuccessPage = () => {
                 <p className="text-4xl">Purchase Successful</p>
             </div>
             <div className="flex gap-4">
+            <Link href="/account/tickets">
                 <Button variant="outlined"  className="text-primary bg-secondary ">
                     View My Tickets
                 </Button>
-
+            </Link>
+            {/* <Link href="/">
                 <Button variant="outlined"  className="text-primary bg-secondary ">
                     View Purchase History
                 </Button>
+            </Link> */}
             </div>
         </div>
 
