@@ -86,7 +86,7 @@ public class TicketController {
             System.out.println("Error getting listed tickets: " + ex.getMessage());
             return ResponseEntity.internalServerError().build();
         }
-    }
+    } 
 
     @GetMapping ("/tickets/{ticketID}/seat")
     public Seat getSeatByTicketID (@PathVariable long ticketID){
