@@ -5,11 +5,30 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
     const seatingPlan = [
 
         { category: "A", zones: [
-            {zoneId: "1", style: { top:"100%",left:"22%" }},
-            {zoneId: "2", style: { top:"100%",right:"22%" }},
-            {zoneId: "3", style: { top:"100%",left:"22%" }},
-            {zoneId: "4", style: { top:"100%",left:"34%" }},
-            {zoneId: "5", style: { top:"100%",right:"34%" }},
+            {zoneId: "1", style: { top:"37.6%",left:"53%" }},
+            {zoneId: "2", style: { top:"40.7%",left:"47.5%" }},
+            {zoneId: "3", style: { top:"43.6%",left:"69%" }},
+            {zoneId: "4", style: { top:"46.7%",left:"63.7%" }},
+            {zoneId: "5", style: { top:"46.4%",left:"47.5%" }},
+            {zoneId: "6", style: { top:"47.5%",left:"50.5%" }},
+        ] },
+        { category: "B", zones: [
+            {zoneId: "7", style: { top:"43.4%",left:"42.5%" }},
+            {zoneId: "8", style: { top:"49.5%",left:"58.5%" }},
+            {zoneId: "9", style: { top:"49.5%",left:"42%" }},
+            {zoneId: "10", style: { top:"52%",left:"46%" }},
+        ] },
+        { category: "C", zones: [
+            {zoneId: "11", style: { top:"34.5%",left:"47%" }},
+            {zoneId: "12", style: { top:"36.5%",left:"43%" }},
+            {zoneId: "13", style: { top:"38.5%",left:"39%" }},
+            {zoneId: "14", style: { top:"45.3%",left:"76%" }},
+            {zoneId: "15", style: { top:"47.3%",left:"73%" }},
+            {zoneId: "16", style: { top:"49.3%",left:"70%" }},
+        ] },
+        { category: "D", zones: [
+            {zoneId: "17", style: { top:"45.5%",left:"33%" }},
+            {zoneId: "18", style: { top:"55.5%",left:"57%" }},
         ] },
     ];
 
@@ -143,26 +162,23 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
             </div>
             </div>
 
+            <div>
+            {seatingPlan.map((cat, catIndex) => (
+                    <div>
+                        <div>
+                            {cat.zones.map((zone, zoneIndex) => (
+                                <div
+                                    key={zoneIndex} className={`zone ${selectedZone === zone.zoneId ? "selected" : ""}`}
+                                    style={zone.style} onClick={ () => {selectZone(zone.zoneId); selectCat(cat.category); selectPrice(cat.category);} }>
+                                      {zone.zoneId}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             <style jsx>{`
-                .stage {
-                    position: relative;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                    padding: 2%;
-                    display: flex;
-                    height: 5%;
-                    width: 34%;
-                    left: 33%;
-                    margin-top: 1%;
-                    border: 1px solid #000000;
-                    border-radius: 2px;
-                }
-                .seating-plan {
-                    position: relative;
-                    margin: 20px;
-                    padding: 20px;
-                }
                 .row {
                     display: flex;
                     flex-wrap: wrap;
@@ -175,11 +191,13 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
                     justify-content: center;
                     cursor: pointer;
                     border: 1px solid #b2b2b2;
-                    font-size: 12px;
-                    border-radius: 2px;
+                    height: 16px;
+                    width:16px;
+                    font-size: 14px;
+                    border-radius: 50%;
                 }
                 .selected {
-                    background-color: green !important;
+                    background-color: gold !important;
                 }
                 @media (max-width: 768px) {
                     .seating-plan {
