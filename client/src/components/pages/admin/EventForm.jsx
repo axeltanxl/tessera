@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { AdminDropDown } from "@/components/ui/AdminDropDown";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { Separator } from "@/components/ui/separator"
+
 
 const EventForm = () => {
     const form = useForm({
@@ -69,10 +71,12 @@ const EventForm = () => {
                 <AdminDropDown name={"Category"} dropdownItems={categoryDropdownOptions} handleChange={handleCategoryChange} />
             </div>
             <FormLabel>Event Venue</FormLabel>
-            <div>
+            <div className="mb-4">
                 <AdminDropDown name={"Venue"} dropdownItems={venueDropdownOptions} handleChange={handleVenueChange} />
             </div>
-            <FormField
+            <p>Add an event run</p>
+            <Separator />
+            {/* <FormField
                 control={control}
                 name="runs"
                 render={({ field }) => (
@@ -86,7 +90,7 @@ const EventForm = () => {
                 )}
             />
             <FormLabel>First run date</FormLabel>
-            <DatePicker/>
+            <DatePicker/> */}
         </Form>
     )
 }
