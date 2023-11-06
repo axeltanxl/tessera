@@ -10,5 +10,5 @@ import com.example.app.models.RunSeat;
 @Repository
 public interface RunSeatRepository extends JpaRepository<RunSeat, Long>{
     List<RunSeat> findAllBySeatSeatID(Long SeatID);
-    // RunSeat findBySeatSeatID(Long SeatID);
+    RunSeat findBySeatSeatIDAndRunRunID(Long seatID, Long runID);
 }
