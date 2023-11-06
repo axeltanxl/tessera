@@ -11,7 +11,7 @@ const allEventsDropdownOptions = ["All events", "New Onsales"];
 const categoryDropdownOptions = ["All events", "Concerts", "Festivals", "Musicals", "Sports", "Theatre"]
 function Events() {
     const [events, setEvents] = useState([]);
-console.log("get events:", events);
+// console.log("get events:", events);
 // const token = localStorage.getItem('jwt');
 useEffect(() => {
     async function fetchData() {
@@ -66,7 +66,7 @@ useEffect(() => {
 
     useEffect(() => {
         let showEvents = events;
-        console.log("showEvents:", showEvents);
+        // console.log("showEvents:", showEvents);
         if (category !== "All events") {
             showEvents = events.filter((item) => item.category === category);
         }
@@ -89,7 +89,7 @@ useEffect(() => {
             })
         }
         setFilteredEvents(showEvents);
-        console.log("filteredEvents:", filteredEvents);
+        // console.log("filteredEvents:", filteredEvents);
     }, [category, startDateSelected, endDateSelected, events]);
 
     return (<section className="bg-primary h-full">

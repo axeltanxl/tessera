@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
 import { formatDate, formatTime } from "@/lib/formatUtil";
+import axios from "axios";
+
 
 const TicketPurchase = () => {
     const url = usePathname();
@@ -22,6 +24,7 @@ const TicketPurchase = () => {
     const token = localStorage.getItem('jwt');
     const [runMap, setRunMap] = useState([]);
     const [event, setEvent] = useState(null);
+    const [venue, setVenue] = useState();
 
     const [table, setTable] = useState();
     const [check, setCheck] = useState(false);
@@ -107,10 +110,26 @@ const TicketPurchase = () => {
             
         }
 
-
+        async function fetchVenueDetails() {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/venue`, {
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
+                });
+                if (response.status === 200) {
+                    setVenue(response.data.name);
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
         fetchRuns();
         fetchEvent();
         getCheck();
+        fetchVenueDetails();
     }, []);
 
     console.log("event:", event)
@@ -136,7 +155,7 @@ const TicketPurchase = () => {
     return (
         <div>
             <div style={{ fontWeight: "bold", textAlign: "center" }}>{event?.name ?? null}</div>
-            <div style={{ textAlign: "center", border: "1px solid grey", borderRadius: "10px", padding: "1%", marginTop: "2rem", marginBottom: "2rem", width: "80%", marginLeft: "10%" }}>{formatDate(date)} {formatTime(startTime)}-{formatTime(endTime)}, venue</div>
+            <div style={{ textAlign: "center", border: "1px solid grey", borderRadius: "10px", padding: "1%", marginTop: "2rem", marginBottom: "2rem", width: "80%", marginLeft: "10%" }}>{formatDate(date)} {formatTime(startTime)}-{formatTime(endTime)}, {venue}</div>
             <Accordion type="multiple" style={{ width: "80%", marginLeft: "10%", marginRight: "10%" }}>
                 <AccordionItem value="select-zone">
                     <AccordionTrigger

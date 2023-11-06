@@ -282,10 +282,29 @@ const Confirmation = () => {
 
     }, [rerender]);
 
-    console.log("RET: SECTION: " + selectedZone);
-    console.log("RET: QUANTITY: " + selectedQuant + " CAT: " + selectedCat + " RUNID: " + runid);
-    console.log("SEAT: " + seats);
+    // console.log("RET: SECTION: " + selectedZone);
+    // console.log("RET: QUANTITY: " + selectedQuant + " CAT: " + selectedCat + " RUNID: " + runid);
+    // console.log("SEAT: " + seats);
 
+    const initialTime = 600; // 10 minutes in seconds
+  const [time, setTime] = useState(initialTime);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (time > 0) {
+        setTime(time - 1);
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [time]);
+
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
     return (
         
         <div>
@@ -293,7 +312,7 @@ const Confirmation = () => {
                 width: "80%", marginLeft: "10%", marginRight: "10%", textAlign: "center", marginTop: "1rem",
                 padding: "1rem", backgroundColor: "#fbe7e6", border: "1px solid #c2292e", borderRadius: "5px", color: "#c2292e", fontSize: "14px"
             }}>
-                Please fill out details below and submit your order within 00:00
+                Please fill out details below and submit your order within  {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
             </div>:""
             }
 
@@ -369,7 +388,7 @@ const Confirmation = () => {
                     Cancel Order
                 </button>
 
-                <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}
+                <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#FAD749" }}
                 onClick={() => {handleConfirmation(stripeValues); handleNext();}}>
                     Confirm
                 </button>
