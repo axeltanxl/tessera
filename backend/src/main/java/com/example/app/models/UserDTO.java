@@ -19,4 +19,5 @@ public class UserDTO {
     private String email;
     private int contactNum;
     private String address;
+    private String stripeUserID;
 }

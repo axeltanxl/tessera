@@ -14,7 +14,7 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import TicketCard from '@/components/ui/cards/TicketCard';
 import Link from 'next/link';
-import Checkbox from '@/components/ui/Checkbox';
+import Checkbox from '@/components/ui/checkbox';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import Cookies from 'js-cookie';

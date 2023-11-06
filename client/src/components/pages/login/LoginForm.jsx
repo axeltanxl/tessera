@@ -38,13 +38,7 @@ const loginToSpring = async (data) => {
                 console.log(res.data.message);
 
     //here is to store spring jwt to into cookies
-    // await fetch("http://localhost:3000/api/auth/login", {
-    //         method: 'post',
-    //         headers: {'Content-Type':'application/json'},
-    //         body: JSON.stringify({
-    //             "jwt": res.data.token
-    //         })
-    //     })
+    
     await axiosNext.post('api/auth/login', {
         "jwt": res.data.token
     })
@@ -52,7 +46,7 @@ const loginToSpring = async (data) => {
 
 const LoginForm = () => {
     const { data :session} = useSession()
-    console.log("session:", session);
+    // console.log("session:", session);
 
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
