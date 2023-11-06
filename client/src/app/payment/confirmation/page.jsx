@@ -260,6 +260,13 @@ const Confirmation = () => {
         
     }
 
+    const manageExit = async () => {
+        for (const seat of seats){
+            await handleRemoveCheckoutTicket(seat);
+        }
+        window.location.reload();
+    }
+
     useEffect(() => {
         //api call
 
@@ -348,7 +355,7 @@ const Confirmation = () => {
             </div>
             }
 
-            {seats? <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
+            {seats? <div onClick={() => manageExit()} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order
                 </button>

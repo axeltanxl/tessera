@@ -1,6 +1,12 @@
 import React from "react";
 
-const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,setSelectedPrice,selectedPrice}) => {
+
+
+const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,setSelectedPrice,selectedPrice,table}) => {
+
+    var jsonString = table.replace(/'/g, '"');
+// Parse the JSON string into a JavaScript object
+    var jsonObject = JSON.parse(jsonString);
 
     const seatingPlan = [
 
@@ -63,8 +69,8 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
     return (
         <div>
             <div style={{textAlign:"center", fontSize:"20px"}}>Seat Selection</div>
-            <div class="container">
-            <div class="pic">
+            <div >
+            <div >
 
         {/* purple */}
                 <svg style={{top:"33%",left:"41.6%",position:"absolute", display:"flex", alignItems: "center", justifyContent: "center"}} xmlns="http://www.w3.org/2000/svg" width="184" height="64" viewBox="0 0 184 64" fill="none">
@@ -146,8 +152,8 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
                     <path d="M95.4245 42.6043L68.7907 34.7451L141.932 1.59434L292.196 44.8646L218.877 78.4496L157.407 61.0994L156.874 60.9487L156.37 61.1815L116.37 79.6815L112.84 81.3144L116.553 82.4747L144.812 91.3058L102.889 110.445L8.18453 82.2247L49.6399 62.6359L54.6053 63.9901L55.1331 64.1341L55.6297 63.9044L95.6297 45.4044L99.2459 43.7319L95.4245 42.6043Z" stroke="black" stroke-width="3"/>
                 </g>
                 <defs>
-                    <filter id="filter0_d_1265_4744" x="0" y="0" width="300.5" height="120.043" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                    <filter id="filter0_d_1265_4744" x="0" y="0" width="300.5" height="120.043" filterUnits="userSpaceOnUse">
+                    <feFlood floodOpacity="0" result="BackgroundImageFix"/>
                     <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
                     <feOffset dy="4"/>
                     <feGaussianBlur stdDeviation="2"/>
@@ -164,7 +170,7 @@ const SeatingPlan = ({setSelectedZone,selectedZone,setSelectedCat,selectedCat,se
 
             <div>
             {seatingPlan.map((cat, catIndex) => (
-                    <div>
+                    <div key={catIndex}>
                         <div>
                             {cat.zones.map((zone, zoneIndex) => (
                                 <div
