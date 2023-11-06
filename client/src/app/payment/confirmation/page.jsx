@@ -289,14 +289,6 @@ const Confirmation = () => {
     return (
         
         <div>
-            {seats? <div style={{
-                width: "80%", marginLeft: "10%", marginRight: "10%", textAlign: "center", marginTop: "1rem",
-                padding: "1rem", backgroundColor: "#fbe7e6", border: "1px solid #c2292e", borderRadius: "5px", color: "#c2292e", fontSize: "14px"
-            }}>
-                Please fill out details below and submit your order within 00:00
-            </div>:""
-            }
-
             {seats? <div style={{ fontSize: "12px" }}>
                 <div style={{ marginLeft: "10%", marginTop: "2rem" }}>Contact Details</div>
                 <div style={{
