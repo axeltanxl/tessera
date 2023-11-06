@@ -20,7 +20,6 @@ const Ticket = ({ params }) => {
     useEffect(() => {
         const fetchTicket = async () => {
             const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
-
             try {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
                     headers: {
@@ -31,7 +30,6 @@ const Ticket = ({ params }) => {
                 if (response.status === 200) {
 
                     const details = response.data;
-                    console.log("detils:", details);
                     setTicketDetails(details);
                 } else {
                     throw new Error('Failed to fetch data');
@@ -54,7 +52,6 @@ const Ticket = ({ params }) => {
 
         fetchTicket();
         loadQRUrl();
-        console.log("qrurl:", qrUrl)
     },[ticketID])
 
     return (

@@ -19,20 +19,22 @@ import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { formatDate, formatTime } from '@/lib/formatUtil';
+import TicketCardWithTicketID from '@/components/ui/cards/TicketCardWithTicketID';
+import SelectedTicket from '@/components/ui/cards/SelectedTicket';
 
 const createAccount = async (action) => {
 
-  const res = await axios.post("/api/stripeTransaction",{"jwt" : localStorage.getItem("jwt")},{
-      headers : {
-          "Content-Type" : "application/json",
-      },
+  const res = await axios.post("/api/stripeTransaction", { "jwt": localStorage.getItem("jwt") }, {
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-  console.log("stripe onboard url",res.status)
-  if(res.status === 201){
-      const {stripeSignUp} = res.data
-      window.location.assign(stripeSignUp);
-  }else if (res.status === 200) {
-      action();
+  console.log("stripe onboard url", res.status)
+  if (res.status === 201) {
+    const { stripeSignUp } = res.data
+    window.location.assign(stripeSignUp);
+  } else if (res.status === 200) {
+    action();
   }
 }
 const MyTickets = () => {
@@ -89,7 +91,6 @@ const MyTickets = () => {
         },
       });
       if (response.status === 200) {
-        console.log("venue: ", response.data);
         return response.data;
       } else {
         throw new Error('Failed to fetch data');
@@ -122,25 +123,25 @@ const MyTickets = () => {
   const addTicketListing = async (quantity, runID, ticketID) => {
     const token = Cookies.get("jwt_spring");
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/runs/${runID}/tickets/${ticketID}/ticketListings`, 
-      {
-        quantity: 1,
-        runID: runID,
-        ticketID: ticketID,
-        listingDate: Date.now()
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/runs/${runID}/tickets/${ticketID}/ticketListings`,
+        {
+          quantity: 1,
+          runID: runID,
+          ticketID: ticketID,
+          listingDate: Date.now()
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
       if (response.status === 201) {
         return response.data;
 
-      } else if(response.status === 400){
-          alert("You have already listed this ticket on marketplace")
-      }else {
+      } else if (response.status === 400) {
+        alert("You have already listed this ticket on marketplace")
+      } else {
         throw new Error('Failed to create ticket listing');
       }
 
@@ -150,7 +151,7 @@ const MyTickets = () => {
       } else {
         console.error(err);
       }
-    } 
+    }
   }
 
   useEffect(() => {
@@ -189,28 +190,28 @@ const MyTickets = () => {
         if (response.status === 200) {
 
           setOrders(response.data);
-          console.log("orders: ", response.data);
+          // console.log("orders: ", response.data);
           const tempOrder = response.data
 
           const runpromises = tempOrder.map(order => fetchRunDetails(order.orderID));
           const runresults = await Promise.all(runpromises);
           setRuns(runresults);
-          console.log("runs: ", runresults);
+          // console.log("runs: ", runresults);
 
           const eventpromises = tempOrder.map(order => fetchEventDetails(order.orderID));
           const eventresults = await Promise.all(eventpromises);
           setEvents(eventresults);
-          console.log("event: ", eventresults);
+          // console.log("event: ", eventresults);
 
           const venuepromises = tempOrder.map(order => fetchVenueDetails(order.orderID));
           const venueresults = await Promise.all(venuepromises);
           setVenues(venueresults);
-          console.log("venue: ", venueresults);
+          // console.log("venue: ", venueresults);
 
           const seatpromises = tempOrder.map(order => fetchSeats(order.orderID));
           const seatresults = await Promise.all(seatpromises);
           setSeats(seatresults);
-          console.log("seats: ", seatresults);
+          // console.log("seats: ", seatresults);
 
         } else {
           throw new Error('Failed to fetch data');
@@ -220,8 +221,11 @@ const MyTickets = () => {
       }
     }
 
+
     fetchDetails();
   }, []);
+
+
 
   //handle selection of tickets (multiselect checkbox)
   const [numTicketsSelected, setNumTicketsSelected] = useState(1);
@@ -255,7 +259,6 @@ const MyTickets = () => {
   function findOrderIndex(ticketID) {
     for (let i = 0; i < orders.length; i++) {
       const secArray = orders[i].tickets;
-      console.log(secArray);
       for (let j = 0; j < secArray.length; j++) {
         if (secArray[j].ticketID === ticketID) {
           return i;
@@ -267,20 +270,21 @@ const MyTickets = () => {
 
   //handle reselling
   const handleResell = () => {
-    
-    for(let i = 0; i < selectedTickets.length; i++){
-      const ticketIndex = selectedTickets[i].tickets[0].ticketID;
+
+    for (let i = 0; i < selectedTickets.length; i++) {
+      const ticketIndex = selectedTickets[i].ticketID;
       const orderIndex = (findOrderIndex(ticketIndex))
       const runIndex = runs[orderIndex].runID
       addTicketListing(1, runIndex, ticketIndex)
     }
   }
 
-  console.log("EVENTS: ", events);
-  console.log("RUNS: ", runs);
-  console.log("SEATS: ", seats);
-  console.log("VENUE: ", venues);
-  console.log("ORDERS: ", orders);
+  // console.log("EVENTS: ", events);
+  // console.log("RUNS: ", runs);
+  // console.log("SEATS: ", seats);
+  // console.log("VENUE: ", venues);
+  // console.log("ORDERS: ", orders);
+
 
 
   return (
@@ -311,7 +315,19 @@ const MyTickets = () => {
 
                     </TableCell>
                     <TableCell>
-                      {seats[index] == undefined ? "" : seats[index].map((item, index) => {
+                      {item.tickets.map((tix, tIndex) => {                       return (<div className='flex items-center' key={tIndex}>
+                          <Checkbox handleSelect={handleSelectTickets} ticket={tix} />
+                          <div className="flex gap-2">
+
+                          </div>
+                          <Link href={`/account/tickets/${tix.ticketID}`}>
+                            <TicketCardWithTicketID ticketID={tix.ticketID}/>
+                          </Link>
+
+                        </div>)
+                      })}
+                      {/* {seats[index] == undefined ? "" : seats[index].map((item, index) => {
+                        console.log("Seats:", item)
                         return (
                           <div className='flex items-center' key={index}>
                             <Checkbox handleSelect={handleSelectTickets} ticket={item} />
@@ -324,7 +340,7 @@ const MyTickets = () => {
 
                           </div>
                         )
-                      })}
+                      })} */}
                     </TableCell>
 
                   </TableRow>
@@ -341,8 +357,11 @@ const MyTickets = () => {
           <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'>Transfer</button>
 
           <p className='font text-sm text-[#1F6EB7] mt-4'>To resell your unwanted tickets</p>
-          <button className='w-24 text-sm border border-[#B4C1DB] bg-white rounded my-1 p-1'
-          onClick={() => {createAccount(handleOpen)}}
+          <button className='w-24 text-sm border border-[#B4C1DB] bg- white rounded my-1 p-1'
+            onClick={() => { 
+              createAccount(handleOpen) 
+              // handleOpen();
+            }}
           >Resell</button>
           <Modal
             open={open}
@@ -358,21 +377,24 @@ const MyTickets = () => {
                       <p>You have selected these ticket(s) to resell</p>
 
                       {selectedTickets.map((item, index) => {
-                        console.log("item:", item, " order index:", findOrderIndex(item.tickets[0].ticketID));
-                        const orderIndex = findOrderIndex(item.tickets[0].ticketID);
-                        return (
-                          <div className='grid grid-cols-2 gap-x-4' key={index}>
-                            <div className='flex justify-center flex-col'>
-                              <p className='font-bold'>{events[orderIndex].name}</p>
-                              <p className='flex items-center'><CalendarIcon />{formatDate(runs[orderIndex].date)} {formatTime(runs[orderIndex].startTime)} - {formatTime(runs[orderIndex].endTime)}</p>
-                              <p className='flex items-center'><IoLocationOutline />National Stadium</p>
-                            </div>
-                            <div className=''>
-                              <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
-                            </div>
-                          </div>
-                        )
-                      })}
+                        console.log("item:", item.ticketID) 
+                        return(<SelectedTicket ticketID={item.ticketID} key={index}/>)
+                        // console.log("item:", item, " order index:", findOrderIndex(item.tickets[0].ticketID));
+                      //   const orderIndex = findOrderIndex(item.tickets[0].ticketID);
+                      //   return (
+                      //     <div className='grid grid-cols-2 gap-x-4' key={index}>
+                      //       <div className='flex justify-center flex-col'>
+                      //         <p className='font-bold'>{events[orderIndex].name}</p>
+                      //         <p className='flex items-center'><CalendarIcon />{formatDate(runs[orderIndex].date)} {formatTime(runs[orderIndex].startTime)} - {formatTime(runs[orderIndex].endTime)}</p>
+                      //         <p className='flex items-center'><IoLocationOutline />National Stadium</p>
+                      //       </div>
+                      //       <div className=''>
+                      //         <TicketCard category={item.category} section={item.section} row={item.row} seatNo={item.seatNo} />
+                      //       </div>
+                      //     </div>
+                      //   )
+                      })
+                      }
 
                       <div className='flex justify-center mt-2'>
                         <button className='border border-amber-300 rounded-sm px-4 py-1 mr-4 text-sm' onClick={handleClose}>Cancel</button>
