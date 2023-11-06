@@ -118,8 +118,21 @@ public class TicketController {
     @GetMapping("/tickets/{ticketID}/events/runs/seats") 
     public ResponseEntity<UserTicketDTO> getEventsAndRunsAndSeatsByTicketID(@PathVariable long ticketID) {
 
-        // TicketListing oneTicketListing = ticketListRepo.findByTicketTicketID(ticketID);
-        Ticket getTicket = ticketRepo.getReferenceById(ticketID);
+        // Get the currently authenticated user from the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        Optional<Ticket> getOptTicket = ticketRepo.findById(ticketID);
+        if (!getOptTicket.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Ticket getTicket = getOptTicket.get();
+        // Check if the currently authenticated user matches the user being updated
+        if (!(authenticatedUser.getUserID() == getTicket.getUser().getUserID())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         CustOrder getOrder = orderRepo.getReferenceById(getTicket.getOrder().getOrderID());
         Seat getSeat = seatRepo.getReferenceById(getTicket.getSeat().getSeatID());
 
