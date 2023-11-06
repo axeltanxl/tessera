@@ -3,6 +3,7 @@
     // "paths": {
     //   "@/*": ["./src/*"]
     // }
-    "paths": { "@/*": ["./src/*"], "@/components/*": ["./src/components/*"], "@/lib/*": ["./src/lib/*"] }
+    "baseUrl": "./src",
+    "paths": { "@/*": ["./*"], "@/components/*": ["./components/*"], "@/lib/*": ["./lib/*"] }
   }
 }
