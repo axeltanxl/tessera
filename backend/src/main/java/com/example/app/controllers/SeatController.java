@@ -74,7 +74,7 @@ public class SeatController {
       return runSeats;
     }
 
-    @GetMapping("/runs/{runID}/availableSeats")
+    @PostMapping("/runs/{runID}/availableSeats")
     public ResponseEntity<Object> getAvailableSeats(@RequestBody SeatAlgoDTO reqBody, @PathVariable("runID") Long runID){
       try {
         List<RunSeatDTO> seatLists = seatService.getAllSeatIDs(reqBody.getSection(), reqBody.getCategory(), runID);
