@@ -118,6 +118,35 @@ const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, pay
         }
     })
 
+        //added to qrcode
+    const {name : userName} = await prisma.user.findUnique({
+        where : {
+            userID : userID,
+        },
+        select : {
+            name : true,
+        }
+    })
+        //added to qrcode
+    const { eventID } = await prisma.run.findUnique({
+        where : {
+            runID : runID,
+        },
+        select : {
+            eventID : true,
+        }
+    })
+
+    //added to qrcode
+    const {name : eventName } = await prisma.event.findUnique({
+        where : {
+            eventID : eventID
+        },
+        select : {
+            name : true,
+        }
+    })
+
     for(let runSeat of runSeats){
         console.log("runseat", runSeat);
         await prisma.runseat.update({
@@ -132,10 +161,23 @@ const createPaymentForPurchase = async (prisma,id, userID, seatIDs, orderId, pay
 
     // create ticket for each seat
     for (let seat of seatIDs){
+            //added to qrcode
+        const {seatNo} = await prisma.seat.findUnique({
+            where : {
+                seatID : seat,
+            },
+            select : {
+                seatNo : true,
+            }
+        })
+
         const uniqueJson = {
             userID : userID,
             runID : runID,
             seatID : seat,
+            userName : userName,
+            eventName : eventName,
+            seatNo : seatNo
         }
         const ticketUniqueCode = CryptoJS.AES.encrypt(
             JSON.stringify(uniqueJson , (key, value) => {return typeof value === 'bigint' ? value.toString() : value;}),
@@ -179,12 +221,34 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
     console.log("price",price)
     console.log("marketplaceID",marketplaceID);
     
-    const {runID} = await prisma.run.findUnique({
+        //added to qrcode
+    const {runID, eventID} = await prisma.run.findUnique({
         where : {
             marketplaceID : marketplaceID,
         },
         select : {
-            runID : true
+            runID : true,
+            eventID : true,
+        }
+    })
+
+        //added to qrcode
+    const {name : userName} = await prisma.user.findUnique({
+        where : {
+            userID : buyerID,
+        },
+        select : {
+            name : true,
+        }
+    })
+
+        //added to qrcode
+    const {name : eventName } = await prisma.event.findUnique({
+        where : {
+            eventID : eventID
+        },
+        select : {
+            name : true,
         }
     })
 
@@ -218,10 +282,22 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
         },
     })
 
+    //added to qrcode
+    const {seatNo} = await prisma.seat.findUnique({
+        where : {
+            seatID : seat,
+        },
+        select : {
+            seatNo : true,
+        }
+    })
+
     const uniqueJson = {
         userID : buyerID,
         runID : runID,
         seatID : seatID,
+        userName : userName,
+        eventName : eventName,
     }
     
     // transfer of tickets
@@ -275,6 +351,4 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
             destination: stripeUserID,
           });
           console.log(transfer)
-
-
 }

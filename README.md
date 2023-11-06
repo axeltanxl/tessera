@@ -1,6 +1,6 @@
 # Tessera
 <p align="center">
-  <img height="100px" src="client/public//tessera-logo.png" />
+  <img height="100px" src="client/public//tessera-logo-white.png" />
 </p>
 Project Website:
 
