@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { jwtHasExpired } from "@/lib/utils";
 
 
-const MyComponent = ({children}) =>  {
+export default ({children}) =>  {
     const { data: session, status } = useSession();
     console.log("home session:", session);
 
@@ -24,4 +24,3 @@ const MyComponent = ({children}) =>  {
     </>
     )
   }
-  export default MyComponent;
