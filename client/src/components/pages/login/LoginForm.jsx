@@ -140,7 +140,7 @@ const LoginForm = () => {
                 </form>
             </Form>
             <div className="flex py-8 gap-2">
-                <p>Don't have an account?</p> 
+                <p>Don&apos;t have an account?</p> 
                 <Link href="/signup" className="underline text-cyan-600">Sign up</Link>
             </div>
         </div>

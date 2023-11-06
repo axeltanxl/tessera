@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { jwtHasExpired } from "@/lib/utils";
 
 
-export default ({children}) =>  {
+const MarketplaceLayout = ({children}) =>  {
     const { data: session, status } = useSession();
     console.log("home session:", session);
 
@@ -24,3 +24,5 @@ export default ({children}) =>  {
     </>
     )
   }
+
+  export default MarketplaceLayout;

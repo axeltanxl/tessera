@@ -3,8 +3,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { jwtHasExpired } from "@/lib/utils";
 
-
-export default ({children}) =>  {
+const ProductsLayout = ({children}) =>  {
     const { data: session, status } = useSession();
     console.log("home session:", session);
 
@@ -24,3 +23,5 @@ export default ({children}) =>  {
     </>
     )
   }
+
+  export default ProductsLayout;

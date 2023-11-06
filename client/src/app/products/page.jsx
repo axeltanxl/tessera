@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import DisplayProduct from "@/components/pages/products/DisplayProduct";
 
-
-
 const Products = () => {
     const [ prices, setPrices] = useState();
     
