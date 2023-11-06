@@ -30,18 +30,27 @@ const Confirmation = () => {
         "quantity" : parseInt(selectedQuant, 10), 
         "category" : selectedCat, 
         "paymentMethod" : "card",
-        "seatIDs" : [4,5,6],
+        "seatIDs" : [4,5,6]
     };
     
     const handlePrev = () => setPage(prev => prev - 1)
 
     const handleConfirmation = async (data) => {
-        const res = await axios.post('/api/checkout', data, 
+        // const res = await fetch("http://localhost:8080/api/v1/events");
+        const res = await fetch(`${process.env.STRIPE_BACKEND}/api/checkout`,
         {
+            method: 'POST',
             headers : {
-                "Content-Type" : "application/json",
+                'Content-Type': 'application/json'
             },
+            body : JSON.stringify(data),
         });
+        // , data, 
+        // {
+        //     headers : {
+        //         "Content-Type" : "application/json",
+        //     },
+        // });
         console.log("order res",res.data)
         localStorage.setItem("orderId", res.data.orderId);
         localStorage.setItem("paymentMethod", res.data.paymentMethod);

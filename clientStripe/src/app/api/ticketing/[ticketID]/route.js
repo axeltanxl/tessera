@@ -16,9 +16,9 @@ import CryptoJS from 'crypto-js'
 
 
 export async function GET(request, {params : {ticketID}}){
-    if(!authenticated){
-        return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
-    }
+    // if(!authenticated){
+    //     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
+    // }
     const prisma = new PrismaClient();
 
     //by right is pull from db here
