@@ -26,6 +26,22 @@ const Confirmation = () => {
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
     const handleNext = () => setPage(prev => prev + 1);
 
+    const handlePrev = async () => {
+        for (const s of seats){
+            const seatRemBody = [{
+                seatID: s.seatID,
+            }]
+            const seatRemOptions = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json',
+                },
+            };
+            const seatRemRes = await axios.post(`http://localhost:8080/api/v1/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
+        }
+        setPage(prev => prev - 1);
+    };
+
     const [user, setUser] = useState();
     const [runid, setRunid] = useState();
     const [event, setEvent] = useState();
@@ -161,7 +177,7 @@ const Confirmation = () => {
         "seatIDs" : seatids,
     };
     
-    const handlePrev = () => setPage(prev => prev - 1)
+    
 
     const handleConfirmation = async (data) => {
         const res = await axios.post('/api/checkout', data, 
@@ -260,13 +276,6 @@ const Confirmation = () => {
         
     }
 
-    const manageExit = async () => {
-        for (const seat of seats){
-            await handleRemoveCheckoutTicket(seat);
-        }
-        window.location.reload();
-    }
-
     useEffect(() => {
         //api call
 
@@ -355,13 +364,13 @@ const Confirmation = () => {
             </div>
             }
 
-            {seats? <div onClick={() => manageExit()} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
+            {seats? <div onClick={() => { handlePrev(); }} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order
                 </button>
 
                 <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}
-                onClick={() => {handleConfirmation(stripeValues);handleNext();}}>
+                onClick={() => {handleConfirmation(stripeValues); handleNext();}}>
                     Confirm
                 </button>
             </div>:""}
