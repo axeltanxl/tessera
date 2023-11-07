@@ -17,7 +17,11 @@ export async function POST(request){
     const prisma = new PrismaClient();
     const { jwt, runID, quantity, category, paymentMethod, seatIDs} = await request.json();
     console.log("jwt:", jwt);
+    console.log(seatIDs)
 
+    if(!seatIDs || seatIDs.length !== quantity){
+        return NextResponse.json({ message: 'insufficient seats' }, { status: 400 });
+    }
     // get run 
     const { eventID, startTime, date } = await prisma.run.findUnique({
         where : {
@@ -88,25 +92,56 @@ export async function POST(request){
         },
       })
     
-    const seats = await prisma.seat.findMany({
-        where : {
-            seatID : { in: seatIDs },
-        },
-        select : {
-            seatRow : true,
-            seatNo : true,
-        }
-    })
-    const seatDescription = seats.map(seat => {
-        return `Row: ${seat.seatRow}, Seat: ${seat.seatNo} `
-    })
-    const seatDesc = seatDescription.join("\n");
+    let seatDesc = "";
+    const listRunSeat = [];
+
+    for(let seatID of seatIDs){
+        const { seatRow, seatNo } = await prisma.seat.findUnique({
+            where : {
+                seatID :  seatID,
+            },
+            select : {
+                seatRow : true,
+                seatNo : true,
+            }
+        })
+        seatDesc += `Row: ${seatRow}, Seat: ${seatNo}`
+
+        const { runSeatID, isAvailable } = await prisma.runseat.findFirst({
+            where : {
+                seatID : seatID,
+                runID : runID,
+            },
+            select : {
+                runSeatID : true,
+                isAvailable : true,
+            }
+        })
+        listRunSeat.push(runSeatID);
+        // if (isAvailable === 0){
+        //     return NextResponse.json({ error: 'seat(s) is taken' }, { status: 400 });
+        // }
+    }
+    
+    console.log("seatDescription");
+    console.log(seatDesc);
+    console.log("listrunseat",listRunSeat);
+
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     // stripe checkout session 
 
-    console.log("seatDescription");
-    console.log(seatDesc)
+        const currentTimeMillis = Date.now();
+
+    // Calculate the expiration time (24 hours from now) in milliseconds
+    const expirationTimeMillis = currentTimeMillis +  30 * 60 * 1000;
+
+    // Convert the expiration time to seconds (Unix timestamp)
+    const expiresAt = Math.floor(expirationTimeMillis / 1000);
     
+    const runSeats = JSON.stringify(listRunSeat , (key, value) => {
+        return typeof value === 'bigint' ? value.toString() : value;
+    })
     const { url, id : sessionID } = await stripe.checkout.sessions.create({
         line_items : [
             {
@@ -124,17 +159,22 @@ export async function POST(request){
             }
         ],
         mode : 'payment', // one time payment
-        success_url : "http://localhost:3000/paymentFeedback/success",
-        cancel_url : "http://localhost:3000/paymentFeedback/cancel",
+        success_url : `${process.env.NEXTAUTH_URL}/paymentFeedback/success`,
+        cancel_url : `${process.env.NEXTAUTH_URL}/paymentFeedback/cancel`,
         payment_intent_data : {
             metadata : {
                 paymentReason : "purchase", 
                 userID : userID,
                 seats : JSON.stringify(seatIDs),
+                runSeats : runSeats,
                 orderId : orderID,
                 paymentMethod : paymentMethod,
             },
         },
+        metadata :{
+            runSeats : runSeats
+        },
+        expires_at : expiresAt,
     })
 
     // update cust order with the session id

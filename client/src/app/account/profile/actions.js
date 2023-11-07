@@ -2,7 +2,7 @@
 import { cookies } from "next/headers"
 // import { signOut } from "next-auth/react"
 import { revalidatePath } from 'next/cache'
-
+import { unAuth } from "@/lib/utils";
 
 export const fetchDetails = async () => {
     const token = cookies().get("jwt_spring").value;
@@ -51,3 +51,4 @@ export const updatePw = async (userID, newDetails) => {
     console.log(res.status);
     return res.status
 }
+

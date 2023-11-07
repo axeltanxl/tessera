@@ -1,14 +1,15 @@
 'use client';
-import { EventCard } from "@/components/ui/EventCard";
+import { EventCard } from "@/components/ui/cards/EventCard";
 import Carousel from "@/components/ui/carousel"
-import { axiosSpring } from "@/lib/utils";
+import { MarketplaceCard } from "@/components/ui/cards/MarketplaceCard";
+import { jwtHasExpired } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from 'react';
-import { toast } from "@/components/ui/use-toast";
+import { signOut } from "next-auth/react";
 
 export const getEvents = async () => {
-    const res = await fetch("http://localhost:8080/api/v1/events");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`);
     // const res = await axiosSpring("events");
     console.log(res);
     const events = await res.json()
@@ -17,32 +18,29 @@ export const getEvents = async () => {
 }
 function Home() {
 
-    const { data: session, status } = useSession();
-    console.log("home session:", session);
-    if (status === "unauthenticated" || !session || !session.user) {
-        redirect("/login");
-    }
-
+    // const { data: session, status } = useSession();
+    // console.log("home session:", session);
+    // if (status === "unauthenticated" || !session || !session.user) {
+    //     redirect("/");
+    // }
+   
     const [events, setEvents] = useState([]);
-    console.log("events:", events);
-    const token = localStorage.getItem('jwt');
-    console.log("token:", token);
+    const [allMarketplaces, setAllMarketplaces] = useState([]);
+    // const token = localStorage.getItem('jwt');
+
+    // const jwt = localStorage.getItem("jwt");
+    // if(!jwt || jwtHasExpired(jwt)){
+    //     signOut();
+    // }
     useEffect(() => {
-        if (status === "authenticated" && session && session.user) {
+        // if (status === "authenticated" && session && session.user) {
             async function fetchData() {
                 try {
-
-                    // const headers = {
-                    //     Authorization: `Bearer ${token}`,
-                    // };
-                    // const res = await fetch("http://localhost:8080/api/v1/events", {
-                    //     method: 'GET',
-                    //     headers,
-                    // });
-                    const res = await axiosSpring("/events");
-                    console.log(res);
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events`, {
+                        method: 'GET',
+                    });
                     if (res.status === 200) {
-                        const eventsData = res.data
+                        const eventsData = await res.json()
                         setEvents(eventsData);
                     } else {
                         console.error("API request failed.");
@@ -51,9 +49,30 @@ function Home() {
                     console.error("An error occurred:", error);
                 }
             }
+            async function fetchOpenMarketplaces(){
+                try{
+                    const headers = {
+                        // Authorization: `Bearer ${token}`,
+                    };
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/openMarketplaces`, {
+                        method: 'GET',
+                        headers
+                    });
+                    if (res.ok) {
+                        const openMarketplaces = await res.json();
+                        setAllMarketplaces(openMarketplaces);
+                    } else {
+                        console.error("API request failed");
+                    }
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                }
+            }
+    
+            fetchOpenMarketplaces();
             fetchData();
-        }
-    }, [status, session]);
+        // }
+    }, []);
 
     return (
         <div className="z-0">
@@ -75,9 +94,9 @@ function Home() {
                 <p className="text-[#1F6EB7] cursor-pointer">See more on Marketplace</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
-                        events.map((item, index) => {
+                        allMarketplaces.map((item, index) => {
                             return (
-                                <EventCard details={item} key={item.eventID} />
+                                <MarketplaceCard details={item} key={index} />
                             )
                         })
                     }

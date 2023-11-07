@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import usePaymentFormContext from "../hooks/usePaymentFormContext";
+import { formatDate, formatTime } from "@/lib/formatUtil";  
 
 const infoName = "Neo Shyh Ruey";
 const infoEmail = "srneo.2022@scis.smu.edu.sg";
@@ -24,16 +25,159 @@ const Confirmation = () => {
 
     const {title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant} = usePaymentFormContext();
     const handleNext = () => setPage(prev => prev + 1);
-    const hardCodedValues = {
+
+    const handlePrev = async () => {
+        for (const s of seats){
+            const seatRemBody = [{
+                seatID: s.seatID,
+            }]
+            const seatRemOptions = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json',
+                },
+            };
+            const seatRemRes = await axios.post(`http://localhost:8080/api/v1/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
+        }
+        setPage(prev => prev - 1);
+    };
+
+    const [user, setUser] = useState();
+    const [runid, setRunid] = useState();
+    const [event, setEvent] = useState();
+    const [run, setRun] = useState();
+    const [venue, setVenue] = useState();
+
+    const[seats, setSeats] = useState();
+    const [seatids, setSeatids] = useState();
+
+    const token = localStorage.getItem('jwt');
+
+    useEffect(() => {
+
+        async function fetchTickets(){
+            try {
+
+                const search = window.location.href;
+                const split = search.split("/");
+                const temprunid = parseInt(split[split.length - 1]);
+                const eventid = parseInt(split[split.length - 2]);
+
+                console.log(temprunid);
+                console.log(eventid);
+
+                setRunid(temprunid);
+
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+
+                const userRes = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  });
+                
+                if (userRes.status === 200) {
+                    setUser(userRes.data);
+                } else {
+                   throw new Error('Failed to fetch data');
+                }
+
+                
+                const eventRes = await fetch(`http://localhost:8080/api/v1/events/${eventid}`, {
+                    method: 'GET',
+                    headers,
+                });
+                const runRes = await fetch(`http://localhost:8080/api/v1/runs/${temprunid}`, {
+                    method: 'GET',
+                    headers,
+                });
+                const venueRes = await fetch(`http://localhost:8080/api/v1/events/${eventid}/venue`, {
+                    method: 'GET',
+                    headers,
+                });
+                if (eventRes.ok) {
+                    const eventData = await eventRes.json();
+                    setEvent(eventData);
+                    console.log("1: ", eventData)
+                } else {
+                    console.error("API request failed.");
+                }
+                if (runRes.ok) {
+                    const runData = await runRes.json();
+                    setRun(runData);
+
+                } else {
+                    console.error("API request failed.");
+                }
+                if (venueRes.ok) {
+                    const venueData = await venueRes.json();
+                    setVenue(venueData);
+                    console.log("2: ", venueData)
+                } else {
+                    console.error("API request failed.");
+                }
+
+                console.log("EVENT: " + event);
+                console.log("RUN: " + run);
+
+                const seatReqBody = {
+                    category: selectedCat,
+                    section: selectedZone,
+                    quantity: selectedQuant,
+                }
+                const seatReqOptions = {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": 'application/json',
+                    },
+                    body: JSON.stringify(seatReqBody),
+                };
+                const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${temprunid}/seatAllocation`, seatReqOptions);
+
+                if (seatRes.ok) {
+                    const seatjson = await seatRes.json();
+                    setSeats(seatjson);
+                    console.log("seatjson: ", seatjson)
+                    const items = [];
+                    for (let i = 0; i < seatjson.length; i++){
+                        items.push(seatjson[i].seatID)
+                    }
+                    setSeatids(items);
+
+                } else {
+                    console.error("API request failed.");
+                    const userConfirmed = window.confirm("There are no tickets available for this option. Please choose another section.");
+                    if (userConfirmed) {
+                    // Reload the page if the user confirmed
+                        window.location.reload();
+                    }else{
+                        window.location.reload();
+                    }   
+                }
+
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+            
+        }
+        fetchTickets();
+    },[]);
+
+
+    const stripeValues = {
+        "runID": runid,
         "jwt" : localStorage.getItem("jwt"),
-        "runID" : 1,
+        // "seatIDs": [],
         "quantity" : parseInt(selectedQuant, 10), 
-        "category" : selectedCat, 
+        "category" : selectedCat,
         "paymentMethod" : "card",
-        "seatIDs" : [4,5,6],
+        "seatIDs" : seatids,
     };
     
-    const handlePrev = () => setPage(prev => prev - 1)
+    
 
     const handleConfirmation = async (data) => {
         const res = await axios.post('/api/checkout', data, 
@@ -83,82 +227,96 @@ const Confirmation = () => {
     const handleDeliveryMethodChange = (event) => {
         setSelectedDeliveryMethod(event.target.value);
     };
-
-
-    const getTicketsCheckout = [
-        {   
-            ticketID: 1,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 22,
-            category:selectedCat,
-            section: selectedZone,
-            price: 300
-        },
-        {
-            ticketID: 2,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 23,
-            category: "A",
-            section: "PA1",
-            price: 300
-        },
-        {
-            ticketID: 3,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 24,
-            category: "A",
-            section: "PA1",
-            price: 300
-        },
-        {
-            ticketID: 4,
-            eventName: "Taylor Swift The Eras Tour",
-            startDate: "8 March 2024 6-9pm",
-            venue: "National Stadium",
-            row: 1,
-            seatNo: 25,
-            category: "A",
-            section: "PA1",
-            price: 300
-        }
-    ]
     
     const [rerender, setRerender] = useState(true);
-    const [checkoutTickets, setCheckoutTickets] = useState(getTicketsCheckout);
+    const [checkoutTickets, setCheckoutTickets] = useState(seats);
+    //getTicketsCheckout
     
-    const handleRemoveCheckoutTicket = (ticketID) => {
-        console.log("to remove:", ticketID)
-        const newList = checkoutTickets.filter((item) => item.ticketID != ticketID);
-        console.log("new list:", newList);
-        setCheckoutTickets(newList);
-        setRerender(true);
+    const handleRemoveCheckoutTicket = async (seat) => {
+        const seatID = seat.seatID;
+        console.log("seatid special: ", seatID);
+        const size = seats.length;
+        console.log("length special: ", size);
+        try{
+
+            const seatRemBody = [{
+                seatID: seatID,
+            }]
+            const seatRemOptions = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json',
+                },
+            };
+            const seatRemRes = await axios.post(`http://localhost:8080/api/v1/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
+
+            if (seatRemRes.status === 200) {
+                if (size === 1) window.location.reload();
+                console.log("to remove:", seatID)
+                const newSeatArr = [];
+                const newSeatIdArr = [];
+                for (const item of seats) {
+                    if (item.seatID !== seatID) {
+                        newSeatArr.push(item);
+                        newSeatIdArr.push(item.seatID)
+
+                    }
+                }
+                setSeats(newSeatArr);
+                setSeatids(newSeatIdArr)
+                setSelectedQuant(selectedQuant - 1);
+                setRerender(true);
+
+            } else {
+                console.error("not working")
+            }
+        } catch (err){
+            console.error('Error: ', err);
+        }
+        
     }
+
     useEffect(() => {
         //api call
 
+
     }, [rerender]);
 
-  
+    // console.log("RET: SECTION: " + selectedZone);
+    // console.log("RET: QUANTITY: " + selectedQuant + " CAT: " + selectedCat + " RUNID: " + runid);
+    // console.log("SEAT: " + seats);
+
+    const initialTime = 600; // 10 minutes in seconds
+  const [time, setTime] = useState(initialTime);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (time > 0) {
+        setTime(time - 1);
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [time]);
+
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
     return (
         
         <div>
-            <div style={{
+            {seats? <div style={{
                 width: "80%", marginLeft: "10%", marginRight: "10%", textAlign: "center", marginTop: "1rem",
                 padding: "1rem", backgroundColor: "#fbe7e6", border: "1px solid #c2292e", borderRadius: "5px", color: "#c2292e", fontSize: "14px"
             }}>
-                Please fill out details below and submit your order within 00:00
-            </div>
+                Please fill out details below and submit your order within  {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
+            </div>:""
+            }
 
-            <div style={{ fontSize: "12px" }}>
+            {seats? <div style={{ fontSize: "12px" }}>
                 <div style={{ marginLeft: "10%", marginTop: "2rem" }}>Contact Details</div>
                 <div style={{
                     width: "80%", marginLeft: "10%", marginRight: "10%", marginTop: "",
@@ -167,77 +325,24 @@ const Confirmation = () => {
                     <div className="table">
                         <div className="table-row">
                             <div className="table-cell">Full Name</div>
-                            <div className="table-cell">{infoName}</div>
+                            <div className="table-cell">{user?user.name:""} </div>
                             <div className="table-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                             <div className="table-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                         </div>
                         <div className="table-row">
                             <div className="table-cell">Email</div>
-                            <div className="table-cell">{infoEmail}</div>
+                            <div className="table-cell">{user?user.email:""}</div>
                         </div>
                         <div className="table-row">
                             <div className="table-cell">Contact Number</div>
-                            <div className="table-cell">{infoHp}</div>
+                            <div className="table-cell">{user?user.contactNum :""}</div>
                         </div>
 
                     </div>
                 </div>
-            </div>
+            </div>:""}
 
-            {/* <div style={{ fontSize: "12px" }}>
-                <div style={{ marginLeft: "10%", marginTop: "2rem" }}>Payment Methods</div>
-                <div style={{
-                    width: "80%", marginLeft: "10%", marginRight: "10%",
-                    padding: "1rem", backgroundColor: "#f3f3f3", border: "1px solid #bfbfbf", borderRadius: "5px"
-                }}>
-                    <div>
-                        <div >
-                            {paymentChoices.map((choice, index) => (
-                                <div
-                                    key={index}
-                                    onClick={() => handlePaymentChoiceClick(choice)}
-                                    className="flex" padding="1rem"
-                                >
-                                    <div className={`bubble ${selectedPayment === choice ? 'selected-bubble' : ''}`}></div>
-                                    <div>
-                                        <div
-                                            style={{ fontWeight: "bold" }}>
-                                            {choice}
-                                        </div>
-                                        <div
-                                            style={{ paddingBottom: "1rem" }}>
-                                            {getDescriptionForPayment(choice)}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style={{ fontSize: "12px" }}>
-                <div style={{ marginLeft: "10%", marginTop: "2rem" }}>Delivery Methods</div>
-                <div style={{
-                    width: "80%", marginLeft: "10%", marginRight: "10%",
-                    padding: "1rem", backgroundColor: "#f3f3f3", border: "1px solid #bfbfbf", borderRadius: "5px"
-                }}>
-                    <div>
-                        <select
-                            value={selectedDeliveryMethod}
-                            onChange={handleDeliveryMethodChange}
-                            style={{ width: "100%", padding: "0.5rem", backgroundColor: "#f3f3f3" }}// Disable the select if no payment method is selected
-                        >
-                            <option value="op">Select a delivery method</option>
-                            {deliveryMethods.map((method, index) => (
-                                <option key={index} value={method}>
-                                    {method}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-            </div> */}
+            {seats?
 
             <div style={{ marginTop: "1rem", width: "80%", marginLeft: "10%", marginTop: "5%" }}>
                 <div style={{ fontSize: "12px" }}>Order Details</div>
@@ -252,37 +357,42 @@ const Confirmation = () => {
                         <div className="table-cell2">Price</div>
                         <div className="table-cell2">Action</div>
                     </div>
-                    {getTicketsCheckout.map((item, index) => (
+                    {seats.map((item, index) => (
                         <div className="table-row2" key={index}>
                             <div className="table-cell2">
-                                <div style={{ textAlign: "center", fontWeight: "bold" }}>{item.eventName}</div>
-                                <div style={{ textAlign: "center" }}>{item.startDate}, {item.venue}</div>
+                                <div style={{ textAlign: "center", fontWeight: "bold" }}>{event? event.name : ""}</div>
+                                <div style={{ textAlign: "center" }}>{run?formatDate(run.date):""}, {run?formatTime(run.startTime):""} - {run?formatTime(run.endTime):""}, {venue? venue.name:""}</div>
                             </div>
                             <div className="table-cell2">
                                 Row {item.row}, Seat {item.seatNo}
                             </div>
                             <div className="table-cell2">
-                                Category {item.category}, Zone {item.section}
+                                Category {selectedCat}, Section {selectedZone}
                             </div>
-                            <div className="table-cell2">${item.price}</div>
+                            <div className="table-cell2">${selectedPrice/100}</div>
                             <div className="table-cell2">
-                                <button onClick={() => handleRemoveCheckoutTicket(item.ticketID)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
+                                <button onClick={() => handleRemoveCheckoutTicket(item)} className="bg-[#fbe7e6] p-1 border rounded border-[#c2292e] text-[#c2292e]">Remove</button>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
+            :
+            <div style={{textAlign:"center", fontSize:"12px", paddingTop:"3rem"}}>
+                No seats of selected quantity and section available
+            </div>
+            }
 
-            <div onClick={handlePrev} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
+            {seats? <div onClick={() => { handlePrev(); }} style={{ margin: "2rem", textAlign: "center", fontSize: "12px" }}>
                 <button className="p-1" style={{ marginRight: "5%", width: "10%", border: "1px solid #ccc", borderRadius: "5px" }}>
                     Cancel Order
                 </button>
 
-                <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#7eda94" }}
-                onClick={() => {handleConfirmation(hardCodedValues);handleNext();}}>
+                <button className="p-1 font-semibold" style={{ width: "10%", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#FAD749" }}
+                onClick={() => {handleConfirmation(stripeValues); handleNext();}}>
                     Confirm
                 </button>
-            </div>
+            </div>:""}
 
             <style jsx>
                 {`
@@ -338,6 +448,10 @@ const Confirmation = () => {
                     .table-header2 {
                         font-weight: bold;
                         background-color: #f0f0f0;
+                    }
+                    
+                    .fresh {
+
                     }
                 `}
             </style>

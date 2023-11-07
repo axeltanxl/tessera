@@ -21,6 +21,7 @@ import {
 import { MdLogout } from 'react-icons/md';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import { isAuthenticated } from '@/lib/utils';
 
 const menuItems = [
     {
@@ -28,29 +29,34 @@ const menuItems = [
         name: "My Tickets"
     },
     {
-        link: "/account/transfer-history",
-        name: "Transfer History"
+        link: "/account/resell-tickets",
+        name: "Resell Tickets"
     },
+    // {
+    //     link: "/account/receive-transfer",
+    //     name: "Receive Transfer"
+    // },
     {
-        link: "/account/receive-transfer",
-        name: "Receive Transfer"
+        link: "/account/transaction-history",
+        name: "Transaction History"
     },
     {
         link: "/account/profile",
         name: "My Profile"
     }
 ]
-export default function MyAccountDropdown({session}) {
+export default function MyAccountDropdown({session, status}) {
+    // console.log(session, status)
     return (
-        <DropdownMenu >
-            <DropdownMenuTrigger asChild>
+        <DropdownMenu onOpenChange={() => isAuthenticated(session, status)}>
+            <DropdownMenuTrigger asChild >
                 <button className="px-2 py-1 rounded-full ml-2 flex items-center hover:bg-[#F5F7FB] outline-none">
                 {!!session && <BiUserCircle size={25} className='mr-1' />}
                     <span className="hidden lg:block">{!!session ? "My Account" : "Log in "}</span>
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-[#FCFAFF] shadow-none border-[#B4C1DB]" align="end">
-                <DropdownMenuLabel>My Acccount</DropdownMenuLabel>
+                <DropdownMenuLabel>{!!session ? "My Account" : "Log in "}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     {

@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation'
 import Link from 'next/link';
 import { formatDate, formatTime } from "@/lib/formatUtil";
+import axios from "axios";
+
 
 const TicketPurchase = () => {
     const url = usePathname();
@@ -22,13 +24,22 @@ const TicketPurchase = () => {
     const token = localStorage.getItem('jwt');
     const [runMap, setRunMap] = useState([]);
     const [event, setEvent] = useState(null);
-    useEffect(() => { 
+    const [venue, setVenue] = useState();
+
+    const [table, setTable] = useState();
+    const [check, setCheck] = useState(false);
+    const { title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant } = usePaymentFormContext();
+
+
+
+    useEffect(() => {
+
         async function fetchRuns() {
             try {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}/runs`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/runs`, {
                     method: 'GET',
                     headers,
                 });
@@ -42,20 +53,74 @@ const TicketPurchase = () => {
                 console.error(e);
             }
         };
+
         async function fetchEvent(){
             try {
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
-                const res = await fetch(`http://localhost:8080/api/v1/events/${eventID}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}`, {
                     method: 'GET',
                     headers,
                 });
                 if (res.ok) {
                     const result = await res.json();
                     setEvent(result);
+                    setTable(result.pricePerCategory);
+                    console.log("event2: " + (result.pricePerCategory))
+                    
                 } else {
                     console.error("API request failed.");
+                }
+
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        async function getCheck(){
+
+            try{
+                const seatReqBody = {
+                    category: selectedCat,
+                    section: selectedZone,
+                    quantity: selectedQuant,
+                }
+                const seatReqOptions = {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": 'application/json',
+                    },
+                    body: JSON.stringify(seatReqBody),
+                };
+                
+                const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${runID}/availableSeats`, seatReqOptions);
+    
+                if (seatRes.ok) {
+                    const seatjson = await seatRes.json();
+                    setCheck(seatjson);
+                    console.log("seatjson: ", seatjson);
+                } else {
+                    console.error("API request failed.");
+                }
+            }catch(e){
+                console.error(e);
+            }
+            
+        }
+
+        async function fetchVenueDetails() {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/venue`, {
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
+                });
+                if (response.status === 200) {
+                    setVenue(response.data.name);
+                } else {
+                    throw new Error('Failed to fetch data');
                 }
             } catch (e) {
                 console.error(e);
@@ -63,25 +128,34 @@ const TicketPurchase = () => {
         }
         fetchRuns();
         fetchEvent();
+        getCheck();
+        fetchVenueDetails();
     }, []);
+
     console.log("event:", event)
+    console.log("table: " + table)
+    
     const run = runMap.find(item => item.runID === runID);
     const date = run?.date ?? null;
     const startTime = run?.startTime ?? null;
     const endTime = run?.endTime ?? null;
 
 
-    const { title, page, setPage, selectedZone, setSelectedZone, selectedCat, setSelectedCat, selectedPrice, setSelectedPrice, selectedQuant, setSelectedQuant } = usePaymentFormContext();
+    
 
     const total = { selectedQuant } * { selectedPrice };
 
     const handleNext = () => setPage(prev => prev + 1)
 
-    console.log({ selectedCat }, { selectedPrice }, { selectedQuant }, { selectedZone })
+    console.log({ selectedCat }, { selectedPrice }, { selectedQuant }, { selectedZone }, table, check)
+
+
+
+
     return (
         <div>
             <div style={{ fontWeight: "bold", textAlign: "center" }}>{event?.name ?? null}</div>
-            <div style={{ textAlign: "center", border: "1px solid grey", borderRadius: "10px", padding: "1%", marginTop: "2rem", marginBottom: "2rem", width: "80%", marginLeft: "10%" }}>{formatDate(date)} {formatTime(startTime)}-{formatTime(endTime)}, venue</div>
+            <div style={{ textAlign: "center", border: "1px solid grey", borderRadius: "10px", padding: "1%", marginTop: "2rem", marginBottom: "2rem", width: "80%", marginLeft: "10%" }}>{formatDate(date)} {formatTime(startTime)}-{formatTime(endTime)}, {venue}</div>
             <Accordion type="multiple" style={{ width: "80%", marginLeft: "10%", marginRight: "10%" }}>
                 <AccordionItem value="select-zone">
                     <AccordionTrigger
@@ -94,7 +168,7 @@ const TicketPurchase = () => {
                         <div aligncontent="center">
                             <SeatingPlan setSelectedZone={setSelectedZone} selectedZone={selectedZone}
                                 setSelectedCat={setSelectedCat} selectedCat={selectedCat} setSelectedPrice={setSelectedPrice}
-                                selectedPrice={selectedPrice} />
+                                selectedPrice={selectedPrice} table={table}/>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
@@ -121,7 +195,7 @@ const TicketPurchase = () => {
                             </div>
                             <div className="table-row">
                                 <div className="table-cell">Standard</div>
-                                <div className="table-cell">${selectedPrice}</div>
+                                <div className="table-cell">${selectedPrice/100}</div>
                                 <div className="table-cell">
                                     <div>
                                         <select id="dropdown" value={selectedQuant} onChange={(e) => { setSelectedQuant(e.target.value) }} >
@@ -134,7 +208,7 @@ const TicketPurchase = () => {
                                     </div>
                                 </div>
                                 {
-                                    isNaN({ total }) ? (<div className="table-cell">Your total bill is:<br></br>${selectedQuant * selectedPrice}</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
+                                    isNaN({ total }) ? (<div className="table-cell">Your total bill is:<br></br>${selectedQuant * selectedPrice / 100 }</div>) : (<div className="table-cell">Your total bill is:<br></br>${total}</div>)
                                 }
                             </div>
                         </div>
@@ -142,8 +216,10 @@ const TicketPurchase = () => {
                 </AccordionItem>
             </Accordion>
 
+            
 
-            <button disabled={!{ selectedPrice }} onClick={handleNext} style={{
+
+            <button disabled={!{ selectedQuant }} onClick={handleNext} style={{
                 width: "10%", borderRadius: "5px", marginLeft: "45%", marginTop: "1rem",
                 backgroundColor: "#2e6ad7", color: "white", marginBottom: "3rem"
             }}>Proceed</button>

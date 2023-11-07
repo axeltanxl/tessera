@@ -33,18 +33,12 @@ const loginToNext = async (data) => {
 }
 
 const loginToSpring = async (data) => {
-    const res = await axios.post("http://localhost:8080/api/v1/auth/login", data)
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/auth/login`, data)
                 localStorage.setItem("jwt", res.data.token);
                 console.log(res.data.message);
 
     //here is to store spring jwt to into cookies
-    // await fetch("http://localhost:3000/api/auth/login", {
-    //         method: 'post',
-    //         headers: {'Content-Type':'application/json'},
-    //         body: JSON.stringify({
-    //             "jwt": res.data.token
-    //         })
-    //     })
+    
     await axiosNext.post('api/auth/login', {
         "jwt": res.data.token
     })
@@ -52,7 +46,7 @@ const loginToSpring = async (data) => {
 
 const LoginForm = () => {
     const { data :session} = useSession()
-    console.log("session:", session);
+    // console.log("session:", session);
 
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
@@ -72,7 +66,7 @@ const LoginForm = () => {
             await loginToSpring(data);
             await loginToNext(data);
             router.push('/');
-            // const res = await axios.post("http://localhost:8080/api/v1/auth/login", data)
+            // const res = await axios.post(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/auth/login`, data)
             // localStorage.setItem("jwt", res.data.token);
             // console.log(res.data.message);
             // const resB = await signIn("credentials",{
