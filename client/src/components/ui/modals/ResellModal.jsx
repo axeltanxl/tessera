@@ -27,7 +27,7 @@ export default function ResellModal({item, open, handleClose, handleUpdateInPric
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/ticketListings/${listingID}`,
                 {
-                    price: resalePrice
+                    price: resalePrice * 100
                 },
                 {
                     headers: {
