@@ -12,14 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu"
  
 export function AdminDropDown({name, dropdownItems, handleChange}) {
-  const defaultName = name === "Venue" ? "Venue not selected" : "Not selected"
+  const defaultName = name === "venue" ? "Venue not selected" : "Not selected"
   const [position, setPosition] = React.useState(defaultName);
   console.log("position:", position);
   
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className={`rounded-sm h-8 hover:bg-[#F5F7FB] ${name === "Venue" ? "w-56":"w-36"}`}>{position}</Button>
+        <Button variant="outline" className={`rounded-sm h-8 hover:bg-[#F5F7FB] ${name === "venue" ? "w-56":"w-36"}`}>{position}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-[#FDFBFF]">
         {/* <DropdownMenuLabel>Panel Position</DropdownMenuLabel> */}
