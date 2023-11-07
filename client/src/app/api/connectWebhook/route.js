@@ -36,9 +36,9 @@ export async function POST(request, response){
                     console.table(paymentIntent.metadata);
                     createPaymentForPurchase(prisma,id, userID, seatIDs, orderId, paymentMethod, runseats)
                 }else if(paymentReason === "transaction"){
-                    const {listingID, buyerID, seatIDs, paymentMethod} = paymentIntent.metadata;
+                    const {listingID, buyerID, seatID, paymentMethod} = paymentIntent.metadata;
                     console.table(paymentIntent.metadata);
-                    payUser(prisma, id, listingID, buyerID, paymentMethod, seatIDs);
+                    payUser(prisma, id, listingID, buyerID, paymentMethod, seatID);
                 }
                 return NextResponse.json({message : "success yayy"}, {status : 200});
           } catch (error) {
@@ -220,6 +220,7 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
     console.log("ticket", ticketID)
     console.log("price",price)
     console.log("marketplaceID",marketplaceID);
+    console.log("seatID", seatID)
     
         //added to qrcode
     const {runID, eventID} = await prisma.run.findUnique({
@@ -285,7 +286,7 @@ const payUser = async (prisma, id, listingID, buyerID, paymentMethod, seatID) =>
     //added to qrcode
     const {seatNo} = await prisma.seat.findUnique({
         where : {
-            seatID : seat,
+            seatID : seatID,
         },
         select : {
             seatNo : true,

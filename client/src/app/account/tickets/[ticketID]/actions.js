@@ -1,9 +1,12 @@
 import QRCode from 'qrcode'
 import axios from 'axios';
+import { cookies } from "next/headers"
+import { NextResponse } from 'next/server';
+
 
 export const getQRurl = async (ticketID) => {
-    // const res = await fetch(`${process.env.NEXT_BACKEND}/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
-    const res = await fetch(`http://localhost:3000/api/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
+    const res = await fetch(`${process.env.NEXT_BACKEND}/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
+    // const res = await fetch(`http://localhost:3000/api/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
     const {qrString} = await res.json();
     // console.log("qrString:", qrString);
     const url = await QRCode.toDataURL(qrString)
@@ -25,3 +28,48 @@ export const getQRurl = async (ticketID) => {
 
 //     //  console.log(res.json());
 // }
+
+
+export const getTicketDetails = async(ticketID) => {
+    const token = cookies().get("jwt_spring").value;
+    console.log(token)
+
+    // const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`,
+    //         },
+    //     });
+    try{
+        const res = await fetch(`${process.env.SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
+            method: 'GET',
+            headers : {"Authorization": `Bearer ${token}`,}
+        });    
+        const details = await res.json();
+        console.log(details);
+        const { seat, event, venue, run} = details
+        console.log(seat)
+        const {row, section, seatNo, category} = seat
+        console.log(event)
+        const { displayImage, name : eventName } = event;
+        console.log(venue)
+        const { name : venueName } = venue;
+        console.log(run);
+        const { date } = run
+
+        const output = {
+            seatNo : seatNo,
+            row : row,
+            section : section,
+            category : category,
+            eventName : eventName,
+            displayImage : displayImage,
+            venueName : venueName,
+            date : date,
+        }
+        
+        return output;
+
+    }catch {
+        return null;
+    }
+}
