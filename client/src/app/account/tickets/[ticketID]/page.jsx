@@ -107,6 +107,10 @@ const Ticket = ({ params }) => {
                     </div>
                 </div>
             </div>
+            <div className='mx-10 mt-16 flex flex-col items-center justify-center'>
+                <img src={ticketDetails?.event?.displayImage}/>
+                <p>See you there!</p>
+            </div>
         </section>
     )
 }
