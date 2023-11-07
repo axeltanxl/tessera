@@ -145,7 +145,7 @@ const ResellTickets = () => {
                                         <TicketCard category={item.seat.category} section={item.seat.section} row={item.seat.row} seatNo={item.seat.seatNo} />
                                     </TableCell>
                                     <TableCell>
-                                        {item.ticketList.status === "Not Listed" ? (<p>{item.ticketList.status}</p>) : (<p>{item.ticketList.status} at ${item.ticketList.price}</p>)}
+                                        {item.ticketList.status === "Not Listed" ? (<p>{item.ticketList.status}</p>) : (<p>{item.ticketList.status} at ${item.ticketList.price / 100}</p>)}
                                     </TableCell>
                                     <TableCell>
                                         <button onClick={() => handleOpen(item)} className='bg-amber-300 rounded-sm px-4 py-1 ml-4 text-sm'>Set price</button>
