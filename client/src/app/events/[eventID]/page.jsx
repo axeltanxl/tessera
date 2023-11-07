@@ -43,12 +43,12 @@ function EventDetails() {
 
     async function fetchRuns(eventID) {
         try {
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
+            // const headers = {
+            //     Authorization: `Bearer ${token}`,
+            // };
             const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/runs`, {
                 method: 'GET',
-                headers,
+                // headers,
             });
             if (res.ok) {
                 const result = await res.json();
@@ -65,12 +65,12 @@ function EventDetails() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const headers = {
-                    Authorization: `Bearer ${token}`,
-                };
+                // const headers = {
+                //     Authorization: `Bearer ${token}`,
+                // };
                 const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}`, {
                     method: 'GET',
-                    headers,
+                    // headers,
                 });
                 if (res.ok) {
                     const eventData = await res.json();
@@ -87,9 +87,9 @@ function EventDetails() {
         async function fetchVenueDetails() {
             try {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/events/${eventID}/venue`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    // headers: {
+                    //     Authorization: `Bearer ${token}`,
+                    // },
                 });
                 if (response.status === 200) {
                     setVenue(response.data.name);
@@ -178,9 +178,9 @@ function EventDetails() {
 
                 <div aria-label='event map' className='w-full flex justify-center items-center'>
                     <img
-                        src={"/taylor-swift-seating.jpg"}
-                        width={800}
-                        height={800}
+                        src={"/layout.png"}
+                        width={600}
+                        height={600}
                         alt="seating "
                     />
                 </div>

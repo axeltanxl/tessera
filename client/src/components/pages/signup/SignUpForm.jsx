@@ -17,7 +17,6 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { signUpSchema } from "./signUpschema"
 import { Icons } from "@/components/ui/icons/icons"
 import { useRouter } from "next/navigation"
-import { axiosSpring } from "@/lib/utils"
 
 
 

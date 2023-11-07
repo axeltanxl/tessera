@@ -38,7 +38,7 @@ model event {
 }
 
 model marketplace {
-  marketplaceID BigInt    @id
+  marketplaceID BigInt    @id @default(autoincrement())
   closingDate   DateTime? @db.Date
   openingDate   DateTime? @db.Date
   status        String?   @db.VarChar(255)
@@ -136,6 +136,16 @@ model venue {
   venueID  BigInt  @id @default(autoincrement())
   capacity Int
   name     String? @db.VarChar(255)
+}
+
+model runseat {
+  runSeatID   BigInt  @id
+  isAvailable Int
+  runID       BigInt?
+  seatID      BigInt?
+
+  @@index([seatID], map: "FKh6tp2yhl9b0d8fvpxi7bhj8u6")
+  @@index([runID], map: "FKinvugr5jyeivvcqjke0idlg8e")
 }
 
 enum user_role {
