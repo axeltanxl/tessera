@@ -1,6 +1,7 @@
 'use client';
 import { EventCard } from "@/components/ui/cards/EventCard";
 import Carousel from "@/components/ui/carousel"
+import { MarketplaceCard } from "@/components/ui/cards/MarketplaceCard";
 import { jwtHasExpired } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
@@ -24,7 +25,8 @@ function Home() {
     // }
    
     const [events, setEvents] = useState([]);
-    console.log("events:", events);
+    const [allMarketplaces, setAllMarketplaces] = useState([]);
+    // const token = localStorage.getItem('jwt');
 
     // const jwt = localStorage.getItem("jwt");
     // if(!jwt || jwtHasExpired(jwt)){
@@ -47,6 +49,27 @@ function Home() {
                     console.error("An error occurred:", error);
                 }
             }
+            async function fetchOpenMarketplaces(){
+                try{
+                    const headers = {
+                        // Authorization: `Bearer ${token}`,
+                    };
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/openMarketplaces`, {
+                        method: 'GET',
+                        headers
+                    });
+                    if (res.ok) {
+                        const openMarketplaces = await res.json();
+                        setAllMarketplaces(openMarketplaces);
+                    } else {
+                        console.error("API request failed");
+                    }
+                } catch (error) {
+                    console.error("An error occurred:", error);
+                }
+            }
+    
+            fetchOpenMarketplaces();
             fetchData();
         // }
     }, []);
@@ -71,9 +94,9 @@ function Home() {
                 <p className="text-[#1F6EB7] cursor-pointer">See more on Marketplace</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {
-                        events.map((item, index) => {
+                        allMarketplaces.map((item, index) => {
                             return (
-                                <EventCard details={item} key={item.eventID} />
+                                <MarketplaceCard details={item} key={index} />
                             )
                         })
                     }

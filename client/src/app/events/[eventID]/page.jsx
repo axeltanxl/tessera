@@ -178,9 +178,9 @@ function EventDetails() {
 
                 <div aria-label='event map' className='w-full flex justify-center items-center'>
                     <img
-                        src={"/taylor-swift-seating.jpg"}
-                        width={800}
-                        height={800}
+                        src={"/layout.png"}
+                        width={600}
+                        height={600}
                         alt="seating "
                     />
                 </div>

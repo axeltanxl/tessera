@@ -2,10 +2,12 @@ import QRCode from 'qrcode'
 import axios from 'axios';
 
 export const getQRurl = async (ticketID) => {
-    const res = await fetch(`${process.env.NEXT_BACKEND}/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
+    // const res = await fetch(`${process.env.NEXT_BACKEND}/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
+    const res = await fetch(`http://localhost:3000/api/ticketing/${ticketID}`, {method: 'GET'}, { next: { revalidate: 5 } });
     const {qrString} = await res.json();
-    console.log(qrString);
+    // console.log("qrString:", qrString);
     const url = await QRCode.toDataURL(qrString)
+    // console.log("URLEE:", url)
     return url;
 }
 
