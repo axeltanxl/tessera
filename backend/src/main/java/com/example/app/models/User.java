@@ -38,7 +38,7 @@ public class User implements UserDetails {
 
     private String name;
     @NotNull(message = "Email cannot be empty")
-    @Email
+    @Email(message = "Email invalid")
     private String email;
     @NotNull(message = "Password cannot be empty")
     private String password;
