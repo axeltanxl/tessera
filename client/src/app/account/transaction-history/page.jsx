@@ -255,7 +255,6 @@ const TransactionHistory = () => {
                     await Promise.all(mergedTransactions.map(async (item, index) => {
                         if (item.runDetails !== undefined) {
                             const venueDetails = await fetchVenueByEventID(item.runDetails.event.eventID);
-                            console.log("venue ee:", venueDetails);
                             const mergeVenue = { ...item, venueDetails };
                             mergedTransactionsWithVenue.push(mergeVenue);
                         }
@@ -274,7 +273,7 @@ const TransactionHistory = () => {
         fetchDetails();
         fetchTransactions();
     }, []);
-    console.log("transactions:", transactions)
+    // console.log("transactions:", transactions)
     return (
         <section className='flex mt-10'>
             <div className='mr-20 ml-10'>
