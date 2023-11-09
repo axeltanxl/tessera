@@ -67,6 +67,21 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Ticket> tickets;
 
+    public User(String name, @NotNull(message = "Email cannot be empty") String email,
+        @NotNull(message = "Password cannot be empty") String password, String contactNum, String address, Role role) {
+      this.name = name;
+      this.email = email;
+      this.password = password;
+      this.contactNum = contactNum;
+      this.address = address;
+      this.role = role;
+    }
+
+    //no override?
+    public long getUserID(){
+      return userID;
+    }
+
     // ALL from UserDetails (Spring Boot default - Security)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
