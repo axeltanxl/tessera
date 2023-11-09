@@ -1,58 +1,62 @@
-'use client'
+// 'use client'
 import SideNav from '@/components/ui/accountNav/SideNav'
 import { SlArrowLeft } from 'react-icons/sl';
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { IoLocationOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import { QRcode } from "@/components/canvas/QRcode"
-import { getQRurl } from './actions';
-import { useEffect, useState } from 'react'
-import axios from 'axios';
+import { getQRurl, getTicketDetails } from './actions';
 import Cookies from 'js-cookie';
 import { formatDate } from '@/lib/formatUtil';
 
-const Ticket = ({ params }) => {
+const Ticket = async ({ params }) => {
     // console.log(params)
-    const ticketID = params.ticketID
-    // const qrUrl = await getQRurl(ticketID);
-    const [ticketDetails, setTicketDetails] = useState();
-    const [qrUrl, setQrUrl] = useState();
-    useEffect(() => {
-        const fetchTicket = async () => {
-            const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
-            try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+    // const ticketID = params.ticketID
+    // // const qrUrl = await getQRurl(ticketID);
+    // const [ticketDetails, setTicketDetails] = useState();
+    // const [qrUrl, setQrUrl] = useState();
+    // useEffect(() => {
+    //     const fetchTicket = async () => {
+            // const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
+    //         try {
+    //             const response = await axios.get(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             });
 
-                if (response.status === 200) {
+    //             if (response.status === 200) {
 
-                    const details = response.data;
-                    setTicketDetails(details);
-                } else {
-                    throw new Error('Failed to fetch data');
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    //                 const details = response.data;
+    //                 setTicketDetails(details);
+    //             } else {
+    //                 throw new Error('Failed to fetch data');
+    //             }
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
 
-        async function loadQRUrl() {
-            try {
-                console.log("Fetching QR URL for ticketID:", ticketID);
-                const qrUrl = await getQRurl(ticketID);
-                console.log("QR URL:", qrUrl);
-                setQrUrl(qrUrl);
-            } catch (error) {
-                console.error("An error occurred while loading the QR URL:", error);
-            }
-        }
+    //     async function loadQRUrl() {
+    //         try {
+    //             console.log("Fetching QR URL for ticketID:", ticketID);
+    //             const qrUrl = await getQRurl(ticketID);
+    //             console.log("QR URL:", qrUrl);
+    //             setQrUrl(qrUrl);
+    //         } catch (error) {
+    //             console.error("An error occurred while loading the QR URL:", error);
+    //         }
+    //     }
 
-        fetchTicket();
-        loadQRUrl();
-    },[ticketID])
+    //     fetchTicket();
+    //     loadQRUrl();
+    // },[ticketID])
+    console.log(params)
+    const ticketID = params.ticketID;
+    const qrUrl = await getQRurl(ticketID);
+    const ticketDetails = await getTicketDetails(ticketID);
+    console.log(ticketDetails);
+    const {  seatNo, row, section, category, eventName, displayImage, venueName, date } = ticketDetails
 
     return (
         <section className='flex mt-10'>
@@ -79,13 +83,13 @@ const Ticket = ({ params }) => {
                     <div className='absolute top-0 left-0 w-[300px]'>
                         <div className='py-4 px-6'>
                             <div className='my-2'>
-                                <p className='font-semibold text-sm'>{ticketDetails?.event?.name}</p>
-                                <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span className='text-sm'>{formatDate(ticketDetails?.run.date)}</span></p>
-                                <p><IoLocationOutline size={20} className='inline-block' /><span className='text-sm'>{ticketDetails?.venue.name}</span></p>
+                                <p className='font-semibold text-sm'>{eventName}</p>
+                                <p><CalendarIcon className="h-4 w-4 inline-block mx-1" /><span className='text-sm'>{formatDate(date)}</span></p>
+                                <p><IoLocationOutline size={20} className='inline-block' /><span className='text-sm'>{venueName}</span></p>
                             </div>
                             <hr></hr>
                             <div className='flex items-center my-2'>
-                                <p className='text-sm'><span className='font-bold text-[#1F6EB7]'>CAT </span>{ticketDetails?.seat.category} Ticket</p>
+                                <p className='text-sm'><span className='font-bold text-[#1F6EB7]'>CAT </span>{category} Ticket</p>
                             </div>
                             <hr></hr>
                             <div className='flex items-center my-2'>
@@ -93,9 +97,9 @@ const Ticket = ({ params }) => {
                                     <p className='text-sm border-r px-6'><span className='font-bold text-[#1F6EB7]'>Zone </span></p>
                                     <p className='text-sm border-r px-6'><span className='font-bold text-[#1F6EB7]'>Row </span></p>
                                     <p className='text-sm px-6'><span className='font-bold text-[#1F6EB7]'>Seat </span></p>
-                                    <p className='text-sm px-6'>{ticketDetails?.seat.section}</p>
-                                    <p className='text-sm px-6'>{ticketDetails?.seat.row}</p>
-                                    <p className='text-sm px-6'>{ticketDetails?.seat.seatNo}</p>
+                                    <p className='text-sm px-6'>{section}</p>
+                                    <p className='text-sm px-6'>{row}</p>
+                                    <p className='text-sm px-6'>{seatNo}</p>
                                 </div>
                             </div>
                             <hr></hr>
@@ -108,7 +112,7 @@ const Ticket = ({ params }) => {
                 </div>
             </div>
             <div className='mx-10 mt-16 flex flex-col items-center justify-center'>
-                <img src={ticketDetails?.event?.displayImage}/>
+                <img src={displayImage}/>
                 <p>See you there!</p>
             </div>
         </section>

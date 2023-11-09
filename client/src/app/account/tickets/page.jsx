@@ -46,7 +46,7 @@ const MyTickets = () => {
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
   const [seats, setSeats] = useState([]);
-
+  const [ marketplaceTix, setMarketPlaceTix ] = useState([]);
   const fetchRunDetails = async (orderid) => {
     const token = Cookies.get("jwt_spring");
     try {
@@ -153,7 +153,7 @@ const MyTickets = () => {
       }
     }
   }
-
+ 
   useEffect(() => {
     const fetchDetails = async () => {
       const token = Cookies.get("jwt_spring"); // Use Cookies.get to access cookies
@@ -170,7 +170,7 @@ const MyTickets = () => {
 
           const userid = response.data.userID;
           fetchOrders(userid);
-
+          findMarketPlaceTickets()
         } else {
           throw new Error('Failed to fetch data');
         }
@@ -179,6 +179,17 @@ const MyTickets = () => {
       }
     };
 
+    const findMarketPlaceTickets = async () => {
+        const response = await axios.get(`/api/ticketing`)
+        if (response.status === 200) {
+            console.log(response.data.tickets);
+            const tickets = JSON.parse(response.data.tickets)
+            console.log(tickets);
+            setMarketPlaceTix(tickets);
+        }
+      }
+
+      
     const fetchOrders = async (userid) => {
       const token = Cookies.get("jwt_spring");
       try {
@@ -297,14 +308,40 @@ const MyTickets = () => {
         <p className='font text-sm text-[#1F6EB7]'>Click on tickets to view QR code and ticket details</p>
         <div>
           <Table>
-            <TableHeader>
+            {/* <TableHeader>
               <TableRow>
                 <TableHead className="font-semibold w-[300px]"></TableHead>
                 <TableHead className="font-semibold">Tickets</TableHead>
               </TableRow>
-            </TableHeader>
+            </TableHeader> */}
             <TableBody>
+                <TableRow>
+                    <TableHead className="font-semibold">Tickets from marketplace</TableHead>
+                </TableRow>
+                
+                {marketplaceTix.map((marketplaceTicket) => {
+                    console.log(marketplaceTicket)
+                    const { ticketID } = marketplaceTicket;
+                    return (
+                    <TableRow key={ticketID} >
+                        <TableCell>
+                        <div className='flex items-center' key={ticketID}>
+                            <Link href={`/account/tickets/${ticketID}`}>
+                                <TicketCardWithTicketID ticketID={ticketID}/>
+                            </Link>
+                        </div>
+                        </TableCell>
+                    </TableRow>
+                    )
+                })}
+
+                <TableRow>
+                    <TableHead className="font-semibold">Tickets</TableHead>
+                </TableRow>
+
               {orders.map((item, index) => {
+                    console.log(item.tickets);
+
                 return (
                   <TableRow key={index} >
                     <TableCell className="font-medium">
@@ -315,7 +352,13 @@ const MyTickets = () => {
 
                     </TableCell>
                     <TableCell>
-                      {item.tickets.map((tix, tIndex) => {                       return (<div className='flex items-center' key={tIndex}>
+                      {item.tickets.map((tix, tIndex) => { 
+                        const beenToMarketPlace = tix.transactions.length > 0
+                        // console.log(beenToMarketPlace);
+                        return (beenToMarketPlace ? 
+                        <div></div> 
+                        : 
+                        <div className='flex items-center' key={tIndex}>
                           <Checkbox handleSelect={handleSelectTickets} ticket={tix} />
                           <div className="flex gap-2">
 

@@ -45,7 +45,7 @@ const ListingCard = ({ item }) => {
                 <p className='text-sm'>{formatDate(runDate)}</p>
                 <p className='text-sm'>Zone {seatSection} | Row {seatRow} | Seat {seatNumber}</p>
                 <div className='flex justify-between'>
-                    <p className='flex'>${ticketListingPrice}</p>
+                    <p className='flex'>${ticketListingPrice / 100}</p>
                     <Button
                         ripple={false}
                         fullWidth={false}
