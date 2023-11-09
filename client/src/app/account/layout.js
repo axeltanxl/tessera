@@ -24,4 +24,4 @@ const AccountLayout = ({children}) =>  {
     )
   }
 
-  export default AccountLayer;
+  export default AccountLayout;
