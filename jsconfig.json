@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    // "paths": {
-    //   "@/*": ["./src/*"]
-    // }
-    "baseUrl": "./client/src",
-    "paths": { "@/*": ["./*"], "@/components/*": ["./components/*"], "@/lib/*": ["./lib/*"] },
-  },
-}
