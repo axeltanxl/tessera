@@ -77,16 +77,17 @@ Create a `.env` file with the template provided in `.env.sample`
 ### Configuration for `.env`
 | Field | Description |
 :-------| :-----------|
-| NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY |  |
-| STRIPE_SECRET_KEY |  |
-| DATABASE_URL |  |
-| NEXTAUTH_URL |   |
-| NEXTAUTH_SECRET |   |
-| SPRING_BACKEND |  |
-| NEXT_PUBLIC_SPRING_BACKEND |  |
-| NEXT_BACKEND |  |
-| QR_SECRET_KEY1 |  |
-| QR_SECRET_KEY2 |  |
+| NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY | Stripe publishable key: found under Developer, [api key](https://stripe.com/docs/keys) |
+| STRIPE_SECRET_KEY | Stripe secret key: found under Developer, [api key](https://stripe.com/docs/keys) |
+| DATABASE_URL | [Connection string/URL of the SQL database](https://www.prisma.io/docs/reference/database-reference/connection-urls#:~:text=%7D-,MySQL,-schema.prisma). |
+| NEXTAUTH_URL | Base url for nextauth: authority component of next backend   |
+| NEXTAUTH_SECRET | [Secret key to encrypt nextauth jwt](https://next-auth.js.org/configuration/options#:~:text=openssl%20rand%20%2Dbase64%2032)  |
+| SPRING_BACKEND | Base url for server components to make request to Spring backend: [authority component]/api/v1  |
+| NEXT_PUBLIC_SPRING_BACKEND | Base url for client components to make request to Spring backend: [authority component]/api/v1 |
+| NEXT_BACKEND | Base url for components to make request to Next backend: [authority component]/api |
+| QR_SECRET_KEY1 | Secret key to generate unique code for each ticket |
+| QR_SECRET_KEY2 | Secret key to generate qr string using unique code and time |
+| STRIPE_WEBHOOK_ENDPOINT_SECRET | Secret key for webhook endpoint to run locally: generated when [running command](#forward-stripe-events-to-webhook) |
 
 Following this, install necessary node packages:
 
@@ -99,3 +100,10 @@ Start the application:
 ```
 npm run dev
 ```
+
+## Forward stripe events to webhook:
+
+```
+stripe listen --forward-to [authority component of next server]/api/connectWebhook
+```
+Stripe connect should also be setup to allow clients to create express stripe account for payout
