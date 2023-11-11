@@ -9,30 +9,30 @@ datasource db {
 
 model custorder {
   orderID        BigInt    @id @default(autoincrement())
+  ticketQuantity Int
+  userID         BigInt?
+  ticketCategory String?   @db.VarChar(255)
   date           DateTime? @db.Date
   price          Int
-  stripeOrderID  String?   @db.VarChar(255)
-  ticketCategory String?   @db.VarChar(255)
-  ticketQuantity Int
   runID          BigInt?
-  userID         BigInt?
+  stripeOrderID  String?   @db.VarChar(255)
 
   @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
   @@index([runID], map: "FKif7961o0kcvcdtu367120seoi")
 }
 
 model event {
-  eventID          BigInt    @id @default(autoincrement())
-  category         String?   @db.VarChar(255)
-  description      String?   @db.Text
-  displayImage     String?   @db.VarChar(255)
   duration         Int
   endDate          DateTime? @db.Date
   maxSlots         Int
-  name             String    @db.VarChar(255)
-  pricePerCategory String?   @db.VarChar(255)
   startDate        DateTime? @db.Date
+  eventID          BigInt    @id @default(autoincrement())
+  category         String?   @db.VarChar(255)
+  description      String?   @db.Text
+  pricePerCategory String?   @db.VarChar(255)
+  name             String    @db.VarChar(255)
   venueID          BigInt?
+  displayImage     String?   @db.VarChar(255)
 
   @@index([venueID], map: "FKfkg0rjjt6ca7ck5mojidks7r7")
 }
@@ -47,9 +47,9 @@ model marketplace {
 model payment {
   paymentID       BigInt  @id @default(autoincrement())
   paymentMethod   String? @db.VarChar(255)
-  stripePaymentID String? @db.VarChar(255)
   orderID         BigInt?
   transactionID   BigInt?
+  stripePaymentID String? @db.VarChar(255)
 
   @@index([orderID], map: "FKb33lw05499g9grnvp6ufpjjwg")
   @@index([transactionID], map: "FKmuaxt57agmtuiovehhauvchmq")
@@ -78,10 +78,10 @@ model seat {
 }
 
 model ticket {
-  ticketID   BigInt  @id @default(autoincrement())
   uniqueCode String? @db.VarChar(255)
   orderID    BigInt?
   seatID     BigInt?
+  ticketID   BigInt  @id @default(autoincrement())
   userID     BigInt?
 
   @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
@@ -95,12 +95,12 @@ model ticketlisting {
   price         Float
   quantity      Int
   status        String?   @db.VarChar(255)
-  eventID       BigInt?
-  marketplaceID BigInt?
-  runID         BigInt?
   ticketID      BigInt?
   transactionID BigInt?   @unique(map: "UK_4vy5x6o4q6m3y4rppqavccbn2")
   userID        BigInt?
+  eventID       BigInt?
+  runID         BigInt?
+  marketplaceID BigInt?
 
   @@index([runID], map: "FK19h0ku2x5pr7s75w0s7sbon6g")
   @@index([marketplaceID], map: "FK91beud6r09v7ry2gbxpw94jo6")
@@ -110,11 +110,11 @@ model ticketlisting {
 }
 
 model transaction {
-  transactionID BigInt    @id @default(autoincrement())
   date          DateTime? @db.DateTime(6)
   buyerID       BigInt?
   sellerID      BigInt?
   ticketID      BigInt?
+  transactionID BigInt    @id @default(autoincrement())
 
   @@index([sellerID], map: "FK2nlddhdsd1n20718nunwqyp69")
   @@index([buyerID], map: "FK7j96qpqvnqa1wplxx8g64t1x4")
@@ -122,9 +122,9 @@ model transaction {
 }
 
 model user {
+  contactNum   String?    @db.VarChar(255)
   userID       BigInt     @id @default(autoincrement())
   address      String?    @db.VarChar(255)
-  contactNum   String?    @db.VarChar(255)
   email        String     @db.VarChar(255)
   name         String?    @db.VarChar(255)
   password     String     @db.VarChar(255)
@@ -133,9 +133,9 @@ model user {
 }
 
 model venue {
-  venueID  BigInt  @id @default(autoincrement())
   capacity Int
   name     String? @db.VarChar(255)
+  venueID  BigInt  @id @default(autoincrement())
 }
 
 model runseat {
@@ -148,7 +148,197 @@ model runseat {
   @@index([runID], map: "FKinvugr5jyeivvcqjke0idlg8e")
 }
 
+model CustOrder {
+  date           DateTime? @db.Date
+  price          Int
+  ticketQuantity Int
+  orderID        BigInt    @id @default(autoincrement())
+  runID          BigInt?
+  userID         BigInt?
+  stripeOrderID  String?   @db.VarChar(255)
+  ticketCategory String?   @db.VarChar(255)
+  User           User?     @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FKi095hldqf17n9kcpp26ghex2o")
+  Run            Run?      @relation(fields: [runID], references: [runID], onDelete: NoAction, onUpdate: NoAction, map: "FKif7961o0kcvcdtu367120seoi")
+  Payment        Payment[]
+  Ticket         Ticket[]
+
+  @@index([userID], map: "FKi095hldqf17n9kcpp26ghex2o")
+  @@index([runID], map: "FKif7961o0kcvcdtu367120seoi")
+}
+
+model Event {
+  duration         Int
+  endDate          DateTime?       @db.Date
+  maxSlots         Int
+  startDate        DateTime?       @db.Date
+  eventID          BigInt          @id @default(autoincrement())
+  venueID          BigInt?
+  category         String?         @db.VarChar(255)
+  description      String?         @db.Text
+  displayImage     String?         @db.VarChar(255)
+  name             String          @db.VarChar(255)
+  pricePerCategory String?         @db.VarChar(255)
+  Venue            Venue?          @relation(fields: [venueID], references: [venueID], onDelete: NoAction, onUpdate: NoAction, map: "FKfkg0rjjt6ca7ck5mojidks7r7")
+  Run              Run[]
+  TicketListing    TicketListing[]
+
+  @@index([venueID], map: "FKfkg0rjjt6ca7ck5mojidks7r7")
+}
+
+model Marketplace {
+  closingDate   DateTime?       @db.Date
+  openingDate   DateTime?       @db.Date
+  marketplaceID BigInt          @id @default(autoincrement())
+  status        String?         @db.VarChar(255)
+  Run           Run?
+  TicketListing TicketListing[]
+}
+
+model Payment {
+  orderID         BigInt?
+  paymentID       BigInt       @id @default(autoincrement())
+  transactionID   BigInt?
+  paymentMethod   String?      @db.VarChar(255)
+  stripePaymentID String?      @db.VarChar(255)
+  CustOrder       CustOrder?   @relation(fields: [orderID], references: [orderID], onDelete: NoAction, onUpdate: NoAction, map: "FKb33lw05499g9grnvp6ufpjjwg")
+  Transaction     Transaction? @relation(fields: [transactionID], references: [transactionID], onDelete: NoAction, onUpdate: NoAction, map: "FKmuaxt57agmtuiovehhauvchmq")
+
+  @@index([orderID], map: "FKb33lw05499g9grnvp6ufpjjwg")
+  @@index([transactionID], map: "FKmuaxt57agmtuiovehhauvchmq")
+}
+
+model Run {
+  date          DateTime?       @db.Date
+  eventID       BigInt?
+  marketplaceID BigInt?         @unique(map: "UK_mn6t8ii8gtxh4v7tpijo9tp1u")
+  runID         BigInt          @id
+  endTime       String?         @db.VarChar(255)
+  startTime     String?         @db.VarChar(255)
+  CustOrder     CustOrder[]
+  Event         Event?          @relation(fields: [eventID], references: [eventID], onDelete: NoAction, onUpdate: NoAction, map: "FKni6xubxc2bq4lmaxubip68iy4")
+  Marketplace   Marketplace?    @relation(fields: [marketplaceID], references: [marketplaceID], onDelete: NoAction, onUpdate: NoAction, map: "FKomva2tdc0y2hlbjmjhf7snac6")
+  RunSeat       RunSeat[]
+  TicketListing TicketListing[]
+
+  @@index([eventID], map: "FKni6xubxc2bq4lmaxubip68iy4")
+}
+
+model RunSeat {
+  isAvailable Int
+  runID       BigInt?
+  runSeatID   BigInt  @id
+  seatID      BigInt?
+  Seat        Seat?   @relation(fields: [seatID], references: [seatID], onDelete: NoAction, onUpdate: NoAction, map: "FKh6tp2yhl9b0d8fvpxi7bhj8u6")
+  Run         Run?    @relation(fields: [runID], references: [runID], onDelete: NoAction, onUpdate: NoAction, map: "FKinvugr5jyeivvcqjke0idlg8e")
+
+  @@index([seatID], map: "FKh6tp2yhl9b0d8fvpxi7bhj8u6")
+  @@index([runID], map: "FKinvugr5jyeivvcqjke0idlg8e")
+}
+
+model Seat {
+  seatNo   Int
+  seatID   BigInt    @id @default(autoincrement())
+  venueID  BigInt?
+  category String?   @db.VarChar(255)
+  seatRow  String?   @db.VarChar(255)
+  section  String?   @db.VarChar(255)
+  RunSeat  RunSeat[]
+  Venue    Venue?    @relation(fields: [venueID], references: [venueID], onDelete: NoAction, onUpdate: NoAction, map: "FKfj8lt431up6yqyeakinimp591")
+  Ticket   Ticket[]
+
+  @@index([venueID], map: "FKfj8lt431up6yqyeakinimp591")
+}
+
+model Ticket {
+  orderID       BigInt?
+  seatID        BigInt?
+  ticketID      BigInt          @id @default(autoincrement())
+  userID        BigInt?
+  uniqueCode    String?         @db.VarChar(255)
+  User          User?           @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FKc16fvc0gd76qdgro0au29h8ab")
+  Seat          Seat?           @relation(fields: [seatID], references: [seatID], onDelete: NoAction, onUpdate: NoAction, map: "FKjuy4c1esbrpokuwgg5v2fuudt")
+  CustOrder     CustOrder?      @relation(fields: [orderID], references: [orderID], onDelete: NoAction, onUpdate: NoAction, map: "FKks8gd5eaa20qau296r9fgcc9n")
+  TicketListing TicketListing[]
+  Transaction   Transaction[]
+
+  @@index([userID], map: "FKc16fvc0gd76qdgro0au29h8ab")
+  @@index([seatID], map: "FKjuy4c1esbrpokuwgg5v2fuudt")
+  @@index([orderID], map: "FKks8gd5eaa20qau296r9fgcc9n")
+}
+
+model TicketListing {
+  price         Float
+  quantity      Int
+  eventID       BigInt?
+  listingDate   DateTime?    @db.DateTime(6)
+  listingID     BigInt       @id @default(autoincrement())
+  marketplaceID BigInt?
+  runID         BigInt?
+  ticketID      BigInt?
+  transactionID BigInt?      @unique(map: "UK_4vy5x6o4q6m3y4rppqavccbn2")
+  userID        BigInt?
+  status        String?      @db.VarChar(255)
+  Run           Run?         @relation(fields: [runID], references: [runID], onDelete: NoAction, onUpdate: NoAction, map: "FK19h0ku2x5pr7s75w0s7sbon6g")
+  Marketplace   Marketplace? @relation(fields: [marketplaceID], references: [marketplaceID], onDelete: NoAction, onUpdate: NoAction, map: "FK91beud6r09v7ry2gbxpw94jo6")
+  Transaction   Transaction? @relation(fields: [transactionID], references: [transactionID], onDelete: NoAction, onUpdate: NoAction, map: "FKfo89abcodmfkldum7l1a582cy")
+  User          User?        @relation(fields: [userID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FKnflg4egmodkj1gmynr3s0fpkh")
+  Event         Event?       @relation(fields: [eventID], references: [eventID], onDelete: NoAction, onUpdate: NoAction, map: "FKooydwf1a56axoqvpgt3ovokts")
+  Ticket        Ticket?      @relation(fields: [ticketID], references: [ticketID], onDelete: NoAction, onUpdate: NoAction, map: "FKpqqii5jlk6yp4hrcfehu7hrc")
+
+  @@index([runID], map: "FK19h0ku2x5pr7s75w0s7sbon6g")
+  @@index([marketplaceID], map: "FK91beud6r09v7ry2gbxpw94jo6")
+  @@index([userID], map: "FKnflg4egmodkj1gmynr3s0fpkh")
+  @@index([eventID], map: "FKooydwf1a56axoqvpgt3ovokts")
+  @@index([ticketID], map: "FKpqqii5jlk6yp4hrcfehu7hrc")
+}
+
+model Transaction {
+  buyerID                         BigInt?
+  date                            DateTime?      @db.DateTime(6)
+  sellerID                        BigInt?
+  ticketID                        BigInt?
+  transactionID                   BigInt         @id @default(autoincrement())
+  Payment                         Payment[]
+  TicketListing                   TicketListing?
+  User_Transaction_sellerIDToUser User?          @relation("Transaction_sellerIDToUser", fields: [sellerID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FK2nlddhdsd1n20718nunwqyp69")
+  User_Transaction_buyerIDToUser  User?          @relation("Transaction_buyerIDToUser", fields: [buyerID], references: [userID], onDelete: NoAction, onUpdate: NoAction, map: "FK7j96qpqvnqa1wplxx8g64t1x4")
+  Ticket                          Ticket?        @relation(fields: [ticketID], references: [ticketID], onDelete: NoAction, onUpdate: NoAction, map: "FKdcjhq8tyb6mwfawkmomggmlag")
+
+  @@index([sellerID], map: "FK2nlddhdsd1n20718nunwqyp69")
+  @@index([buyerID], map: "FK7j96qpqvnqa1wplxx8g64t1x4")
+  @@index([ticketID], map: "FKdcjhq8tyb6mwfawkmomggmlag")
+}
+
+model User {
+  userID                                 BigInt          @id @default(autoincrement())
+  address                                String?         @db.VarChar(255)
+  contactNum                             String?         @db.VarChar(255)
+  email                                  String          @db.VarChar(255)
+  name                                   String?         @db.VarChar(255)
+  password                               String          @db.VarChar(255)
+  role                                   User_role?
+  stripeUserID                           String?         @db.VarChar(255)
+  CustOrder                              CustOrder[]
+  Ticket                                 Ticket[]
+  TicketListing                          TicketListing[]
+  Transaction_Transaction_sellerIDToUser Transaction[]   @relation("Transaction_sellerIDToUser")
+  Transaction_Transaction_buyerIDToUser  Transaction[]   @relation("Transaction_buyerIDToUser")
+}
+
+model Venue {
+  capacity Int
+  venueID  BigInt  @id @default(autoincrement())
+  name     String? @db.VarChar(255)
+  Event    Event[]
+  Seat     Seat[]
+}
+
 enum user_role {
+  ADMIN
+  USER
+}
+
+enum User_role {
   ADMIN
   USER
 }
