@@ -95,7 +95,7 @@ const TicketPurchase = () => {
                     body: JSON.stringify(seatReqBody),
                 };
                 
-                const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${runID}/availableSeats`, seatReqOptions);
+                const seatRes = await fetch(`${process.env.SPRING_BACKEND}/runs/${runID}/availableSeats`, seatReqOptions);
     
                 if (seatRes.ok) {
                     const seatjson = await seatRes.json();

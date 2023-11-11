@@ -37,7 +37,7 @@ const Confirmation = () => {
                     "Content-Type": 'application/json',
                 },
             };
-            const seatRemRes = await axios.post(`http://localhost:8080/api/v1/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
+            const seatRemRes = await axios.post(`${process.env.SPRING_BACKEND}/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
         }
         setPage(prev => prev - 1);
     };
@@ -85,15 +85,15 @@ const Confirmation = () => {
                 }
 
                 
-                const eventRes = await fetch(`http://localhost:8080/api/v1/events/${eventid}`, {
+                const eventRes = await fetch(`${process.env.SPRING_BACKEND}/events/${eventid}`, {
                     method: 'GET',
                     headers,
                 });
-                const runRes = await fetch(`http://localhost:8080/api/v1/runs/${temprunid}`, {
+                const runRes = await fetch(`${process.env.SPRING_BACKEND}/runs/${temprunid}`, {
                     method: 'GET',
                     headers,
                 });
-                const venueRes = await fetch(`http://localhost:8080/api/v1/events/${eventid}/venue`, {
+                const venueRes = await fetch(`${process.env.SPRING_BACKEND}/events/${eventid}/venue`, {
                     method: 'GET',
                     headers,
                 });
@@ -135,7 +135,7 @@ const Confirmation = () => {
                     },
                     body: JSON.stringify(seatReqBody),
                 };
-                const seatRes = await fetch(`http://localhost:8080/api/v1/runs/${temprunid}/seatAllocation`, seatReqOptions);
+                const seatRes = await fetch(`${process.env.SPRING_BACKEND}/runs/${temprunid}/seatAllocation`, seatReqOptions);
 
                 if (seatRes.ok) {
                     const seatjson = await seatRes.json();
@@ -248,7 +248,7 @@ const Confirmation = () => {
                     "Content-Type": 'application/json',
                 },
             };
-            const seatRemRes = await axios.post(`http://localhost:8080/api/v1/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
+            const seatRemRes = await axios.post(`${process.env.SPRING_BACKEND}/runs/${runid}/resetSeatStatus`, seatRemBody, seatRemOptions);
 
             if (seatRemRes.status === 200) {
                 if (size === 1) window.location.reload();
