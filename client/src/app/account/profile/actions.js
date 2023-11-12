@@ -6,7 +6,7 @@ import { unAuth } from "@/lib/utils";
 
 export const fetchDetails = async () => {
     const token = cookies().get("jwt_spring").value;
-    const res = await fetch(`${process.env.SPRING_BACKEND}/users/accountDetails`, 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/accountDetails`, 
     {
         method: 'GET',
         headers : {"Authorization": `Bearer ${token}`,}
@@ -20,8 +20,8 @@ export const fetchDetails = async () => {
 
 export const updateDetails = async (userID, newDetails) => {
     const token = cookies().get("jwt_spring").value;
-    console.log(`${process.env.SPRING_BACKEND}/users/${userID}/update`)
-    const res = await fetch(`${process.env.SPRING_BACKEND}/users/${userID}/update`, 
+    console.log(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userID}/update`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userID}/update`, 
     {
         method: 'PUT',
         headers : {
@@ -36,9 +36,9 @@ export const updateDetails = async (userID, newDetails) => {
 
 export const updatePw = async (userID, newDetails) => {
     const token = cookies().get("jwt_spring").value;
-    console.log(`${process.env.SPRING_BACKEND}/users/${userID}/updatePwd`)
+    console.log(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userID}/updatePwd`)
     console.log(newDetails)
-    const res = await fetch(`${process.env.SPRING_BACKEND}/users/${userID}/updatePwd`, 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/users/${userID}/updatePwd`, 
     {
         method: 'PUT',
         headers : {

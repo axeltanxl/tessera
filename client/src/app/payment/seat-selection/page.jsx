@@ -95,7 +95,7 @@ const TicketPurchase = () => {
                     body: JSON.stringify(seatReqBody),
                 };
                 
-                const seatRes = await fetch(`${process.env.SPRING_BACKEND}/runs/${runID}/availableSeats`, seatReqOptions);
+                const seatRes = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/runs/${runID}/availableSeats`, seatReqOptions);
     
                 if (seatRes.ok) {
                     const seatjson = await seatRes.json();

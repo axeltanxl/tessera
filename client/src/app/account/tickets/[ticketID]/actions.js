@@ -40,7 +40,7 @@ export const getTicketDetails = async(ticketID) => {
     //         },
     //     });
     try{
-        const res = await fetch(`${process.env.SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPRING_BACKEND}/tickets/${ticketID}/events/runs/seats`, {
             method: 'GET',
             headers : {"Authorization": `Bearer ${token}`,}
         });    
