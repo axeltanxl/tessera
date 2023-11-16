@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 import jakarta.persistence.Entity;
@@ -37,6 +38,7 @@ public class User implements UserDetails {
 
     private String name;
     @NotNull(message = "Email cannot be empty")
+    @Email(message = "Email invalid")
     private String email;
     @NotNull(message = "Password cannot be empty")
     private String password;

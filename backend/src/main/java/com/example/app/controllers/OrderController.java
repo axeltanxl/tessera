@@ -23,6 +23,11 @@ public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
+    /**
+     * Get orders by user ID
+     * @param userId
+     * @return Return list of orders linked to userID
+     */
     @GetMapping("/users/{userID}/orders")
     public List<CustOrder> getOrderByUserID(@PathVariable long userID) {
         List<CustOrder> orders = orderRepository.findOrderByUserUserID(userID);

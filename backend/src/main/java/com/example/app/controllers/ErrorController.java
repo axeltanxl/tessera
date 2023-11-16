@@ -16,6 +16,11 @@ import com.example.app.exceptions.UnauthorizedException;
 @ControllerAdvice
 public class ErrorController extends ResponseEntityExceptionHandler {
 
+    /**
+     * Returns anything that throws an error.
+     * @param exception
+     * @return Returns a stack trace to the front end. INTERNAL SERVER ERROR.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception ex) {
         // Error Handling
@@ -23,6 +28,10 @@ public class ErrorController extends ResponseEntityExceptionHandler {
             .body("Check stack trace. An error occurred: " + ex.getMessage());
     }
     
+    /**
+     * Returns an error for Ticket Not Found.
+     * @return Returns ticketNotFoundException. NOT_FOUND Error.
+     */
     @ExceptionHandler(TicketNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleTicketNotFoundException(TicketNotFoundException ex) {
