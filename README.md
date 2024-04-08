@@ -29,7 +29,7 @@ Project Documentation: https://smu.sg/CS203-Tessera-Documentation
 ## Built with
 | NextJS | TailwindCSS | Spring Boot | MySQL |
 |--------|-------------|-------------|-------|
-| <img height="80px" src="https://images.ctfassets.net/c63hsprlvlya/IacLLeOBR5WCvdCPqKuff/6860b5cc464c4f54703a2befa3f706b4/nextjs3.webp" /> | <img height="80px" src="https://miro.medium.com/v2/resize:fit:1400/1*oPL8C-i04sqAUoOS_da9aA.jpeg" /> | <img height="80px" src="https://e4developer.com/wp-content/uploads/2018/01/spring-boot.png" /> | <img height="80px" src="https://v5c2e8r4.stackpathcdn.com/wp-content/uploads/2014/09/mysql-logo.jpg" /> |
+| <img height="80px" src="https://images.ctfassets.net/c63hsprlvlya/IacLLeOBR5WCvdCPqKuff/6860b5cc464c4f54703a2befa3f706b4/nextjs3.webp" /> | <img height="80px" src="https://miro.medium.com/v2/resize:fit:1400/1*oPL8C-i04sqAUoOS_da9aA.jpeg" /> | <img height="80px" src="https://e4developer.com/wp-content/uploads/2018/01/spring-boot.png" /> | <img height="80px" src="https://upload.wikimedia.org/wikipedia/labs/8/8e/Mysql_logo.png" /> |
 
 | AWS | Stripe | Docker | Vercel |
 |-----|--------|--------|--------|
